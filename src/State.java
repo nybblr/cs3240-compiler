@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class NFA {
+public class State {
+	public String label;
 	public ArrayList<Transition> transitions = new ArrayList<Transition>();
-	public ArrayList<State> states = new ArrayList<State>();
 }
