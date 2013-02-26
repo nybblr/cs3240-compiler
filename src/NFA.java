@@ -31,4 +31,13 @@ public class NFA {
 	public Boolean isAccepted(String string) {
 		return false;
 	}
+
+	public State step(State from, Character on) {
+		return from;
+	}
+
+	/* Manipulation */
+	public Boolean addState(State state) {
+		return false;
+	}
 }
