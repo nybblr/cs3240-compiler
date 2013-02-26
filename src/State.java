@@ -1,8 +1,8 @@
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class State {
 	private String label;
-	private ArrayList<Transition> transitions = new ArrayList<Transition>();
+	private HashSet<Transition> transitions = new HashSet<Transition>();
 	private Boolean accepts;
 
 	/* Getters and setters */
@@ -14,7 +14,7 @@ public class State {
 		this.label = label;
 	}
 
-	public ArrayList<Transition> getTransitions() {
+	public HashSet<Transition> getTransitions() {
 		return transitions;
 	}
 

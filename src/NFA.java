@@ -1,10 +1,16 @@
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class NFA {
-	public ArrayList<Transition> transitions = new ArrayList<Transition>();
-	public ArrayList<State> states = new ArrayList<State>();
+	public HashSet<Transition> transitions = new HashSet<Transition>();
+	public HashSet<State> states = new HashSet<State>();
 	public State start;
 
+	/* Constructors */
+	public NFA(State start) {
+		this.start = start;
+	}
+
+	/* Getters and setters */
 	public State getStart() {
 		return start;
 	}
@@ -13,11 +19,16 @@ public class NFA {
 		this.start = start;
 	}
 
-	public ArrayList<Transition> getTransitions() {
+	public HashSet<Transition> getTransitions() {
 		return transitions;
 	}
 
-	public ArrayList<State> getStates() {
+	public HashSet<State> getStates() {
 		return states;
+	}
+
+	/* Traversal */
+	public Boolean isAccepted(String string) {
+		return false;
 	}
 }
