@@ -40,4 +40,14 @@ public class NFA {
 	public Boolean addState(State state) {
 		return false;
 	}
+
+	/* Export */
+	public void toTable() {
+		// Should return some kind of transition table
+		toDFA().toTable();
+	}
+
+	public DFA toDFA() {
+		return new DFA(this);
+	}
 }
