@@ -40,6 +40,10 @@ public class NFA {
 	public Boolean addState(State state) {
 		return false;
 	}
+	
+	public Boolean addTransition(State from, Character on, State to) {
+		return false;
+	}
 
 	/* Export */
 	public void toTable() {
