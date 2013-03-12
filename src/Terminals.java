@@ -17,7 +17,18 @@ public class Terminals {
 	public void setChars(HashSet<Character> chars) {
 		this.chars = chars;
 	}
+	public void addChar(char c) {
+		chars.add(c);
+	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	/* Generators */
 	public DFA getDFA() {
 		this.dfa = null;
