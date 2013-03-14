@@ -38,10 +38,15 @@ public class NFA {
 
 	/* Manipulation */
 	public Boolean addState(State state) {
+		this.states.add(state);
 		return false;
 	}
 	
 	public Boolean addTransition(State from, Character on, State to) {
+		Transition transition = new Transition(from, on, to);
+		this.transitions.add(transition);
+		from.addTransition(on, to);
+		
 		return false;
 	}
 

@@ -34,6 +34,12 @@ public class State {
 	public Boolean addTransition(Character on, State to) {
 		return false;
 	}
+	
+	public Boolean addTransition(Transition transition) {
+		this.transitions.add(transition);
+		
+		return false;
+	}
 
 	public Boolean deleteTransition(Character on, State to) {
 		return false;
