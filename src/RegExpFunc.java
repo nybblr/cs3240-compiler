@@ -1,4 +1,5 @@
-import java.awt.font.LineBreakMeasurer;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * 
@@ -9,28 +10,31 @@ import java.awt.font.LineBreakMeasurer;
  *
  */
 public class RegExpFunc {
-    public enum Regex{SPACE, BSLASH, MULTI, PLUS, OR, LBRAC, RBRAC,
-        LPAREN, RPAREN, PERIOD, APOS, QUOT, UNION, RECHAR, CLSCHAR}
-    public enum Class{DIGIT, NONZERO, CHAR, UPPER}
-    
+    private String SPACE = " ", BSLASH = "/", MULTI = "*",
+    PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
+    RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"", UNION = "UNION",
+    RECHAR = "RECHAR", CLSCHAR = "CLSCHAR", IN = "IN", NOT = "^";
+    private ArrayList<Terminals> classes = Parser.getClasses();
 
-    private void matchToken(Regex token) {
+    private void matchToken(String token) {
         // TODO Auto-generated method stub
         
     }
-    
-    private void matchToken(Class token) {
-        //TODO Auto-generated method stub
-    }
 
-    private Object peekToken() {
+    private String peekToken() {
         // TODO Auto-generated method stub
         return null;
     }
     
-    private void definedClass() {
-        // TODO Auto-generated method stub
-        
+    private boolean definedClass() {
+        for(int i=0; i<classes.size(); i++){
+            HashSet<Character> chars = classes.get(i).getChars();
+            if(chars.contains(peekToken())){
+                matchToken(peekToken());
+                return true;
+            }
+        }
+        return false;
     }
     
     public void origRegExp() {
@@ -43,8 +47,8 @@ public class RegExpFunc {
     }
     
     public void regExPrime() {
-        if(peekToken() == Regex.UNION) {
-            matchToken(Regex.UNION);
+        if(peekToken() == UNION) {
+            matchToken(UNION);
             regExOne();
             regExPrime();
         }
@@ -59,37 +63,25 @@ public class RegExpFunc {
     }
     
     public void regExOnePrime() {
-        if(peekToken() == Regex.LPAREN) {
+        if(peekToken() == LPAREN) {
             regExTwo();
             regExOnePrime();
         }
-        else if(peekToken() == Regex.RECHAR) {
+        else if(peekToken() == RECHAR) {
             regExTwo();
             regExOnePrime();
         }
-        else if(peekToken() == Regex.PERIOD) {
+        else if(peekToken() == PERIOD) {
             regExTwo();
             regExOnePrime();
         }
-        else if(peekToken() == Regex.LBRAC) {
+        else if(peekToken() == LBRAC) {
             regExTwo();
             regExOnePrime();
         }
-        else if(peekToken() == Class.CHAR) {
-            regExTwo();
-            regExOnePrime();
-        }
-        else if(peekToken() == Class.DIGIT) {
-            regExTwo();
-            regExOnePrime();
-        }
-        else if(peekToken() == Class.NONZERO) {
-            regExTwo();
-            regExOnePrime();
-        }
-        else if(peekToken() == Class.UPPER) {
-            regExTwo();
-            regExOnePrime();
+        else if(definedClass()) {
+                regExTwo();
+                regExOnePrime();            
         }
         else {
             return;
@@ -97,46 +89,37 @@ public class RegExpFunc {
     }
     
     public void regExTwo() {
-        if(peekToken() == Regex.LPAREN) {
-            matchToken(Regex.LPAREN);
+        if(peekToken() == LPAREN) {
+            matchToken(LPAREN);
             regExp();
-            if(peekToken() == Regex.RPAREN) {
-                matchToken(Regex.RPAREN);
+            if(peekToken() == RPAREN) {
+                matchToken(RPAREN);
                 regExTwoTail();
             }
         }
-        else if(peekToken() == Regex.RECHAR) {
-            matchToken(Regex.RECHAR);
+        else if(peekToken() == RECHAR) {
+            matchToken(RECHAR);
             regExTwoTail();
         }
         else {
-            if(peekToken() == Regex.PERIOD) {
+            if(peekToken() == PERIOD) {
                 regExThree();
             }
-            else if(peekToken() == Regex.LBRAC) {
+            else if(peekToken() == LBRAC) {
                 regExThree();
             }
-            else if(peekToken() == Class.CHAR) {
-                regExThree();
-            }
-            else if(peekToken() == Class.DIGIT) {
-                regExThree();
-            }
-            else if(peekToken() == Class.NONZERO) {
-                regExThree();
-            }
-            else if(peekToken() == Class.UPPER) {
+            else if(definedClass()) {
                 regExThree();
             }
         }
     }
     
     public void regExTwoTail() {
-        if(peekToken() == Regex.MULTI) {
-            matchToken(Regex.MULTI);
+        if(peekToken() == MULTI) {
+            matchToken(MULTI);
         }
-        else if(peekToken() == Regex.PLUS) {
-            matchToken(Regex.PLUS);
+        else if(peekToken() == PLUS) {
+            matchToken(PLUS);
         }
         else {
             return;
@@ -144,22 +127,13 @@ public class RegExpFunc {
     }
     
     public void regExThree() {
-        if(peekToken() == Regex.PERIOD) {
+        if(peekToken() == PERIOD) {
             charClass();
         }
-        else if(peekToken() == Regex.LBRAC) {
+        else if(peekToken() == LBRAC) {
             charClass();
         }
-        else if(peekToken() == Class.CHAR) {
-            charClass();
-        }
-        else if(peekToken() == Class.DIGIT) {
-            charClass();
-        }
-        else if(peekToken() == Class.NONZERO) {
-            charClass();
-        }
-        else if(peekToken() == Class.UPPER) {
+        else if(definedClass()) {
             charClass();
         }
         else {
@@ -168,24 +142,23 @@ public class RegExpFunc {
     }
     
     public void charClass() {
-        if(peekToken() == Regex.PERIOD) {
-            matchToken(Regex.PERIOD);
+        if(peekToken() == PERIOD) {
+            matchToken(PERIOD);
         }
-        else if(peekToken() == Regex.LBRAC) {
-            matchToken(Regex.LBRAC);
+        else if(peekToken() == LBRAC) {
+            matchToken(LBRAC);
             charClassOne();
         }
-        else if(peekToken() == Class.CHAR || peekToken() == Class.DIGIT ||
-                peekToken() == Class.NONZERO || peekToken() == Class.UPPER) {
+        else {
             definedClass();
         }
     }
 
     public void charClassOne() {
-        if(peekToken() == Regex.CLSCHAR) {
+        if(peekToken() == CLSCHAR) {
             charSetList();
         }
-        else if(peekToken() == Regex.RBRAC) {
+        else if(peekToken() == RBRAC) {
             charSetList();
         }
         else {
@@ -194,25 +167,25 @@ public class RegExpFunc {
     }
     
     public void charSetList() {
-        if(peekToken() == Regex.CLSCHAR) {
+        if(peekToken() == CLSCHAR) {
             charSet();
             charSetList();
         }
-        else if(peekToken() == Regex.RBRAC){
-            matchToken(Regex.RBRAC);
+        else if(peekToken() == RBRAC){
+            matchToken(RBRAC);
         }
     }
     
     public void charSet() {
-        if(peekToken() == Regex.CLSCHAR){
-            matchToken(Regex.CLSCHAR);
+        if(peekToken() == CLSCHAR){
+            matchToken(CLSCHAR);
             charSetTail();
         }
     }
     
     public void charSetTail() {
-        if(peekToken() == Regex.CLSCHAR){
-            matchToken(Regex.CLSCHAR);
+        if(peekToken() == CLSCHAR){
+            matchToken(CLSCHAR);
         }
         else{
             return;
@@ -221,17 +194,17 @@ public class RegExpFunc {
     
     public void excludeSet() {
         charSet();
-        if(peekToken() == Regex.RBRAC){
-            matchToken(Regex.RBRAC);
+        if(peekToken() == RBRAC){
+            matchToken(RBRAC);
         }
     }
     
     public void excludeSetTail() {
-        if(peekToken() == Regex.LBRAC){
-            matchToken(Regex.LBRAC);
+        if(peekToken() == LBRAC){
+            matchToken(LBRAC);
             charSet();
-            if(peekToken() == Regex.RBRAC){
-                matchToken(Regex.RBRAC);
+            if(peekToken() == RBRAC){
+                matchToken(RBRAC);
             }
         }
         else{

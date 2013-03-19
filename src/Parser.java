@@ -2,11 +2,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Parser {
+    static ArrayList<Terminals> classes;
 	public static void main(String[] args){
 		try{
 			Scanner scan = new Scanner(new File("input_spec.txt"));
 			Terminals currClass = null;
-			ArrayList<Terminals> classes = new ArrayList<Terminals>();
+			classes = new ArrayList<Terminals>();
 			while(scan.hasNextLine()){
 				String line = scan.nextLine();
 				Scanner lineScan = new Scanner(line);
@@ -49,7 +50,15 @@ public class Parser {
 			}
 		} catch(Exception e){}
 	}
-	public static ArrayList<Character> getIntervalOfChars(String inside){
+	
+     /**
+     * @return the classes
+     */
+    public static ArrayList<Terminals> getClasses() {
+        return classes;
+    }
+    
+    public static ArrayList<Character> getIntervalOfChars(String inside){
 		ArrayList<Character> list = new ArrayList<Character>();
 		int index=0;
 		char previousChar = inside.charAt(0);
