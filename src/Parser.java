@@ -1,5 +1,6 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 public class Parser {
     static ArrayList<Terminals> classes;
@@ -49,6 +50,29 @@ public class Parser {
 				}
 			}
 		} catch(Exception e){}
+		
+		for(Terminals eachClass : classes){
+			State startState = new State();
+			startState.setLabel("start");
+			startState.setAccepts(false);
+			
+			State acceptState = new State();
+			acceptState.setLabel("accept");
+			acceptState.setAccepts(true);
+			
+			//State deadState = new State();
+			//deadState.setLabel("dead");
+			//deadState.setAccepts(false);
+			
+			HashSet<Character> chars = eachClass.getChars();
+			for(Character c : chars){
+				startState.addTransition(new Transition(startState, c, acceptState));
+			}
+			NFA nfa = new NFA(startState);
+			eachClass.setNFA(nfa);
+			DFA dfa = nfa.toDFA();
+			eachClass.setDFA(dfa);
+		}
 	}
 	
      /**
