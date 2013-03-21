@@ -14,8 +14,6 @@ public class Parser {
 				Scanner lineScan = new Scanner(line);
 				int count = 0;
 				while(lineScan.hasNext()){
-				
-					//System.out.println(token);
 					String token = lineScan.next();
 					if(count == 0 && token.charAt(0) == '$'){
 						Terminals newClass = new Terminals();
@@ -35,7 +33,6 @@ public class Parser {
 								if(s.equals("IN")){
 									String newClass = lineScan.next();
 									String className = newClass.substring(1);
-									//classes.contains();
 								}
 							} else {
 								ArrayList<Character> list = getIntervalOfChars(inside);
@@ -52,17 +49,15 @@ public class Parser {
 		} catch(Exception e){}
 		
 		for(Terminals eachClass : classes){
-			State startState = new State();
+			//commented portion is for when we start using the toDFA() method
+			
+			/*State startState = new State();
 			startState.setLabel("start");
 			startState.setAccepts(false);
 			
 			State acceptState = new State();
 			acceptState.setLabel("accept");
 			acceptState.setAccepts(true);
-			
-			//State deadState = new State();
-			//deadState.setLabel("dead");
-			//deadState.setAccepts(false);
 			
 			HashSet<Character> chars = eachClass.getChars();
 			for(Character c : chars){
@@ -71,7 +66,32 @@ public class Parser {
 			NFA nfa = new NFA(startState);
 			eachClass.setNFA(nfa);
 			DFA dfa = nfa.toDFA();
+			eachClass.setDFA(dfa);*/
+			
+			State startState = new State();
+			startState.setLabel("start");
+			startState.setAccepts(false);
+			
+			State acceptState = new State();
+			acceptState.setLabel("accept");
+			acceptState.setAccepts(true);
+			
+			State deadState = new State();
+			deadState.setLabel("dead");
+			deadState.setAccepts(false);
+			
+			HashSet<Character> chars = eachClass.getChars();
+			for(int num=0; num<=127; num++){
+				char c = (char)num;
+				if(chars.contains(c)){
+					startState.addTransition(new Transition(startState, c, acceptState));
+				} else {
+					startState.addTransition(new Transition(startState, c, deadState));
+				}
+			}
+			DFA dfa = new DFA(startState);
 			eachClass.setDFA(dfa);
+			eachClass.setNFA(dfa);
 		}
 	}
 	
