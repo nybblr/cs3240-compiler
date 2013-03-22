@@ -33,7 +33,7 @@ public class InputStream {
 	
 	// Consume character at current pointer
 	// Returns if we matched
-	boolean matchToken(Character token) {
+	public boolean matchToken(Character token) {
 		// Make sure the token matches
 		if (!token.equals(peekToken())) return false;
 		
@@ -43,18 +43,18 @@ public class InputStream {
 	}
 	
 	// Move pointer forward
-	int advancePointer() {
+	public int advancePointer() {
 		if (isConsumed()) return -1;
 		return pointer++;
 	}
 	
-	void resetPointer() {
+	public void resetPointer() {
 		pointer = 0;
 	}
 	
 	/* Utility */
 	// Have we already matched all the tokens in the string?
-	boolean isConsumed() {
+	public boolean isConsumed() {
 		return pointer == input.length();
 	}
 }

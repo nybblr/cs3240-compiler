@@ -15,15 +15,22 @@ public class RegExpFunc {
     RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"", UNION = "UNION",
     RECHAR = "RECHAR", CLSCHAR = "CLSCHAR", IN = "IN", NOT = "^", DASH = "-";
     private ArrayList<Terminals> classes = Parser.getClasses();
+    
+    private String input;
+    private InputStream is;
 
-    private void matchToken(String token) {
-        // TODO Auto-generated method stub
-        
+    /* Constructor */
+    public RegExpFunc(String input) {
+    	this.input = new String(input);
+    	this.is = new InputStream(this.input);
+    }
+    
+    private boolean matchToken(String token) {
+        return is.matchToken(token.charAt(0));
     }
 
     private String peekToken() {
-        // TODO Auto-generated method stub
-        return null;
+        return String.valueOf(is.peekToken());
     }
     
     private void union() {
