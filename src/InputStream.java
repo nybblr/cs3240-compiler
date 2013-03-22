@@ -32,9 +32,14 @@ public class InputStream {
 	}
 	
 	// Consume character at current pointer
-	Character matchToken() {
+	// Returns if we matched
+	boolean matchToken(Character token) {
+		// Make sure the token matches
+		if (!token.equals(peekToken())) return false;
+		
+		// Advance pointer
 		advancePointer();
-		return peekToken();
+		return true;
 	}
 	
 	// Move pointer forward
