@@ -13,7 +13,7 @@ public class RegExpFunc {
     private String SPACE = " ", BSLASH = "/", MULTI = "*",
     PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
     RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"", UNION = "UNION",
-    RECHAR = "RECHAR", CLSCHAR = "CLSCHAR", IN = "IN", NOT = "^";
+    RECHAR = "RECHAR", CLSCHAR = "CLSCHAR", IN = "IN", NOT = "^", DASH = "-";
     private ArrayList<Terminals> classes = Parser.getClasses();
 
     private void matchToken(String token) {
@@ -24,6 +24,18 @@ public class RegExpFunc {
     private String peekToken() {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    private void union() {
+        //TODO Auto-generated method stub
+    }
+    
+    private void reChar() {
+        // TODO Auto-generated method stub
+    }
+    
+    private void clsChar() {
+        // TODO Auto-generated method stub
     }
     
     private boolean definedClass() {
@@ -47,8 +59,9 @@ public class RegExpFunc {
     }
     
     public void regExPrime() {
-        if(peekToken() == UNION) {
-            matchToken(UNION);
+        if(peekToken() == OR) {
+            matchToken(OR);
+            union();
             regExOne();
             regExPrime();
         }
@@ -184,8 +197,9 @@ public class RegExpFunc {
     }
     
     public void charSetTail() {
-        if(peekToken() == CLSCHAR){
-            matchToken(CLSCHAR);
+        if(peekToken() == DASH){
+            matchToken(DASH);
+            clsChar();
         }
         else{
             return;
@@ -193,9 +207,13 @@ public class RegExpFunc {
     }
     
     public void excludeSet() {
-        charSet();
-        if(peekToken() == RBRAC){
-            matchToken(RBRAC);
+        if(peekToken() == NOT) {
+            charSet();
+            if(peekToken() == RBRAC) {
+                matchToken(RBRAC);
+                if(peekToken() == IN)
+                    excludeSetTail();
+            }
         }
     }
     
