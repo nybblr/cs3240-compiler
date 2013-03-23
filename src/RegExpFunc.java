@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * 
@@ -23,6 +24,7 @@ public class RegExpFunc {
     public RegExpFunc(String input) {
     	this.input = new String(input);
     	this.is = new InputStream(this.input);
+    	origRegExp();
     }
     
     private boolean matchToken(String token) {
@@ -30,11 +32,9 @@ public class RegExpFunc {
     }
 
     private String peekToken() {
-        return String.valueOf(is.peekToken());
-    }
-    
-    private void union() {
-        //TODO Auto-generated method stub
+        String s = String.valueOf(is.peekToken());
+        System.out.println("Current regex char: " + s);
+        return s;
     }
     
     private void reChar() {
@@ -45,15 +45,39 @@ public class RegExpFunc {
         // TODO Auto-generated method stub
     }
     
-    private boolean definedClass() {
+    private boolean inSpecification() {
+        String s="", t = peekToken();
+        if(t.equals("null"))
+            return false;
         for(int i=0; i<classes.size(); i++){
             HashSet<Character> chars = classes.get(i).getChars();
-            if(chars.contains(peekToken())){
-                matchToken(peekToken());
-                return true;
+            Iterator<Character> iter = chars.iterator();
+            while(iter.hasNext() && !(s.equals(t))){
+                s = iter.next().toString();
+                System.out.println("Comparing: " + s + "to" + t);
+                if((s).equals(peekToken())){
+                    return true;
+                }
             }
         }
         return false;
+    }
+    
+    private void definedClass() {
+        String s="",t=peekToken();
+        if(t == null)
+            return;
+        for(int i=0; i<classes.size(); i++){
+            HashSet<Character> chars = classes.get(i).getChars();
+            Iterator<Character> iter = chars.iterator();
+            while(iter.hasNext() && !(s.equals(t))){
+                s = iter.next().toString();
+                System.out.println("Comparing: " + s + "to" + t);
+                if((s).equals(peekToken())){
+                    matchToken(peekToken());
+                }
+            }
+        }
     }
     
     public void origRegExp() {
@@ -62,13 +86,13 @@ public class RegExpFunc {
     
     public void regExp() {
         regExOne();
-        regExPrime();
+        if(peekToken().equals(OR))
+            regExPrime();
     }
     
     public void regExPrime() {
-        if(peekToken() == OR) {
+        if(peekToken().equals(OR)) {
             matchToken(OR);
-            union();
             regExOne();
             regExPrime();
         }
@@ -83,23 +107,23 @@ public class RegExpFunc {
     }
     
     public void regExOnePrime() {
-        if(peekToken() == LPAREN) {
+        if(peekToken().equals(LPAREN)) {
             regExTwo();
             regExOnePrime();
         }
-        else if(peekToken() == RECHAR) {
+        else if(peekToken().equals(RECHAR)) {
             regExTwo();
             regExOnePrime();
         }
-        else if(peekToken() == PERIOD) {
+        else if(peekToken().equals(PERIOD)) {
             regExTwo();
             regExOnePrime();
         }
-        else if(peekToken() == LBRAC) {
+        else if(peekToken().equals(LBRAC)) {
             regExTwo();
             regExOnePrime();
         }
-        else if(definedClass()) {
+        else if(inSpecification()) {
                 regExTwo();
                 regExOnePrime();            
         }
@@ -109,36 +133,40 @@ public class RegExpFunc {
     }
     
     public void regExTwo() {
-        if(peekToken() == LPAREN) {
+        if(peekToken().equals(LPAREN)) {
             matchToken(LPAREN);
             regExp();
-            if(peekToken() == RPAREN) {
+            if(peekToken().equals(RPAREN)) {
                 matchToken(RPAREN);
                 regExTwoTail();
             }
+            else {
+                System.out.println("Invalid syntax");
+                System.exit(0);
+            }
         }
-        else if(peekToken() == RECHAR) {
+        else if(peekToken().equals(RECHAR)) {
             matchToken(RECHAR);
             regExTwoTail();
         }
         else {
-            if(peekToken() == PERIOD) {
+            if(peekToken().equals(PERIOD)) {
                 regExThree();
             }
-            else if(peekToken() == LBRAC) {
+            else if(peekToken().equals(LBRAC)) {
                 regExThree();
             }
-            else if(definedClass()) {
+            else if(inSpecification()) {
                 regExThree();
             }
         }
     }
     
     public void regExTwoTail() {
-        if(peekToken() == MULTI) {
+        if(peekToken().equals(MULTI)) {
             matchToken(MULTI);
         }
-        else if(peekToken() == PLUS) {
+        else if(peekToken().equals(PLUS)) {
             matchToken(PLUS);
         }
         else {
@@ -147,25 +175,29 @@ public class RegExpFunc {
     }
     
     public void regExThree() {
-        if(peekToken() == PERIOD) {
+        if(peekToken().equals(PERIOD)) {
             charClass();
         }
-        else if(peekToken() == LBRAC) {
+        else if(peekToken().equals(LBRAC)) {
             charClass();
         }
-        else if(definedClass()) {
+        else if(inSpecification()) {
             charClass();
+        }
+        else if(peekToken().equals("null")) {
+            return;
         }
         else {
-            return;
+            System.out.println("Incorrect syntax");
+            System.exit(0);
         }
     }
     
     public void charClass() {
-        if(peekToken() == PERIOD) {
+        if(peekToken().equals(PERIOD)) {
             matchToken(PERIOD);
         }
-        else if(peekToken() == LBRAC) {
+        else if(peekToken().equals(LBRAC)) {
             matchToken(LBRAC);
             charClassOne();
         }
@@ -175,10 +207,10 @@ public class RegExpFunc {
     }
 
     public void charClassOne() {
-        if(peekToken() == CLSCHAR) {
+        if(peekToken().equals(CLSCHAR)) {
             charSetList();
         }
-        else if(peekToken() == RBRAC) {
+        else if(peekToken().equals(RBRAC)) {
             charSetList();
         }
         else {
@@ -187,24 +219,27 @@ public class RegExpFunc {
     }
     
     public void charSetList() {
-        if(peekToken() == CLSCHAR) {
+        if(peekToken().equals(CLSCHAR)) {
             charSet();
             charSetList();
         }
-        else if(peekToken() == RBRAC){
+        else if(peekToken().equals(RBRAC)) {
             matchToken(RBRAC);
+        }
+        else{
+            System.out.println("Invlid Syntax");
         }
     }
     
     public void charSet() {
-        if(peekToken() == CLSCHAR){
+        if(peekToken().equals(CLSCHAR)) {
             matchToken(CLSCHAR);
             charSetTail();
         }
     }
     
     public void charSetTail() {
-        if(peekToken() == DASH){
+        if(peekToken().equals(DASH)) {
             matchToken(DASH);
             clsChar();
         }
@@ -214,21 +249,33 @@ public class RegExpFunc {
     }
     
     public void excludeSet() {
-        if(peekToken() == NOT) {
+        if(peekToken().equals(NOT)) {
             charSet();
-            if(peekToken() == RBRAC) {
+            if(peekToken().equals(RBRAC)) {
                 matchToken(RBRAC);
-                if(peekToken() == IN)
+                if(peekToken().equals(IN))
                     excludeSetTail();
+                else {
+                    System.out.println("Invalid Syntax");
+                    System.exit(0);
+                }
             }
+            else {
+                System.out.println("Invalid Syntax");
+                System.exit(0);
+            }
+        }
+        else {
+            System.out.println("Invalid Syntax");
+            System.exit(0);
         }
     }
     
     public void excludeSetTail() {
-        if(peekToken() == LBRAC){
+        if(peekToken().equals(LBRAC)) {
             matchToken(LBRAC);
             charSet();
-            if(peekToken() == RBRAC){
+            if(peekToken().equals(RBRAC)) {
                 matchToken(RBRAC);
             }
         }

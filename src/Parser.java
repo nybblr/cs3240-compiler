@@ -5,96 +5,104 @@ import java.util.Scanner;
 public class Parser {
     static ArrayList<Terminals> classes;
 	public static void main(String[] args){
-		try{
-			Scanner scan = new Scanner(new File("input_spec.txt"));
-			Terminals currClass = null;
-			classes = new ArrayList<Terminals>();
-			while(scan.hasNextLine()){
-				String line = scan.nextLine();
-				Scanner lineScan = new Scanner(line);
-				int count = 0;
-				while(lineScan.hasNext()){
-					String token = lineScan.next();
-					if(count == 0 && token.charAt(0) == '$'){
-						Terminals newClass = new Terminals();
-						currClass = newClass;
-						classes.add(currClass);
-						currClass.setName(token.substring(1,token.length()));
-						System.out.println(currClass.getName());
-					}
-					else {
-						if(token.charAt(0) == '['){
-							int endIndex = token.indexOf(']');
-							String inside = token.substring(1,endIndex);
-							System.out.println(inside);
-							if(inside.charAt(0) == '^'){
-								ArrayList<Character> list = getIntervalOfChars(inside.substring(1));
-								String s = lineScan.next();
-								if(s.equals("IN")){
-									String newClass = lineScan.next();
-									String className = newClass.substring(1);
-								}
-							} else {
-								ArrayList<Character> list = getIntervalOfChars(inside);
-								for(char c : list){
-									currClass.addChar(c);
-									//System.out.println("added "+c+" to "+currClass.getName());
-								}
-							}
-						}
-					}
-					count++;
-				}
-			}
-		} catch(Exception e){}
-		
-		for(Terminals eachClass : classes){
-			//commented portion is for when we start using the toDFA() method
-			
-			/*State startState = new State();
-			startState.setLabel("start");
-			startState.setAccepts(false);
-			
-			State acceptState = new State();
-			acceptState.setLabel("accept");
-			acceptState.setAccepts(true);
-			
-			HashSet<Character> chars = eachClass.getChars();
-			for(Character c : chars){
-				startState.addTransition(new Transition(startState, c, acceptState));
-			}
-			NFA nfa = new NFA(startState);
-			eachClass.setNFA(nfa);
-			DFA dfa = nfa.toDFA();
-			eachClass.setDFA(dfa);*/
-			
-			State startState = new State();
-			startState.setLabel("start");
-			startState.setAccepts(false);
-			
-			State acceptState = new State();
-			acceptState.setLabel("accept");
-			acceptState.setAccepts(true);
-			
-			State deadState = new State();
-			deadState.setLabel("dead");
-			deadState.setAccepts(false);
-			
-			HashSet<Character> chars = eachClass.getChars();
-			for(int num=0; num<=127; num++){
-				char c = (char)num;
-				if(chars.contains(c)){
-					startState.addTransition(new Transition(startState, c, acceptState));
-				} else {
-					startState.addTransition(new Transition(startState, c, deadState));
-				}
-			}
-			DFA dfa = new DFA(startState);
-			eachClass.setDFA(dfa);
-			eachClass.setNFA(dfa);
-		}
+	    fileParser("input_spec.txt");
+	    System.out.println("Input Regex: ");
+	    Scanner scan = new Scanner(System.in);
+	    if(scan.hasNext()){
+	        RegExpFunc regex = new RegExpFunc(scan.next().trim());
+	    }
 	}
-	
+
+    public static void fileParser(String filename){
+        try{
+            Scanner scan = new Scanner(new File(filename));
+            Terminals currClass = null;
+            classes = new ArrayList<Terminals>();
+            while(scan.hasNextLine()){
+                    String line = scan.nextLine();
+                    Scanner lineScan = new Scanner(line);
+                    int count = 0;
+                    while(lineScan.hasNext()){
+                            String token = lineScan.next();
+                            if(count == 0 && token.charAt(0) == '$'){
+                                    Terminals newClass = new Terminals();
+                                    currClass = newClass;
+                                    classes.add(currClass);
+                                    currClass.setName(token.substring(1,token.length()));
+                                    System.out.println(currClass.getName());
+                            }
+                            else {
+                                    if(token.charAt(0) == '['){
+                                            int endIndex = token.indexOf(']');
+                                            String inside = token.substring(1,endIndex);
+                                            System.out.println(inside);
+                                            if(inside.charAt(0) == '^'){
+                                                    ArrayList<Character> list = getIntervalOfChars(inside.substring(1));
+                                                    String s = lineScan.next();
+                                                    if(s.equals("IN")){
+                                                            String newClass = lineScan.next();
+                                                            String className = newClass.substring(1);
+                                                    }
+                                            } else {
+                                                    ArrayList<Character> list = getIntervalOfChars(inside);
+                                                    for(char c : list){
+                                                            currClass.addChar(c);
+                                                            //System.out.println("added "+c+" to "+currClass.getName());
+                                                    }
+                                            }
+                                    }
+                            }
+                            count++;
+                    }
+            }
+    } catch(Exception e){}
+    
+    for(Terminals eachClass : classes){
+            //commented portion is for when we start using the toDFA() method
+            
+            /*State startState = new State();
+            startState.setLabel("start");
+            startState.setAccepts(false);
+            
+            State acceptState = new State();
+            acceptState.setLabel("accept");
+            acceptState.setAccepts(true);
+            
+            HashSet<Character> chars = eachClass.getChars();
+            for(Character c : chars){
+                    startState.addTransition(new Transition(startState, c, acceptState));
+            }
+            NFA nfa = new NFA(startState);
+            eachClass.setNFA(nfa);
+            DFA dfa = nfa.toDFA();
+            eachClass.setDFA(dfa);*/
+            
+            State startState = new State();
+            startState.setLabel("start");
+            startState.setAccepts(false);
+            
+            State acceptState = new State();
+            acceptState.setLabel("accept");
+            acceptState.setAccepts(true);
+            
+            State deadState = new State();
+            deadState.setLabel("dead");
+            deadState.setAccepts(false);
+            
+            HashSet<Character> chars = eachClass.getChars();
+            for(int num=0; num<=127; num++){
+                    char c = (char)num;
+                    if(chars.contains(c)){
+                            startState.addTransition(new Transition(startState, c, acceptState));
+                    } else {
+                            startState.addTransition(new Transition(startState, c, deadState));
+                    }
+            }
+            DFA dfa = new DFA(startState);
+            eachClass.setDFA(dfa);
+            eachClass.setNFA(dfa);
+    }
+    }
      /**
      * @return the classes
      */
