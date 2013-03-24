@@ -100,20 +100,24 @@ public class Parser {
 			State deadState = new State();
 			deadState.setLabel("dead");
 			deadState.setAccepts(false);
+			
+			DFA dfa = new DFA(startState);
+			dfa.addState(acceptState);
+			dfa.addState(deadState);
 
 			HashSet<Character> chars = eachClass.getChars();
 			System.out.println(eachClass.getName());
 			for(int num=0; num<=127; num++){
 				char c = (char)num;
 				if(chars.contains(c)){
-					startState.addTransition(new Transition(startState, c, acceptState));
+					dfa.addTransition(startState, c, acceptState);
 					System.out.print(c+ " ");
 				} else {
-					startState.addTransition(new Transition(startState, c, deadState));
+					dfa.addTransition(startState, c, deadState);
 				}
 			}
 			System.out.println();
-			DFA dfa = new DFA(startState);
+			
 			eachClass.setDFA(dfa);
 			eachClass.setNFA(dfa);
 		}
