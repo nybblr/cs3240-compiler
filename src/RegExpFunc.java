@@ -28,7 +28,8 @@ public class RegExpFunc {
 	}
 
 	private boolean matchToken(String token) {
-		return is.matchToken(token.charAt(0));
+		//return is.matchToken(token.charAt(0));
+		return is.matchToken(token);
 	}
 
 	private String peekToken() {
@@ -38,7 +39,8 @@ public class RegExpFunc {
 	}
 
 	private boolean peekToken(String token) {
-		return peekToken().equals(token);
+		//return peekToken().equals(token);
+		return is.peekToken(token);
 	}
 
 	private void reChar() {

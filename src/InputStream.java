@@ -26,9 +26,15 @@ public class InputStream {
 	
 	/* Navigation */
 	// Get character at current pointer without advancing
-	Character peekToken() {
+	public Character peekToken() {
 		if (isConsumed()) return null;
 		return input.charAt(pointer);
+	}
+	
+	// Peek multibyte sequences
+	public boolean peekToken(String token) {
+		if (!isEnough(token.length())) return false;
+		return input.substring(pointer, pointer+token.length()).equals(token);
 	}
 	
 	// Consume character at current pointer
@@ -42,10 +48,27 @@ public class InputStream {
 		return true;
 	}
 	
+	// Match multibyte
+	public boolean matchToken(String token) {
+		// Make sure the token matches
+		if (!peekToken(token)) return false;
+		
+		// Advance pointer
+		advancePointer(token.length());
+		return true;
+	}
+	
 	// Move pointer forward
 	public int advancePointer() {
 		if (isConsumed()) return -1;
-		return pointer++;
+		return ++pointer;
+	}
+	
+	// Move pointer forward over multibyte
+	public int advancePointer(int n) {
+		if (!isEnough(n)) return -1;
+		pointer += n;
+		return pointer;
 	}
 	
 	public void resetPointer() {
@@ -55,6 +78,11 @@ public class InputStream {
 	/* Utility */
 	// Have we already matched all the tokens in the string?
 	public boolean isConsumed() {
-		return pointer == input.length();
+		return pointer >= input.length();
+	}
+	
+	// Do we have enough characters in the string to match?
+	public boolean isEnough(int tokenLength) {
+		return pointer + tokenLength <= input.length();
 	}
 }
