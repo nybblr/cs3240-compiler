@@ -20,7 +20,12 @@ public class Terminals {
 	public void addChar(char c) {
 		chars.add(c);
 	}
-	
+	public void removeChar(char c) {
+		chars.remove(c);
+	}
+	public boolean containsChar(char c) {
+		return chars.contains(c);
+	}
 	public String getName() {
 		return name;
 	}

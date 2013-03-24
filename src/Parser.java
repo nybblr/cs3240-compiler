@@ -19,89 +19,104 @@ public class Parser {
             Terminals currClass = null;
             classes = new ArrayList<Terminals>();
             while(scan.hasNextLine()){
-                    String line = scan.nextLine();
-                    Scanner lineScan = new Scanner(line);
-                    int count = 0;
-                    while(lineScan.hasNext()){
-                            String token = lineScan.next();
-                            if(count == 0 && token.charAt(0) == '$'){
-                                    Terminals newClass = new Terminals();
-                                    currClass = newClass;
-                                    classes.add(currClass);
-                                    currClass.setName(token.substring(1,token.length()));
-                                    System.out.println(currClass.getName());
-                            }
-                            else {
-                                    if(token.charAt(0) == '['){
-                                            int endIndex = token.indexOf(']');
-                                            String inside = token.substring(1,endIndex);
-                                            System.out.println(inside);
-                                            if(inside.charAt(0) == '^'){
-                                                    ArrayList<Character> list = getIntervalOfChars(inside.substring(1));
-                                                    String s = lineScan.next();
-                                                    if(s.equals("IN")){
-                                                            String newClass = lineScan.next();
-                                                            String className = newClass.substring(1);
-                                                    }
-                                            } else {
-                                                    ArrayList<Character> list = getIntervalOfChars(inside);
-                                                    for(char c : list){
-                                                            currClass.addChar(c);
-                                                            //System.out.println("added "+c+" to "+currClass.getName());
-                                                    }
-                                            }
+                String line = scan.nextLine();
+                Scanner lineScan = new Scanner(line);
+                int count = 0;
+                while(lineScan.hasNext()){
+                    String token = lineScan.next();
+                    if(count == 0 && token.charAt(0) == '$'){
+                        Terminals newClass = new Terminals();
+                        currClass = newClass;
+                        classes.add(currClass);
+                        currClass.setName(token.substring(1,token.length()));
+                        System.out.println(currClass.getName());
+                    }
+                    else {
+                        if(token.charAt(0) == '['){
+                            int endIndex = token.indexOf(']');
+                            String inside = token.substring(1,endIndex);
+                            System.out.println(inside);
+                            if(inside.charAt(0) == '^'){
+                                ArrayList<Character> list = getIntervalOfChars(inside.substring(1));
+                                String s = lineScan.next();
+                                if(s.equals("IN")){
+                                    String newClass = lineScan.next();
+                                    String className = newClass.substring(1);
+                                    System.out.println("exclude from "+className);
+                                    for(Terminals eachClass : classes){
+                                    	if(eachClass.getName().equals(className)){
+                                    		Object[] chars = eachClass.getChars().toArray();
+                                    		for(int i=0; i<chars.length; i++){
+                                    			currClass.addChar((Character)(chars[i]));
+                                    		}
+                                    		for(char c : list){
+                                    			currClass.removeChar(c);
+                                    		}
+                                    	}
                                     }
+                                }
+                            } else {
+                                ArrayList<Character> list = getIntervalOfChars(inside);
+                                for(char c : list){
+                                    currClass.addChar(c);
+                                    //System.out.println("added "+c+" to "+currClass.getName());
+                                }
                             }
-                            count++;
+                        }
                     }
+                    count++;
+                }
             }
-    } catch(Exception e){}
+        } catch(Exception e){}
     
-    for(Terminals eachClass : classes){
-            //commented portion is for when we start using the toDFA() method
-            
-            /*State startState = new State();
-            startState.setLabel("start");
-            startState.setAccepts(false);
-            
-            State acceptState = new State();
-            acceptState.setLabel("accept");
-            acceptState.setAccepts(true);
-            
-            HashSet<Character> chars = eachClass.getChars();
-            for(Character c : chars){
+	    for(Terminals eachClass : classes){
+	        //commented portion is for when we start using the toDFA() method
+	        
+	        /*State startState = new State();
+	        startState.setLabel("start");
+	        startState.setAccepts(false);
+	        
+	        State acceptState = new State();
+	        acceptState.setLabel("accept");
+	        acceptState.setAccepts(true);
+	        
+	        HashSet<Character> chars = eachClass.getChars();
+	        for(Character c : chars){
+	                startState.addTransition(new Transition(startState, c, acceptState));
+	        }
+	        NFA nfa = new NFA(startState);
+	        eachClass.setNFA(nfa);
+	        DFA dfa = nfa.toDFA();
+	        eachClass.setDFA(dfa);*/
+	        
+	        State startState = new State();
+	        startState.setLabel("start");
+	        startState.setAccepts(false);
+	        
+	        State acceptState = new State();
+	        acceptState.setLabel("accept");
+	        acceptState.setAccepts(true);
+	        
+	        State deadState = new State();
+	        deadState.setLabel("dead");
+	        deadState.setAccepts(false);
+	        
+	        HashSet<Character> chars = eachClass.getChars();
+	        System.out.println(eachClass.getName());
+	        for(int num=0; num<=127; num++){
+	            char c = (char)num;
+	            if(chars.contains(c)){
                     startState.addTransition(new Transition(startState, c, acceptState));
-            }
-            NFA nfa = new NFA(startState);
-            eachClass.setNFA(nfa);
-            DFA dfa = nfa.toDFA();
-            eachClass.setDFA(dfa);*/
-            
-            State startState = new State();
-            startState.setLabel("start");
-            startState.setAccepts(false);
-            
-            State acceptState = new State();
-            acceptState.setLabel("accept");
-            acceptState.setAccepts(true);
-            
-            State deadState = new State();
-            deadState.setLabel("dead");
-            deadState.setAccepts(false);
-            
-            HashSet<Character> chars = eachClass.getChars();
-            for(int num=0; num<=127; num++){
-                    char c = (char)num;
-                    if(chars.contains(c)){
-                            startState.addTransition(new Transition(startState, c, acceptState));
-                    } else {
-                            startState.addTransition(new Transition(startState, c, deadState));
-                    }
-            }
-            DFA dfa = new DFA(startState);
-            eachClass.setDFA(dfa);
-            eachClass.setNFA(dfa);
-    }
+                    System.out.print(c+ " ");
+	            } else {
+                    startState.addTransition(new Transition(startState, c, deadState));
+	            }
+	        }
+	        System.out.println();
+	        DFA dfa = new DFA(startState);
+	        eachClass.setDFA(dfa);
+	        eachClass.setNFA(dfa);
+	    }
     }
      /**
      * @return the classes
