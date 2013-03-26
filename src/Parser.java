@@ -32,6 +32,11 @@ public class Parser {
 						System.out.println(currClass.getName());
 					}
 					else {
+						RegExpFunc func = new RegExpFunc(token);
+						NFA nfa = func.origRegExp();
+						currClass.setNFA(nfa);
+					}
+					/*else {
 						if(token.charAt(0) == '['){
 							int endIndex = token.indexOf(']');
 							String inside = token.substring(1,endIndex);
@@ -63,13 +68,13 @@ public class Parser {
 								}
 							}
 						}
-					}
+					}*/
 					count++;
 				}
 			}
 		} catch(Exception e){}
 
-		for(Terminals eachClass : classes){
+//		for(Terminals eachClass : classes){
 			//commented portion is for when we start using the toDFA() method
 
 			/*State startState = new State();
@@ -89,7 +94,7 @@ public class Parser {
 			DFA dfa = nfa.toDFA();
 			eachClass.setDFA(dfa);*/
 
-			State startState = new State();
+			/*State startState = new State();
 			startState.setLabel("start");
 			startState.setAccepts(false);
 
@@ -119,9 +124,9 @@ public class Parser {
 			System.out.println();
 			
 			eachClass.setDFA(dfa);
-			eachClass.setNFA(dfa);
+			eachClass.setNFA(dfa);*/
 		}
-	}
+//	}
 	 /**
 	 * @return the classes
 	 */
