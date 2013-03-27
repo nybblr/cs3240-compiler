@@ -36,26 +36,55 @@ public class NFA {
 	public State step(State from, Character on) {
 		return from;
 	}
-
-	// Which states can be reached via empty string?
-	public HashSet<State> statesReachableFrom(State from) {
+	
+	// Which states can be reached on a certain character?
+	public HashSet<State> statesReachableOn(State from, Character on) {
 		HashSet<State> reachable = new HashSet<State>();
 		Iterator<Transition> iter = from.getTransitions().iterator();
 		while (iter.hasNext()) {
 			Transition t = iter.next();
 			
-			// Add all empty transitions
+			// Do they want the epsilon transitions?
+			boolean equals = false;
+			if (on == null)
+				equals = on == t.c;
+			else
+				equals = on.equals(t.c);
+			
+			// Add all matching transitions
 			// Skip if already added to prevent loops
-			if (t.isEmptyTransition() && !reachable.contains(t.to)) {
+			if (equals  && !reachable.contains(t.to)) {
 				// Add this state
 				reachable.add(t.to);
 				
-				// Recurse and add all reachable from this state
+				// Recurse and add all reachable from this state (epsilon transitions)
 				reachable.addAll(statesReachableFrom(t.to));
 			}
 		}
 		
 		return reachable;
+	}
+
+	// Which states can be reached via empty string?
+	public HashSet<State> statesReachableFrom(State from) {
+		return statesReachableOn(from, null);
+//		HashSet<State> reachable = new HashSet<State>();
+//		Iterator<Transition> iter = from.getTransitions().iterator();
+//		while (iter.hasNext()) {
+//			Transition t = iter.next();
+//			
+//			// Add all empty transitions
+//			// Skip if already added to prevent loops
+//			if (t.isEmptyTransition() && !reachable.contains(t.to)) {
+//				// Add this state
+//				reachable.add(t.to);
+//				
+//				// Recurse and add all reachable from this state
+//				reachable.addAll(statesReachableFrom(t.to));
+//			}
+//		}
+//		
+//		return reachable;
 	}
 
 	/* Manipulation */
