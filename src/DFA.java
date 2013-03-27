@@ -1,3 +1,5 @@
+import java.util.HashSet;
+
 public class DFA extends NFA {
 	/* Constructors */
 	public DFA(State start) {

@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class NFA {
 	public HashSet<Transition> transitions = new HashSet<Transition>();
@@ -34,6 +35,27 @@ public class NFA {
 
 	public State step(State from, Character on) {
 		return from;
+	}
+
+	// Which states can be reached via empty string?
+	public HashSet<State> statesReachableFrom(State from) {
+		HashSet<State> reachable = new HashSet<State>();
+		Iterator<Transition> iter = from.getTransitions().iterator();
+		while (iter.hasNext()) {
+			Transition t = iter.next();
+			
+			// Add all empty transitions
+			// Skip if already added to prevent loops
+			if (t.isEmptyTransition() && !reachable.contains(t.to)) {
+				// Add this state
+				reachable.add(t.to);
+				
+				// Recurse and add all reachable from this state
+				reachable.addAll(statesReachableFrom(t.to));
+			}
+		}
+		
+		return reachable;
 	}
 
 	/* Manipulation */
