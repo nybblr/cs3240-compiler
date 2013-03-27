@@ -2,9 +2,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class NFA {
-	public HashSet<Transition> transitions = new HashSet<Transition>();
-	public HashSet<State> states = new HashSet<State>();
-	public State start;
+	private HashSet<Transition> transitions = new HashSet<Transition>();
+	private HashSet<State> states = new HashSet<State>();
+	private HashSet<State> accepting = new HashSet<State>();
+	private State start;
 
 	/* Constructors */
 	public NFA(State start) {
@@ -26,6 +27,10 @@ public class NFA {
 
 	public HashSet<State> getStates() {
 		return states;
+	}
+	
+	public HashSet<State> getAcceptingStates() {
+		return accepting;
 	}
 
 	/* Traversal */
@@ -90,6 +95,11 @@ public class NFA {
 	/* Manipulation */
 	public Boolean addState(State state) {
 		this.states.add(state);
+		state.setNFA(this);
+		
+		if (state.getAccepts())
+			accepting.add(state);
+		
 		return false;
 	}
 	
@@ -99,6 +109,21 @@ public class NFA {
 		from.addTransition(on, to);
 		
 		return false;
+	}
+	
+	public boolean getAccepts(State state) {
+		return state.getAccepts();
+	}
+	
+	public void setAccepts(State state, boolean accepts) {
+		if (accepts)
+			accepting.add(state);
+		else
+			accepting.remove(state);
+		
+		// Prevent loops
+		if (state.getAccepts() != accepts)
+			state.setAccepts(accepts);
 	}
 	
 	// Add empty string transition
