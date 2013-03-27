@@ -100,6 +100,11 @@ public class NFA {
 		
 		return false;
 	}
+	
+	// Add empty string transition
+	public Boolean addEpsilonTransition(State from, State to) {
+		return addTransition(from, Transition.EPSILON, to);
+	}
 
 	/* Export */
 	public void toTable() {
