@@ -6,9 +6,15 @@ public class DFA extends NFA {
 		super(start);
 	}
 
+	// Convert NFA to DFA
 	public DFA(NFA nfa) {
-		// Convert NFA to DFA
 		super(new State());
+		
+		// First, add start state
+		// This is the NFA start state and all reachable states (epsilon transitions)
+		StateSet start = new StateSet();
+		start.add(nfa.getStart());
+		start.states.addAll(nfa.statesReachableFrom(nfa.getStart()));
 	}
 
 	/* Export */
