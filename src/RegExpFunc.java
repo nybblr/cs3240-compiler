@@ -14,7 +14,11 @@ public class RegExpFunc {
     private String SPACE = " ", BSLASH = "/", MULTI = "*",
 	PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
 	RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"", UNION = "UNION",
-	RECHAR = "RECHAR", CLSCHAR = "CLSCHAR", IN = "IN", NOT = "^", DASH = "-";
+	IN = "IN", NOT = "^", DASH = "-";
+    
+    private HashSet<Character> CLS_CHAR = new HashSet<Character>();
+    private HashSet<Character> RE_CHAR = new HashSet<Character>();
+    
     private ArrayList<Terminals> classes = Parser.getClasses();
 
     private String input;
@@ -43,12 +47,22 @@ public class RegExpFunc {
 	return is.peekToken(token);
     }
 
-    private void reChar() {
+    private boolean peekReToken() {
 	// TODO Auto-generated method stub
     }
 
-    private void clsChar() {
+    private boolean peekClsToken() {
 	// TODO Auto-generated method stub
+    	
+    }
+    
+    private boolean matchReToken() {
+    	// TODO Auto-generated method stub
+    }
+
+    private boolean matchClsToken() {
+	// TODO Auto-generated method stub
+    	
     }
 
     private void invalid() {
@@ -127,7 +141,7 @@ public class RegExpFunc {
 	    regExTwo();
 	    regExOnePrime();
 	}
-	else if(peekToken(RECHAR)) {
+	else if(peekReToken()) {
 	    regExTwo();
 	    regExOnePrime();
 	}
@@ -161,8 +175,8 @@ public class RegExpFunc {
 		invalid();
 	    }
 	}
-	else if(peekToken(RECHAR)) {
-	    matchToken(RECHAR);
+	else if(peekReToken()) {
+	    matchReToken();
 	    regExTwoTail();
 	}
 	else {
@@ -226,7 +240,7 @@ public class RegExpFunc {
     }
 
     public NFA charClassOne() {
-	if(peekToken(CLSCHAR)) {
+	if(peekClsToken()) {
 	    charSetList();
 	}
 	else if(peekToken(RBRAC)) {
@@ -239,7 +253,7 @@ public class RegExpFunc {
     }
 
     public NFA charSetList() {
-	if(peekToken(CLSCHAR)) {
+	if(peekClsToken()) {
 	    charSet();
 	    charSetList();
 	}
@@ -253,8 +267,8 @@ public class RegExpFunc {
     }
 
     public NFA charSet() {
-	if(peekToken(CLSCHAR)) {
-	    matchToken(CLSCHAR);
+	if(peekClsToken()) {
+	    matchClsToken();
 	    charSetTail();
 	}
 	return null;
@@ -263,7 +277,9 @@ public class RegExpFunc {
     public NFA charSetTail() {
         if(peekToken(DASH)) {
             matchToken(DASH);
-            clsChar();
+            
+            // ???????? What should this be?????
+            //clsChar();
         }
 	else{
 	    return null;
@@ -275,7 +291,7 @@ public class RegExpFunc {
 	if(peekToken(NOT)) {
 	    charSet();
 	    if(peekToken(RBRAC)) {
-		matchToken(RBRAC);
+	    	matchToken(RBRAC);
 		if(peekToken(IN))
 		    excludeSetTail();
 		else
