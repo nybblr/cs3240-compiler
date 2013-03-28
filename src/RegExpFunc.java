@@ -68,11 +68,16 @@ public class RegExpFunc {
     
     private Character matchEscaped(HashSet<Character> escaped) {
     	// Escaped character?
+    	Character token;
     	if (is.peekToken(ESCAPE)) {
-    		return is.peekToken(1);
+    		token = is.peekToken(1);
+    		is.advancePointer(2);
     	} else {
-    		return is.peekToken();
+    		token = is.peekToken();
+    		is.advancePointer();
     	}
+    	
+    	return token;
     }
 
     private boolean peekReToken() {
