@@ -147,7 +147,20 @@ public class NFA {
 		return nfa1;
 	}
 	public static NFA star(NFA nfa1){
-		return null;
+		State startState = nfa1.getStart();
+		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+		Iterator<State> iter = acceptingStates.iterator();
+		while(iter.hasNext()){
+			State s = iter.next();
+			nfa1.addEpsilonTransition(s, startState);
+		}
+		nfa1.setAccepts(startState, false);
+		State newStart = new State();
+		newStart.setLabel("Start");
+		NFA newNfa = new NFA(newStart);
+		newNfa.setAccepts(newStart, true);
+		newNfa.addEpsilonTransition(newStart, startState);
+		return newNfa;
 	}
 	public static NFA plus(NFA nfa1){
 		return null;
