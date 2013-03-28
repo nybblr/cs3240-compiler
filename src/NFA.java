@@ -126,6 +126,19 @@ public class NFA {
 			state.setAccepts(accepts);
 	}
 	
+	public static NFA union(NFA nfa1, NFA nfa2){
+		return null;
+	}
+	public static NFA concat(NFA nfa1, NFA nfa2){
+		return null;
+	}
+	public static NFA star(NFA nfa1){
+		return null;
+	}
+	public static NFA plus(NFA nfa1){
+		return null;
+	}
+	
 	// Add empty string transition
 	public Boolean addEpsilonTransition(State from, State to) {
 		return addTransition(from, Transition.EPSILON, to);
