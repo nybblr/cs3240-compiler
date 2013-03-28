@@ -1,9 +1,11 @@
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class NFA {
-	public HashSet<Transition> transitions = new HashSet<Transition>();
-	public HashSet<State> states = new HashSet<State>();
-	public State start;
+	private HashSet<Transition> transitions = new HashSet<Transition>();
+	private HashSet<State> states = new HashSet<State>();
+	private HashSet<State> accepting = new HashSet<State>();
+	private State start;
 
 	/* Constructors */
 	public NFA(State start) {
@@ -26,6 +28,10 @@ public class NFA {
 	public HashSet<State> getStates() {
 		return states;
 	}
+	
+	public HashSet<State> getAcceptingStates() {
+		return accepting;
+	}
 
 	/* Traversal */
 	public Boolean isAccepted(String string) {
@@ -35,10 +41,65 @@ public class NFA {
 	public State step(State from, Character on) {
 		return from;
 	}
+	
+	// Which states can be reached on a certain character?
+	public HashSet<State> statesReachableOn(State from, Character on) {
+		HashSet<State> reachable = new HashSet<State>();
+		Iterator<Transition> iter = from.getTransitions().iterator();
+		while (iter.hasNext()) {
+			Transition t = iter.next();
+			
+			// Do they want the epsilon transitions?
+			boolean equals = false;
+			if (on == null)
+				equals = on == t.c;
+			else
+				equals = on.equals(t.c);
+			
+			// Add all matching transitions
+			// Skip if already added to prevent loops
+			if (equals  && !reachable.contains(t.to)) {
+				// Add this state
+				reachable.add(t.to);
+				
+				// Recurse and add all reachable from this state (epsilon transitions)
+				reachable.addAll(statesReachableFrom(t.to));
+			}
+		}
+		
+		return reachable;
+	}
+
+	// Which states can be reached via empty string?
+	public HashSet<State> statesReachableFrom(State from) {
+		return statesReachableOn(from, null);
+//		HashSet<State> reachable = new HashSet<State>();
+//		Iterator<Transition> iter = from.getTransitions().iterator();
+//		while (iter.hasNext()) {
+//			Transition t = iter.next();
+//			
+//			// Add all empty transitions
+//			// Skip if already added to prevent loops
+//			if (t.isEmptyTransition() && !reachable.contains(t.to)) {
+//				// Add this state
+//				reachable.add(t.to);
+//				
+//				// Recurse and add all reachable from this state
+//				reachable.addAll(statesReachableFrom(t.to));
+//			}
+//		}
+//		
+//		return reachable;
+	}
 
 	/* Manipulation */
 	public Boolean addState(State state) {
 		this.states.add(state);
+		state.setNFA(this);
+		
+		if (state.getAccepts())
+			accepting.add(state);
+		
 		return false;
 	}
 	
@@ -48,6 +109,72 @@ public class NFA {
 		from.addTransition(on, to);
 		
 		return false;
+	}
+	
+	public boolean getAccepts(State state) {
+		return state.getAccepts();
+	}
+	
+	public void setAccepts(State state, boolean accepts) {
+		if (accepts)
+			accepting.add(state);
+		else
+			accepting.remove(state);
+		
+		// Prevent loops
+		if (state.getAccepts() != accepts)
+			state.setAccepts(accepts);
+	}
+	
+	public static NFA union(NFA nfa1, NFA nfa2){
+		State newStart = new State();
+		newStart.setLabel("Start");
+		NFA newNfa = new NFA(newStart);
+		newNfa.setAccepts(newStart, false);
+		newNfa.addEpsilonTransition(newStart, nfa1.getStart());
+		newNfa.addEpsilonTransition(newStart, nfa2.getStart());
+		return newNfa;
+	}
+	public static NFA concat(NFA nfa1, NFA nfa2){
+		State startState = nfa2.getStart();
+		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+		Iterator<State> iter = acceptingStates.iterator();
+		while(iter.hasNext()){
+			State s = iter.next();
+			nfa1.setAccepts(s, false);
+			nfa1.addEpsilonTransition(s, startState);
+		}
+		return nfa1;
+	}
+	public static NFA star(NFA nfa1){
+		State startState = nfa1.getStart();
+		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+		Iterator<State> iter = acceptingStates.iterator();
+		while(iter.hasNext()){
+			State s = iter.next();
+			nfa1.addEpsilonTransition(s, startState);
+		}
+		State newStart = new State();
+		newStart.setLabel("Start");
+		NFA newNfa = new NFA(newStart);
+		newNfa.setAccepts(newStart, true);
+		newNfa.addEpsilonTransition(newStart, startState);
+		return newNfa;
+	}
+	public static NFA plus(NFA nfa1){
+		State startState = nfa1.getStart();
+		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+		Iterator<State> iter = acceptingStates.iterator();
+		while(iter.hasNext()){
+			State s = iter.next();
+			nfa1.addEpsilonTransition(s, startState);
+		}
+		return nfa1;
+	}
+	
+	// Add empty string transition
+	public Boolean addEpsilonTransition(State from, State to) {
+		return addTransition(from, Transition.EPSILON, to);
 	}
 
 	/* Export */

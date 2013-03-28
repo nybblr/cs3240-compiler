@@ -4,6 +4,7 @@ public class State {
 	private String label;
 	private HashSet<Transition> transitions = new HashSet<Transition>();
 	private Boolean accepts;
+	private NFA nfa;
 
 	/* Getters and setters */
 	public String getLabel() {
@@ -14,6 +15,14 @@ public class State {
 		this.label = label;
 	}
 
+	public NFA getNFA() {
+		return nfa;
+	}
+
+	public void setNFA(NFA nfa) {
+		this.nfa = nfa;
+	}
+	
 	public HashSet<Transition> getTransitions() {
 		return transitions;
 	}
@@ -24,6 +33,10 @@ public class State {
 
 	public void setAccepts(Boolean accepts) {
 		this.accepts = accepts;
+		
+		// If there's an NFA, tell it to update the accepting list
+		if (nfa != null)
+			nfa.setAccepts(this, accepts);
 	}
 
 	/* Transitions */
