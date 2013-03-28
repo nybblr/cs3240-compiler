@@ -136,7 +136,15 @@ public class NFA {
 		return newNfa;
 	}
 	public static NFA concat(NFA nfa1, NFA nfa2){
-		return null;
+		State startState = nfa2.getStart();
+		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+		Iterator<State> iter = acceptingStates.iterator();
+		while(iter.hasNext()){
+			State s = iter.next();
+			nfa1.setAccepts(s, false);
+			nfa1.addEpsilonTransition(s, startState);
+		}
+		return nfa1;
 	}
 	public static NFA star(NFA nfa1){
 		return null;
