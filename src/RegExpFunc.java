@@ -92,12 +92,12 @@ public class RegExpFunc {
     }
 
     public NFA origRegExp() {
-	regExp();
-	return null;
+	return regExp();
+	
     }
 
     public NFA regExp() {
-	regExOne();
+	NFA nfa = regExOne();
 	if(peekToken(OR)){
 	    regExPrime();
 	}
