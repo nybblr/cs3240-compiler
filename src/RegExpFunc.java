@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Arrays;
 
 /**
  *
@@ -11,13 +12,22 @@ import java.util.Iterator;
  *
  */
 public class RegExpFunc {
-    private String SPACE = " ", BSLASH = "/", MULTI = "*",
+    private static final String SPACE = " ", BSLASH = "/", MULTI = "*",
 	PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
 	RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"", UNION = "UNION",
 	IN = "IN", NOT = "^", DASH = "-";
     
-    private HashSet<Character> CLS_CHAR = new HashSet<Character>();
-    private HashSet<Character> RE_CHAR = new HashSet<Character>();
+    private static final Character ESCAPE = new Character('\\');
+    
+    private static final Character[] EX_RE_CHAR = {
+    		' ', '\\', '*', '+', '?', '|', '[', ']', '(', ')', '.', '\'', '"'
+    };
+    private static final Character[] EX_CLS_CHAR = {
+    		'\\', '^', '-', '[', ']'
+    };
+    
+    private static final HashSet<Character> RE_CHAR = new HashSet<Character>(Arrays.asList(EX_RE_CHAR));
+    private static final HashSet<Character> CLS_CHAR = new HashSet<Character>(Arrays.asList(EX_CLS_CHAR));
     
     private ArrayList<Terminals> classes = Parser.getClasses();
 
@@ -26,9 +36,9 @@ public class RegExpFunc {
 
     /* Constructor */
     public RegExpFunc(String input) {
-	this.input = new String(input);
-	this.is = new InputStream(this.input);
-//	origRegExp();
+    	this.input = new String(input);
+    	this.is = new InputStream(this.input);
+    	//origRegExp();
     }
 
     private boolean matchToken(String token) {
@@ -37,32 +47,48 @@ public class RegExpFunc {
     }
 
     private String peekToken() {
-	String s = String.valueOf(is.peekToken());
-	System.out.println("Current regex char: " + s);
+    	String s = String.valueOf(is.peekToken());
+    	System.out.println("Current regex char: " + s);
 	return s;
     }
 
     private boolean peekToken(String token) {
-	//return peekToken().equals(token);
-	return is.peekToken(token);
+    	//return peekToken().equals(token);
+    	return is.peekToken(token);
+    }
+    
+    private boolean peekEscaped(HashSet<Character> escaped) {
+    	// Escaped character?
+    	if (is.peekToken(ESCAPE)) {
+    		return escaped.contains(is.peekToken(1));
+    	} else {
+    		return !escaped.contains(is.peekToken());
+    	}
+    }
+    
+    private Character matchEscaped(HashSet<Character> escaped) {
+    	// Escaped character?
+    	if (is.peekToken(ESCAPE)) {
+    		return is.peekToken(1);
+    	} else {
+    		return is.peekToken();
+    	}
     }
 
     private boolean peekReToken() {
-	// TODO Auto-generated method stub
+    	return peekEscaped(RE_CHAR);
     }
 
     private boolean peekClsToken() {
-	// TODO Auto-generated method stub
-    	
+    	return peekEscaped(CLS_CHAR);
     }
     
-    private boolean matchReToken() {
-    	// TODO Auto-generated method stub
+    private Character matchReToken() {
+    	return matchEscaped(CLS_CHAR);
     }
 
-    private boolean matchClsToken() {
-	// TODO Auto-generated method stub
-    	
+    private Character matchClsToken() {
+    	return matchEscaped(CLS_CHAR);
     }
 
     private void invalid() {
@@ -280,6 +306,7 @@ public class RegExpFunc {
             
             // ???????? What should this be?????
             //clsChar();
+            matchClsToken();
         }
 	else{
 	    return null;

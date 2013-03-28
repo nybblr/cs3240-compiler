@@ -31,6 +31,17 @@ public class InputStream {
 		return input.charAt(pointer);
 	}
 	
+	// Peek token at pointer and return if it matches
+	public boolean peekToken(Character c) {
+		return c.equals(peekToken());
+	}
+	
+	// Get character at current pointer plus offset without advancing
+	public Character peekToken(int i) {
+		if (isConsumed()) return null;
+		return input.charAt(pointer + i);
+	}
+	
 	// Peek multibyte sequences
 	public boolean peekToken(String token) {
 		if (!isEnough(token.length())) return false;
