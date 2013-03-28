@@ -154,7 +154,6 @@ public class NFA {
 			State s = iter.next();
 			nfa1.addEpsilonTransition(s, startState);
 		}
-		nfa1.setAccepts(startState, false);
 		State newStart = new State();
 		newStart.setLabel("Start");
 		NFA newNfa = new NFA(newStart);
@@ -163,7 +162,14 @@ public class NFA {
 		return newNfa;
 	}
 	public static NFA plus(NFA nfa1){
-		return null;
+		State startState = nfa1.getStart();
+		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+		Iterator<State> iter = acceptingStates.iterator();
+		while(iter.hasNext()){
+			State s = iter.next();
+			nfa1.addEpsilonTransition(s, startState);
+		}
+		return nfa1;
 	}
 	
 	// Add empty string transition
