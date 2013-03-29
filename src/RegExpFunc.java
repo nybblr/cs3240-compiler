@@ -136,9 +136,11 @@ public class RegExpFunc {
             if(classes.get(i).getName().equals(className)){
                 classHash = classes.get(i).getChars();
                 Iterator<Character> iter = classHash.iterator();
-                Character start = iter.next();
-                for(int j=0; j<Integer.parseInt(c.toString()); j++){
-                    classHash.add((char)(start+1));
+                while(iter.hasNext()){
+	                Character start = iter.next();
+	                for(int j=0; j<c; j++){
+	                    classHash.add((char)(start+1));
+	                }
                 }
                 classHash.add(c);
             }
