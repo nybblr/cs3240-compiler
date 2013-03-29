@@ -31,8 +31,7 @@ public class Parser {
 				token = token.replaceAll("\\s","");
 				System.out.println(token);
 				RegExpFunc func = new RegExpFunc(token);
-				NFA nfa = func.origRegExp();
-				System.out.println(currClass.getName()+" "+nfa);
+				NFA nfa = func.origRegExp(currClass.getName());
 				currClass.setNFA(nfa);
 			}
 		} catch(Exception e){
