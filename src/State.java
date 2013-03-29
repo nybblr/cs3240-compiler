@@ -57,4 +57,15 @@ public class State {
 	public Boolean deleteTransition(Character on, State to) {
 		return false;
 	}
+	
+	public boolean equals(Object other) {
+		if (other instanceof State) {
+			State state = (State)other;
+			return transitions.equals(state.getTransitions()) &&
+					accepts == state.getAccepts() &&
+					nfa.equals(state.getNFA());
+		} else {
+			return false;
+		}
+	}
 }

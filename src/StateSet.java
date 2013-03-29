@@ -32,8 +32,13 @@ public class StateSet {
 		return states.contains(state);
 	}
 	
-	public boolean equals(Object object) {
-		return false;
+	public boolean equals(Object other) {
+		if (other instanceof StateSet) {
+			StateSet otherSet = (StateSet)other;
+			return states.equals(otherSet.getStates());
+		} else {
+			return false;
+		}
 	}
 	
 	// Do any of the states accept?
