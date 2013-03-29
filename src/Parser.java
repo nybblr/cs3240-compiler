@@ -10,6 +10,7 @@ public class Parser {
 
 	public static void fileParser(String filename){
 		try{
+			System.out.println("Parsing input spec...");
 			Scanner scan = new Scanner(new File(filename));
 			Terminals currClass = null;
 			classes = new ArrayList<Terminals>();
@@ -33,7 +34,9 @@ public class Parser {
 				NFA nfa = func.origRegExp();
 				currClass.setNFA(nfa);
 			}
-		} catch(Exception e){}
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 
 		//		for(Terminals eachClass : classes){
 		//commented portion is for when we start using the toDFA() method
