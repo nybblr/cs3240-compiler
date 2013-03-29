@@ -76,9 +76,10 @@ public class State {
 		if (other instanceof State) {
 			State state = (State)other;
 			if (state == other) return true;
-			return label.equals(state.getLabel()) &&
-					accepts == state.getAccepts() &&
-					nfa.equals(state.getNFA());
+//			return label.equals(state.getLabel()) &&
+//					accepts == state.getAccepts() &&
+//					nfa.equals(state.getNFA());
+			return false;
 		} else {
 			return false;
 		}
