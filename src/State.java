@@ -6,10 +6,14 @@ public class State {
 	private Boolean accepts = false;
 	private NFA nfa;
 	
+	private static int counter = 0;
+	
 	public StateSet set; // state set that was used to generate this state
 	
 	/* Constructors */
 	public State() {
+		this(""+counter);
+		counter++;
 	}
 	
 	public State(String label) {
