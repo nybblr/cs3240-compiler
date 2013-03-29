@@ -159,7 +159,7 @@ public class RegExpFunc {
 		NFA nfa = regExOne();
 		if(peekToken(OR)){
 	            matchToken(OR);
-	            nfa = NFA.union(nfa, regExPrime());
+	            nfa = NFA.union(regExPrime(), nfa);
 		}
 		return nfa;
 	}
@@ -169,7 +169,7 @@ public class RegExpFunc {
 		if(peekToken(OR)) {
 		    matchToken(OR);
 	            NFA nfa = regExOne();
-	            nfa = NFA.concat(nfa, regExPrime());
+	            nfa = NFA.concat(regExPrime(), nfa);
 	            return nfa;
 		}
 		else {
@@ -191,25 +191,20 @@ public class RegExpFunc {
 
 	public NFA regExOnePrime() {
 		debug();
-		if(peekToken(LPAREN) | peekToken(PERIOD) | peekToken(LBRAC)) {
-	            NFA nfa = regExTwo();
-	            NFA.concat(nfa, regExOnePrime());
-	            return nfa;
+		State s = new State();
+		NFA nfa = new NFA(s);
+		if(peekToken(LPAREN) || peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)){
+		    nfa.addEpsilonTransition(s, regExTwo().getStart());
+                    NFA.concat(nfa, regExOnePrime());
+                    return nfa;
 		}
 		else if(peekReToken()) {
-	            NFA nfa = regExTwo();
-	            NFA.concat(nfa, regExOnePrime());
-	            return nfa;
-	        }
-	        else if(inSpecification()) {
-	            NFA nfa = regExTwo();
+	            nfa.addEpsilonTransition(s, regExTwo().getStart());
 	            NFA.concat(nfa, regExOnePrime());
 	            return nfa;
 	        }
 	        else {
-	            State s = new State();
 	            State a = new State();
-	            NFA nfa = new NFA(s);
 	            nfa.addEpsilonTransition(nfa.getStart(), a);
 	            nfa.setAccepts(a, true);
 	            return nfa;
@@ -218,33 +213,39 @@ public class RegExpFunc {
 
 	public NFA regExTwo() {
 		debug();
+		State s = new State();
+		NFA nfa = new NFA(s);
+//***********************************Double check the if for minor bug issues***********************************
 		if(peekToken(LPAREN)) {
-			matchToken(LPAREN);
-			NFA nfa = regExp();
-			if(peekToken(RPAREN)) {
-				matchToken(RPAREN);
-				regExTwoTail();
-			}
-			else {
-				invalid();
-			}
+		      matchToken(LPAREN);
+		      NFA rexpNFA = regExp();
+		      nfa.addTransition(s, '(', rexpNFA.getStart());
+		      if(peekToken(RPAREN)) {
+		          matchToken(RPAREN);
+		          State t = new State();
+		          nfa.addTransition(t, ')', regExTwoTail().getStart());
+		          NFA.concat(rexpNFA, nfa);
+		          return nfa;
+		      }
+		      else {
+		          invalid();
+		          return null;
+		      }
 		}
 		else if(peekReToken()) {
-			matchReToken();
-			regExTwoTail();
+			nfa.addTransition(s, matchReToken(), regExTwoTail().getStart());
+			return nfa;
 		}
 		else {
-			if(peekToken(PERIOD)) {
-				regExThree();
+			if(peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)){
+			    nfa.addEpsilonTransition(s, regExThree().getStart());
+			    return nfa;
 			}
-			else if(peekToken(LBRAC)) {
-				regExThree();
-			}
-			else if(inSpecification()) {
-				regExThree();
+			else {
+			    invalid();
+			    return null;
 			}
 		}
-		return null;
 	}
 
 	public NFA regExTwoTail() {
@@ -277,130 +278,217 @@ public class RegExpFunc {
 
 	public NFA regExThree() {
 		debug();
-		if(peekToken(PERIOD)) {
-			charClass();
-		}
-		else if(peekToken(LBRAC)) {
-			charClass();
-		}
-		else if(inSpecification()) {
-			charClass();
+		State s = new State();
+		NFA nfa = new NFA(s);
+		if(peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
+		    nfa.addEpsilonTransition(s, charClass().getStart());
+		    return nfa;
 		}
 		else if(peekToken("null")) {
-			return null;
+                    State a = new State();
+                    nfa.addEpsilonTransition(s, a);
+                    return nfa;
 		}
 		else {
 			invalid();
+			return null;
 		}
-		return null;
 	}
 
 	public NFA charClass() {
 		debug();
+		State s = new State();
+		NFA nfa = new NFA(s);
 		if(peekToken(PERIOD)) {
 			matchToken(PERIOD);
+	                State a = new State();
+	                nfa.addTransition(s, '.', a);
+	                return nfa;
 		}
 		else if(peekToken(LBRAC)) {
 			matchToken(LBRAC);
-			charClassOne();
+			nfa.addTransition(s, '[', charClassOne().getStart());
+			return nfa;
 		}
-		else {
+//******************************Not sure what to do for transition********************************************
+		else if(peekToken(DOLLAR)){
 			matchToken(DOLLAR);
+	                State a = new State();
+	                nfa.addTransition(s, '$', a);
+	                nfa.setAccepts(a, true);
 			System.out.println("I'm in char class!!!");
 			definedClass();
+			return null;
 		}
-		return null;
+		else{
+		    invalid();
+		    return null;
+		}
 	}
 
 	public NFA charClassOne() {
 		debug();
+		State s = new State();
+		NFA nfa = new NFA(s);
+		//Not sure what to do for transition
 		if(peekClsToken()) {
-			charSetList();
+		    nfa.addEpsilonTransition(s,charSetList().getStart());
+			return null;
 		}
-		else if(peekToken(RBRAC)) {
-			charSetList();
+		else if(peekToken(RBRAC) || peekToken(NOT)) {
+		    nfa.addEpsilonTransition(s, excludeSet().getStart());
+		    return nfa;
 		}
 		else {
-			excludeSet();
+		    invalid();
+		    return null;
 		}
-		return null;
 	}
 
 	public NFA charSetList() {
 		debug();
+		State s = new State();
+		NFA nfa = new NFA(s);
 		if(peekClsToken()) {
-			charSet();
-			charSetList();
+		    nfa.addEpsilonTransition(s, charSet().getStart());
+		    NFA.concat(nfa, charSetList());
+                    return nfa;
 		}
 		else if(peekToken(RBRAC)) {
-			matchToken(RBRAC);
+		    matchToken(RBRAC);
+	            State a = new State();
+	            nfa.addTransition(s, ']', a);
+	            return nfa;
 		}
 		else{
 			invalid();
+			return null;
 		}
-		return null;
 	}
 
 	public NFA charSet() {
 		debug();
 		System.out.println(peekToken());
 		System.out.println(is.getPointer());
+		State s = new State();
+		NFA nfa = new NFA(s);
 		if(peekClsToken()) {
-			matchClsToken();
-			charSetTail();
+		    nfa.addTransition(s, matchClsToken(),charSetTail().getStart());
+                    return nfa;
 		}
-		return null;
+		else {
+		    invalid();
+                    return null;
+		}
 	}
 
 	public NFA charSetTail() {
 		debug();
+		State s = new State();
+		NFA nfa = new NFA(s);
 		if(peekToken(DASH)) {
 			System.out.println("We're there!");
 			matchToken(DASH);
-
-			// ???????? What should this be?????
-			//clsChar();
-			matchClsToken();
+			State t = new State();
+			nfa.addTransition(s, '-', t);
+			if(peekClsToken()) {
+			    nfa.addTransition(t, matchClsToken(), new State());
+			    return nfa;
+			}
+			else {
+			    invalid();
+			    return null;
+			}
 		}
 		else{
-			return null;
+                    State a = new State();
+                    nfa.addEpsilonTransition(s, a);
+                    return nfa;
 		}
-		return null;
 	}
-
+/** --------------------------------------------------------------------------------------------------*/
+	//Special case with IN exclusion so make sure to pay detailed attention to this part
 	public NFA excludeSet() {
 		debug();
+		State s = new State();
+		NFA nfa = new NFA(s);
+//***********************************Double check the if for minor bug issues***********************************
 		if(peekToken(NOT)) {
 			matchToken(NOT);
-			charSet();
+			nfa.addTransition(s, '^', charSet().getStart());
 			if(peekToken(RBRAC)) {
 				System.out.println("We're at the ]!");
 				matchToken(RBRAC);
-				if(peekToken(IN)) {
-					matchToken(IN);
-					excludeSetTail();
-				} else
-					invalid();
+				State t = new State();
+				State u = new State();
+				NFA nfa1 = new NFA(t);
+				nfa1.addTransition(t, ']', u);
+				NFA.concat(nfa, nfa1);
+				if(peekToken(SPACE)){
+				    matchToken(SPACE);
+				    State v = new State();
+	                            State w = new State();
+	                            NFA nfa2 = new NFA(v);
+	                            nfa1.addTransition(v, ']', w);
+	                            NFA.concat(nfa1, nfa2);
+				    if(peekToken(IN)) {
+                                        matchToken(IN);
+                                        State x = new State();
+                                        State y = new State();
+                                        NFA nfa3 = new NFA(x);
+                                        nfa1.addTransition(x, ']', y);
+                                        NFA.concat(nfa2, nfa3);
+                                            if(peekToken(SPACE)){
+                                                matchToken(SPACE);
+                                                State z = new State();
+                                                NFA nfa4 = new NFA(z);
+                                                nfa1.addTransition(z, ']', excludeSetTail().getStart());
+                                                NFA.concat(nfa3, nfa4);
+                                            }
+                                            else{
+                                                invalid();
+                                                return null;
+                                            }
+                                    }
+				    else{
+                                        invalid();
+				        return null;
+				    }
+				}
+				else{
+                                    invalid();
+                                    return null;
+                                }
 			}
 			else {
 				invalid();
+				return null;
 			}
+			return nfa;
 		}
 		else {
 			invalid();
+			return null;
 		}
-		return null;
 	}
 
 	public NFA excludeSetTail() {
 		debug();
+		State s = new State();
+		NFA nfa = new NFA(s);
 		if(peekToken(LBRAC)) {
 			matchToken(LBRAC);
-			charSet();
+			nfa.addTransition(s, '[', charSet().getStart());
 			if(peekToken(RBRAC)) {
 				matchToken(RBRAC);
+				State t = new State();
+				State u = new State();
+				NFA nfa1 = new NFA(t);
+				nfa1.addTransition(t, ']', u);
+				nfa.setAccepts(u, true);
 			}
 		}
+//***********************************Not sure what to do for transition***********************************
 		else{
 			System.out.println("I'm here!!!");
 			matchToken(DOLLAR);
