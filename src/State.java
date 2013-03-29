@@ -1,10 +1,20 @@
 import java.util.HashSet;
 
 public class State {
-	private String label;
+	private String label = "";
 	private HashSet<Transition> transitions = new HashSet<Transition>();
-	private Boolean accepts;
+	private Boolean accepts = false;
 	private NFA nfa;
+	
+	public StateSet set; // state set that was used to generate this state
+	
+	/* Constructors */
+	public State() {
+	}
+	
+	public State(String label) {
+		this.label = label;
+	}
 
 	/* Getters and setters */
 	public String getLabel() {

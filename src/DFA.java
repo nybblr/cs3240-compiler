@@ -1,8 +1,9 @@
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.LinkedList;
 
-public class DFA extends NFA {
+public class DFA extends NFA {	
 	/* Constructors */
 	public DFA(State start) {
 		super(start);
@@ -12,19 +13,37 @@ public class DFA extends NFA {
 	public DFA(NFA nfa) {
 		super(new State());
 		
+		HashMap<HashSet<State>, State> map = new HashMap<HashSet<State>, State>();
+		
 		// First, add start state
 		// This is the NFA start state and all reachable states (epsilon transitions)
-		StateSet start = new StateSet();
-		start.add(nfa.getStart());
-		start.states.addAll(nfa.statesReachableFrom(nfa.getStart()));
+		StateSet startSet = new StateSet();
+		startSet.add(nfa.getStart());
+		startSet.states.addAll(nfa.statesReachableFrom(nfa.getStart()));
+		
+		setStart(startSet.toState());
+		
+		map.put(startSet.getStates(), getStart());
 		
 		Queue<StateSet> queue = new LinkedList<StateSet>();
-		queue.offer(start);
+		queue.offer(startSet);
 		
 		while(!queue.isEmpty()) {
 			StateSet set = queue.poll();
 			
-			
+			for (int i = 0; i < 256; i++) {
+				StateSet trans = set.transition((char)i);
+				State to = null;
+				if (!map.containsKey(trans)) {
+					to = set.toState();
+					map.put(set.getStates(), to);
+				} else {
+					to = map.get(trans);
+				}
+				
+				State from = map.get(set);
+				addTransition(from, (char)i, to);
+			}
 		}
 	}
 

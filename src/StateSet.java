@@ -62,6 +62,27 @@ public class StateSet {
 		
 		return chars;
 	}
+	
+	public HashSet<State> statesReachableOn(Character on) {
+		HashSet<State> reachable = new HashSet<State>();
+		Iterator<State> iter = states.iterator();
+		while (iter.hasNext()) {
+			State state = iter.next();
+			reachable.addAll(state.getNFA().statesReachableOn(state, on));
+		}
+		
+		return reachable;
+	}
+	
+	public StateSet transition(Character on) {
+		HashSet<State> reachable = statesReachableOn(on);
+		
+		if (reachable.equals(states)) {
+			return this;
+		} else {
+			return new StateSet(reachable);
+		}
+	}
 
 	public String toString() {
 		String string = "{";
@@ -73,5 +94,9 @@ public class StateSet {
 		}
 		string += "}";
 		return string;
+	}
+	
+	public State toState() {
+		return new State(toString());
 	}
 }
