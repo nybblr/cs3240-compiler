@@ -20,6 +20,8 @@ public class TestNFAtoDFA {
 		
 		System.out.println(nfa.toString());
 		System.out.println(dfa.toString());
+		
+		System.out.println(nfa.statesReachableOn(start, 'h'));
 	}
 
 }

@@ -54,14 +54,14 @@ public class State {
 		return false;
 	}
 
-	public Boolean addTransition(Character on, State to) {
-		return false;
+	public Transition addTransition(Character on, State to) {
+		Transition transition = new Transition(this, on, to);
+		return addTransition(transition);
 	}
 	
-	public Boolean addTransition(Transition transition) {
+	public Transition addTransition(Transition transition) {
 		this.transitions.add(transition);
-		
-		return false;
+		return transition;
 	}
 
 	public Boolean deleteTransition(Character on, State to) {
