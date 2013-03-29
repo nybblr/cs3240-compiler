@@ -413,37 +413,20 @@ public class RegExpFunc {
 		State s = new State();
 		NFA nfa = new NFA(s);
 //***********************************Double check the if for minor bug issues***********************************
+		
+//Assumption made that there is an " " then "IN" then another " "
 		if(peekToken(NOT)) {
 			matchToken(NOT);
-			nfa.addTransition(s, '^', charSet().getStart());
 			if(peekToken(RBRAC)) {
 				System.out.println("We're at the ]!");
 				matchToken(RBRAC);
-				State t = new State();
-				State u = new State();
-				NFA nfa1 = new NFA(t);
-				nfa1.addTransition(t, ']', u);
-				NFA.concat(nfa, nfa1);
 				if(peekToken(SPACE)){
-				    matchToken(SPACE);
-				    State v = new State();
-	                            State w = new State();
-	                            NFA nfa2 = new NFA(v);
-	                            nfa1.addTransition(v, ']', w);
-	                            NFA.concat(nfa1, nfa2);
+                                    matchToken(SPACE);
 				    if(peekToken(IN)) {
                                         matchToken(IN);
-                                        State x = new State();
-                                        State y = new State();
-                                        NFA nfa3 = new NFA(x);
-                                        nfa1.addTransition(x, ']', y);
-                                        NFA.concat(nfa2, nfa3);
                                             if(peekToken(SPACE)){
                                                 matchToken(SPACE);
-                                                State z = new State();
-                                                NFA nfa4 = new NFA(z);
-                                                nfa1.addTransition(z, ']', excludeSetTail().getStart());
-                                                NFA.concat(nfa3, nfa4);
+                                                nfa.addTransition(s, ' ', excludeSetTail().getStart());
                                             }
                                             else{
                                                 invalid();
@@ -454,17 +437,31 @@ public class RegExpFunc {
                                         invalid();
 				        return null;
 				    }
+                                    State t = new State();
+                                    nfa.addTransition(t, ' ', nfa.getStart());
+                                    nfa.setStart(t);
 				}
 				else{
                                     invalid();
                                     return null;
                                 }
+				State u = new State();
+                                nfa.addTransition(u, ']', nfa.getStart());
+                                nfa.setStart(u);
 			}
 			else {
 				invalid();
 				return null;
 			}
-			return nfa;
+			State v = new State();
+			NFA charSetNFA = charSet();
+			NFA nfaNew = new NFA(v);
+			Iterator iter = charSet().getAcceptingStates().iterator();
+			while(iter.hasNext()){
+			    NFA.concat(charSetNFA, nfa);
+			}
+                        nfaNew.addTransition(v, '^', charSetNFA.getStart());
+			return nfaNew;
 		}
 		else {
 			invalid();
