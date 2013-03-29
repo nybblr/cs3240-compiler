@@ -158,65 +158,69 @@ public class RegExpFunc {
 		debug();
 		NFA nfa = regExOne();
 		if(peekToken(OR)){
-			regExPrime();
+	            matchToken(OR);
+	            nfa = NFA.union(nfa, regExPrime());
 		}
-		return null;
+		return nfa;
 	}
 
 	public NFA regExPrime() {
 		debug();
 		if(peekToken(OR)) {
-			matchToken(OR);
-			regExOne();
-			regExPrime();
+		    matchToken(OR);
+	            NFA nfa = regExOne();
+	            nfa = NFA.concat(nfa, regExPrime());
+	            return nfa;
 		}
 		else {
-			return null;
+		    State s = new State();
+	            State a = new State();
+	            NFA nfa = new NFA(s);
+	            nfa.addEpsilonTransition(nfa.getStart(), a);
+	            nfa.setAccepts(a, true);
+	            return nfa;
 		}
-		return null;
 	}
 
 	public NFA regExOne() {
 		debug();
-		regExTwo();
-		regExOnePrime();
-		return null;
+		NFA nfa = regExTwo();
+	        nfa = NFA.concat(nfa, regExOnePrime());
+	        return nfa;
 	}
 
 	public NFA regExOnePrime() {
 		debug();
-		if(peekToken(LPAREN)) {
-			regExTwo();
-			regExOnePrime();
+		if(peekToken(LPAREN) | peekToken(PERIOD) | peekToken(LBRAC)) {
+	            NFA nfa = regExTwo();
+	            NFA.concat(nfa, regExOnePrime());
+	            return nfa;
 		}
 		else if(peekReToken()) {
-			regExTwo();
-			regExOnePrime();
-		}
-		else if(peekToken(PERIOD)) {
-			regExTwo();
-			regExOnePrime();
-		}
-		else if(peekToken(LBRAC)) {
-			regExTwo();
-			regExOnePrime();
-		}
-		else if(inSpecification()) {
-			
-			regExTwo();
-			regExOnePrime();
-		}
-		else {
-			return null;
-		}
-		return null;
+	            NFA nfa = regExTwo();
+	            NFA.concat(nfa, regExOnePrime());
+	            return nfa;
+	        }
+	        else if(inSpecification()) {
+	            NFA nfa = regExTwo();
+	            NFA.concat(nfa, regExOnePrime());
+	            return nfa;
+	        }
+	        else {
+	            State s = new State();
+	            State a = new State();
+	            NFA nfa = new NFA(s);
+	            nfa.addEpsilonTransition(nfa.getStart(), a);
+	            nfa.setAccepts(a, true);
+	            return nfa;
+	        }
 	}
 
 	public NFA regExTwo() {
 		debug();
 		if(peekToken(LPAREN)) {
 			matchToken(LPAREN);
-			regExp();
+			NFA nfa = regExp();
 			if(peekToken(RPAREN)) {
 				matchToken(RPAREN);
 				regExTwoTail();
@@ -246,15 +250,29 @@ public class RegExpFunc {
 	public NFA regExTwoTail() {
 		debug();
 		if(peekToken(MULTI)) {
-			matchToken(MULTI);
+		    matchToken(MULTI);
+		    State s = new State();
+	            State a = new State();
+	            NFA nfa = new NFA(s);
+	            nfa.addTransition(s, '*', a);
+	            return nfa;
 		}
 		else if(peekToken(PLUS)) {
-			matchToken(PLUS);
+		    matchToken(PLUS);
+	            State s = new State();
+	            State a = new State();
+	            NFA nfa = new NFA(s);
+	            nfa.addTransition(s, '+', a);
+	            return nfa;
 		}
 		else {
-			return null;
+		    State s = new State();
+	            State a = new State();
+	            NFA nfa = new NFA(s);
+	            nfa.addEpsilonTransition(nfa.getStart(), a);
+	            nfa.setAccepts(a, true);
+	            return nfa;
 		}
-		return null;
 	}
 
 	public NFA regExThree() {
