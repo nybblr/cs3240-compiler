@@ -1,4 +1,6 @@
 import java.util.HashSet;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class DFA extends NFA {
 	/* Constructors */
@@ -16,7 +18,14 @@ public class DFA extends NFA {
 		start.add(nfa.getStart());
 		start.states.addAll(nfa.statesReachableFrom(nfa.getStart()));
 		
+		Queue<StateSet> queue = new LinkedList<StateSet>();
+		queue.offer(start);
 		
+		while(!queue.isEmpty()) {
+			StateSet set = queue.poll();
+			
+			
+		}
 	}
 
 	/* Export */

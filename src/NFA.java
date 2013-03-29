@@ -10,6 +10,7 @@ public class NFA {
 	/* Constructors */
 	public NFA(State start) {
 		this.start = start;
+		addState(start);
 	}
 
 	/* Getters and setters */
@@ -104,6 +105,30 @@ public class NFA {
 	}
 	
 	public Boolean addTransition(State from, Character on, State to) {
+		if (!equals(from.getNFA()) && from.getNFA() != null) {
+			Iterator<State> iters = from.getNFA().getStates().iterator();
+			while(iters.hasNext()) {
+				State state = iters.next();
+				addState(state);
+			}
+			
+			transitions.addAll(from.getNFA().getTransitions());
+		} else {
+			from.setNFA(this);
+		}
+		
+		if (!equals(to.getNFA()) && to.getNFA() != null) {
+			Iterator<State> iters = to.getNFA().getStates().iterator();
+			while(iters.hasNext()) {
+				State state = iters.next();
+				addState(state);
+			}
+			
+			transitions.addAll(to.getNFA().getTransitions());
+		} else {
+			to.setNFA(this);
+		}
+		
 		Transition transition = new Transition(from, on, to);
 		this.transitions.add(transition);
 		from.addTransition(on, to);

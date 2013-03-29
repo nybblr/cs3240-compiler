@@ -32,6 +32,10 @@ public class StateSet {
 		return states.contains(state);
 	}
 	
+	public boolean equals(Object object) {
+		return false;
+	}
+	
 	// Do any of the states accept?
 	public boolean accepts() {
 		Iterator<State> iter = states.iterator();
