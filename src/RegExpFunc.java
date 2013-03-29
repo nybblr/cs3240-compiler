@@ -132,20 +132,20 @@ public class RegExpFunc {
 
 	private void definedClass() {
 		debug();
-		
+
 		for(int i=0; i<classes.size(); i++){
 			String name = classes.get(i).getName();
 			if (is.peekToken(name)) {
 				is.matchToken(name);
 			}
-//			Iterator<Character> iter = chars.iterator();
-//			while(iter.hasNext() && !(s.equals(t))){
-//				s = iter.next().toString();
-//				//System.out.println("Comparing: " + s + "to" + t);
-//				if(peekToken(s)){
-//					matchToken(peekToken());
-//				}
-//			}
+			//			Iterator<Character> iter = chars.iterator();
+			//			while(iter.hasNext() && !(s.equals(t))){
+			//				s = iter.next().toString();
+			//				//System.out.println("Comparing: " + s + "to" + t);
+			//				if(peekToken(s)){
+			//					matchToken(peekToken());
+			//				}
+			//			}
 		}
 	}
 
@@ -158,7 +158,7 @@ public class RegExpFunc {
 		debug();
 		NFA nfa = regExOne();
 		if(peekToken(OR)){
-	            nfa = NFA.union(regExPrime(), nfa);
+			nfa = NFA.union(regExPrime(), nfa);
 		}
 		return nfa;
 	}
@@ -166,26 +166,26 @@ public class RegExpFunc {
 	public NFA regExPrime() {
 		debug();
 		if(peekToken(OR)) {
-		    matchToken(OR);
-	            NFA nfa = regExOne();
-	            nfa = NFA.concat(regExPrime(), nfa);
-	            return nfa;
+			matchToken(OR);
+			NFA nfa = regExOne();
+			nfa = NFA.concat(regExPrime(), nfa);
+			return nfa;
 		}
 		else {
-		    State s = new State();
-	            State a = new State();
-	            NFA nfa = new NFA(s);
-	            nfa.addEpsilonTransition(nfa.getStart(), a);
-	            nfa.setAccepts(a, true);
-	            return nfa;
+			State s = new State();
+			State a = new State();
+			NFA nfa = new NFA(s);
+			nfa.addEpsilonTransition(nfa.getStart(), a);
+			nfa.setAccepts(a, true);
+			return nfa;
 		}
 	}
 
 	public NFA regExOne() {
 		debug();
 		NFA nfa = regExTwo();
-	        nfa = NFA.concat(nfa, regExOnePrime());
-	        return nfa;
+		nfa = NFA.concat(nfa, regExOnePrime());
+		return nfa;
 	}
 
 	public NFA regExOnePrime() {
@@ -193,44 +193,44 @@ public class RegExpFunc {
 		State s = new State();
 		NFA nfa = new NFA(s);
 		if(peekToken(LPAREN) || peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)){
-		    nfa.addEpsilonTransition(s, regExTwo().getStart());
-                    nfa = NFA.concat(nfa, regExOnePrime());
-                    return nfa;
+			nfa.addEpsilonTransition(s, regExTwo().getStart());
+			nfa = NFA.concat(nfa, regExOnePrime());
+			return nfa;
 		}
 		else if(peekReToken()) {
-	            nfa.addEpsilonTransition(s, regExTwo().getStart());
-	            nfa = NFA.concat(nfa, regExOnePrime());
-	            return nfa;
-	        }
-	        else {
-	            State a = new State();
-	            nfa.addEpsilonTransition(nfa.getStart(), a);
-	            nfa.setAccepts(a, true);
-	            return nfa;
-	        }
+			nfa.addEpsilonTransition(s, regExTwo().getStart());
+			nfa = NFA.concat(nfa, regExOnePrime());
+			return nfa;
+		}
+		else {
+			State a = new State();
+			nfa.addEpsilonTransition(nfa.getStart(), a);
+			nfa.setAccepts(a, true);
+			return nfa;
+		}
 	}
 
 	public NFA regExTwo() {
 		debug();
 		State s = new State();
 		NFA nfa = new NFA(s);
-//***********************************Double check the if for minor bug issues***********************************
+		//***********************************Double check the if for minor bug issues***********************************
 		if(peekToken(LPAREN)) {
-		      matchToken(LPAREN);
-		      if(peekToken(RPAREN)) {
-		          matchToken(RPAREN);
-		          nfa.addTransition(s, ')', regExTwoTail().getStart());
-		      }
-		      else {
-		          invalid();
-		          return null;
-		      }
-		      State t = new State();
-		      NFA nfaNew = new NFA(t);
-                      NFA rexpNFA = regExp();
-		      NFA concat = NFA.concat(rexpNFA, nfa);
-		      nfaNew.addTransition(t, ')', concat.getStart());
-		      return nfaNew;
+			matchToken(LPAREN);
+			if(peekToken(RPAREN)) {
+				matchToken(RPAREN);
+				nfa.addTransition(s, ')', regExTwoTail().getStart());
+			}
+			else {
+				invalid();
+				return null;
+			}
+			State t = new State();
+			NFA nfaNew = new NFA(t);
+			NFA rexpNFA = regExp();
+			NFA concat = NFA.concat(rexpNFA, nfa);
+			nfaNew.addTransition(t, ')', concat.getStart());
+			return nfaNew;
 		}
 		else if(peekReToken()) {
 			nfa.addTransition(s, matchReToken(), regExTwoTail().getStart());
@@ -238,12 +238,12 @@ public class RegExpFunc {
 		}
 		else {
 			if(peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)){
-			    nfa.addEpsilonTransition(s, regExThree().getStart());
-			    return nfa;
+				nfa.addEpsilonTransition(s, regExThree().getStart());
+				return nfa;
 			}
 			else {
-			    invalid();
-			    return null;
+				invalid();
+				return null;
 			}
 		}
 	}
@@ -251,28 +251,28 @@ public class RegExpFunc {
 	public NFA regExTwoTail() {
 		debug();
 		if(peekToken(MULTI)) {
-		    matchToken(MULTI);
-		    State s = new State();
-	            State a = new State();
-	            NFA nfa = new NFA(s);
-	            nfa.addTransition(s, '*', a);
-	            return nfa;
+			matchToken(MULTI);
+			State s = new State();
+			State a = new State();
+			NFA nfa = new NFA(s);
+			nfa.addTransition(s, '*', a);
+			return nfa;
 		}
 		else if(peekToken(PLUS)) {
-		    matchToken(PLUS);
-	            State s = new State();
-	            State a = new State();
-	            NFA nfa = new NFA(s);
-	            nfa.addTransition(s, '+', a);
-	            return nfa;
+			matchToken(PLUS);
+			State s = new State();
+			State a = new State();
+			NFA nfa = new NFA(s);
+			nfa.addTransition(s, '+', a);
+			return nfa;
 		}
 		else {
-		    State s = new State();
-	            State a = new State();
-	            NFA nfa = new NFA(s);
-	            nfa.addEpsilonTransition(nfa.getStart(), a);
-	            nfa.setAccepts(a, true);
-	            return nfa;
+			State s = new State();
+			State a = new State();
+			NFA nfa = new NFA(s);
+			nfa.addEpsilonTransition(nfa.getStart(), a);
+			nfa.setAccepts(a, true);
+			return nfa;
 		}
 	}
 
@@ -281,13 +281,13 @@ public class RegExpFunc {
 		State s = new State();
 		NFA nfa = new NFA(s);
 		if(peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
-		    nfa.addEpsilonTransition(s, charClass().getStart());
-		    return nfa;
+			nfa.addEpsilonTransition(s, charClass().getStart());
+			return nfa;
 		}
 		else if(peekToken("null")) {
-                    State a = new State();
-                    nfa.addEpsilonTransition(s, a);
-                    return nfa;
+			State a = new State();
+			nfa.addEpsilonTransition(s, a);
+			return nfa;
 		}
 		else {
 			invalid();
@@ -301,28 +301,28 @@ public class RegExpFunc {
 		NFA nfa = new NFA(s);
 		if(peekToken(PERIOD)) {
 			matchToken(PERIOD);
-	                State a = new State();
-	                nfa.addTransition(s, '.', a);
-	                return nfa;
+			State a = new State();
+			nfa.addTransition(s, '.', a);
+			return nfa;
 		}
 		else if(peekToken(LBRAC)) {
 			matchToken(LBRAC);
 			nfa.addTransition(s, '[', charClassOne().getStart());
 			return nfa;
 		}
-//******************************Not sure what to do for transition********************************************
+		//******************************Not sure what to do for transition********************************************
 		else if(peekToken(DOLLAR)){
 			matchToken(DOLLAR);
-	                State a = new State();
-	                nfa.addTransition(s, '$', a);
-	                nfa.setAccepts(a, true);
+			State a = new State();
+			nfa.addTransition(s, '$', a);
+			nfa.setAccepts(a, true);
 			System.out.println("I'm in char class!!!");
 			definedClass();
 			return null;
 		}
 		else{
-		    invalid();
-		    return null;
+			invalid();
+			return null;
 		}
 	}
 
@@ -331,16 +331,16 @@ public class RegExpFunc {
 		State s = new State();
 		NFA nfa = new NFA(s);
 		if(peekClsToken()) {
-		    nfa.addEpsilonTransition(s,charSetList().getStart());
+			nfa.addEpsilonTransition(s,charSetList().getStart());
 			return null;
 		}
 		else if(peekToken(RBRAC) || peekToken(NOT)) {
-		    nfa.addEpsilonTransition(s, excludeSet().getStart());
-		    return nfa;
+			nfa.addEpsilonTransition(s, excludeSet().getStart());
+			return nfa;
 		}
 		else {
-		    invalid();
-		    return null;
+			invalid();
+			return null;
 		}
 	}
 
@@ -349,15 +349,15 @@ public class RegExpFunc {
 		State s = new State();
 		NFA nfa = new NFA(s);
 		if(peekClsToken()) {
-		    nfa.addEpsilonTransition(s, charSet().getStart());
-		    nfa = NFA.concat(nfa, charSetList());
-                    return nfa;
+			nfa.addEpsilonTransition(s, charSet().getStart());
+			nfa = NFA.concat(nfa, charSetList());
+			return nfa;
 		}
 		else if(peekToken(RBRAC)) {
-		    matchToken(RBRAC);
-	            State a = new State();
-	            nfa.addTransition(s, ']', a);
-	            return nfa;
+			matchToken(RBRAC);
+			State a = new State();
+			nfa.addTransition(s, ']', a);
+			return nfa;
 		}
 		else{
 			invalid();
@@ -372,12 +372,12 @@ public class RegExpFunc {
 		State s = new State();
 		NFA nfa = new NFA(s);
 		if(peekClsToken()) {
-		    nfa.addTransition(s, matchClsToken(),charSetTail().getStart());
-                    return nfa;
+			nfa.addTransition(s, matchClsToken(),charSetTail().getStart());
+			return nfa;
 		}
 		else {
-		    invalid();
-                    return null;
+			invalid();
+			return null;
 		}
 	}
 
@@ -391,62 +391,62 @@ public class RegExpFunc {
 			State t = new State();
 			nfa.addTransition(s, '-', t);
 			if(peekClsToken()) {
-			    nfa.addTransition(t, matchClsToken(), new State());
-			    return nfa;
+				nfa.addTransition(t, matchClsToken(), new State());
+				return nfa;
 			}
 			else {
-			    invalid();
-			    return null;
+				invalid();
+				return null;
 			}
 		}
 		else{
-                    State a = new State();
-                    nfa.addEpsilonTransition(s, a);
-                    return nfa;
+			State a = new State();
+			nfa.addEpsilonTransition(s, a);
+			return nfa;
 		}
 	}
-/** --------------------------------------------------------------------------------------------------*/
+	/** --------------------------------------------------------------------------------------------------*/
 	//Special case with IN exclusion so make sure to pay detailed attention to this part
 	public NFA excludeSet() {
 		debug();
 		State s = new State();
 		NFA nfa = new NFA(s);
-//***********************************Double check the if for minor bug issues***********************************
-		
-//Assumption made that there is an " " then "IN" then another " "
+		//***********************************Double check the if for minor bug issues***********************************
+
+		//Assumption made that there is an " " then "IN" then another " "
 		if(peekToken(NOT)) {
 			matchToken(NOT);
 			if(peekToken(RBRAC)) {
 				System.out.println("We're at the ]!");
 				matchToken(RBRAC);
 				if(peekToken(SPACE)){
-                                    matchToken(SPACE);
-				    if(peekToken(IN)) {
-                                        matchToken(IN);
-                                            if(peekToken(SPACE)){
-                                                matchToken(SPACE);
-                                                nfa.addTransition(s, ' ', excludeSetTail().getStart());
-                                            }
-                                            else{
-                                                invalid();
-                                                return null;
-                                            }
-                                    }
-				    else{
-                                        invalid();
-				        return null;
-				    }
-                                    State t = new State();
-                                    nfa.addTransition(t, ' ', nfa.getStart());
-                                    nfa.setStart(t);
+					matchToken(SPACE);
+					if(peekToken(IN)) {
+						matchToken(IN);
+						if(peekToken(SPACE)){
+							matchToken(SPACE);
+							nfa.addTransition(s, ' ', excludeSetTail().getStart());
+						}
+						else{
+							invalid();
+							return null;
+						}
+					}
+					else{
+						invalid();
+						return null;
+					}
+					State t = new State();
+					nfa.addTransition(t, ' ', nfa.getStart());
+					nfa.setStart(t);
 				}
 				else{
-                                    invalid();
-                                    return null;
-                                }
+					invalid();
+					return null;
+				}
 				State u = new State();
-                                nfa.addTransition(u, ']', nfa.getStart());
-                                nfa.setStart(u);
+				nfa.addTransition(u, ']', nfa.getStart());
+				nfa.setStart(u);
 			}
 			else {
 				invalid();
@@ -456,7 +456,7 @@ public class RegExpFunc {
 			NFA charSetNFA = charSet();
 			NFA nfaNew = new NFA(v);
 			charSetNFA = NFA.concat(charSetNFA, nfa);
-                        nfaNew.addTransition(v, '^', charSetNFA.getStart());
+			nfaNew.addTransition(v, '^', charSetNFA.getStart());
 			return nfaNew;
 		}
 		else {
@@ -482,11 +482,11 @@ public class RegExpFunc {
 				return nfa;
 			}
 			else {
-			    invalid();
-			    return null;
+				invalid();
+				return null;
 			}
 		}
-//***********************************Not sure what to do for transition***********************************
+		//***********************************Not sure what to do for transition***********************************
 		else{
 			System.out.println("I'm here!!!");
 			matchToken(DOLLAR);
