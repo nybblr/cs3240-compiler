@@ -12,344 +12,382 @@ import java.util.Arrays;
  *
  */
 public class RegExpFunc {
-    private static final String SPACE = " ", BSLASH = "/", MULTI = "*",
-	PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
-	RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"", UNION = "UNION",
-	IN = "IN", NOT = "^", DASH = "-";
-    
-    private static final Character ESCAPE = new Character('\\');
-    
-    private static final Character[] EX_RE_CHAR = {
-    		' ', '\\', '*', '+', '?', '|', '[', ']', '(', ')', '.', '\'', '"'
-    };
-    private static final Character[] EX_CLS_CHAR = {
-    		'\\', '^', '-', '[', ']'
-    };
-    
-    private static final HashSet<Character> RE_CHAR = new HashSet<Character>(Arrays.asList(EX_RE_CHAR));
-    private static final HashSet<Character> CLS_CHAR = new HashSet<Character>(Arrays.asList(EX_CLS_CHAR));
-    
-    private ArrayList<Terminals> classes = Parser.getClasses();
+	private static final String SPACE = " ", BSLASH = "/", MULTI = "*",
+			PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
+			RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"", UNION = "UNION",
+			IN = "IN", NOT = "^", DASH = "-", DOLLAR = "$";
 
-    private String input;
-    private InputStream is;
+	private static final Character ESCAPE = new Character('\\');
 
-    /* Constructor */
-    public RegExpFunc(String input) {
-    	this.input = new String(input);
-    	this.is = new InputStream(this.input);
-    	//origRegExp();
-    }
+	private static final Character[] EX_RE_CHAR = {
+		' ', '\\', '*', '+', '?', '|', '[', ']', '(', ')', '.', '\'', '"', '$'
+	};
+	private static final Character[] EX_CLS_CHAR = {
+		'\\', '^', '-', '[', ']', '$'
+	};
 
-    private boolean matchToken(String token) {
-        //return is.matchToken(token.charAt(0));
-        return is.matchToken(token);
-    }
+	private static final HashSet<Character> RE_CHAR = new HashSet<Character>(Arrays.asList(EX_RE_CHAR));
+	private static final HashSet<Character> CLS_CHAR = new HashSet<Character>(Arrays.asList(EX_CLS_CHAR));
 
-    private String peekToken() {
-    	String s = String.valueOf(is.peekToken());
-    	System.out.println("Current regex char: " + s);
-	return s;
-    }
+	private ArrayList<Terminals> classes = Parser.getClasses();
 
-    private boolean peekToken(String token) {
-    	//return peekToken().equals(token);
-    	return is.peekToken(token);
-    }
-    
-    private boolean peekEscaped(HashSet<Character> escaped) {
-    	// Escaped character?
-    	if (is.peekToken(ESCAPE)) {
-    		return escaped.contains(is.peekToken(1));
-    	} else {
-    		return !escaped.contains(is.peekToken());
-    	}
-    }
-    
-    private Character matchEscaped(HashSet<Character> escaped) {
-    	// Escaped character?
-    	Character token;
-    	if (is.peekToken(ESCAPE)) {
-    		token = is.peekToken(1);
-    		is.advancePointer(2);
-    	} else {
-    		token = is.peekToken();
-    		is.advancePointer();
-    	}
-    	
-    	return token;
-    }
+	private String input;
+	private InputStream is;
 
-    private boolean peekReToken() {
-    	return peekEscaped(RE_CHAR);
-    }
+	/* Constructor */
+	public RegExpFunc(String input) {
+		this.input = new String(input);
+		this.is = new InputStream(this.input);
+		//origRegExp();
+	}
 
-    private boolean peekClsToken() {
-    	return peekEscaped(CLS_CHAR);
-    }
-    
-    private Character matchReToken() {
-    	return matchEscaped(CLS_CHAR);
-    }
+	private boolean matchToken(String token) {
+		//return is.matchToken(token.charAt(0));
+		return is.matchToken(token);
+	}
 
-    private Character matchClsToken() {
-    	return matchEscaped(CLS_CHAR);
-    }
+	private String peekToken() {
+		if (is.peekToken() == null) return null;
+		String s = String.valueOf(is.peekToken());
+		System.out.println("Current regex char: " + s);
+		return s;
+	}
 
-    private void invalid() {
-	System.out.println("Invalid Syntax");
-	System.exit(0);
-    }
+	private boolean peekToken(String token) {
+		//return peekToken().equals(token);
+		return is.peekToken(token);
+	}
 
-    private boolean inSpecification() {
-	String s="", t = peekToken();
-	if(t.equals("null"))
-	    return false;
-	for(int i=0; i<classes.size(); i++){
-	    HashSet<Character> chars = classes.get(i).getChars();
-	    Iterator<Character> iter = chars.iterator();
-	    while(iter.hasNext() && !(s.equals(t))){
-	        s = iter.next().toString();
-		//System.out.println("Comparing: " + s + "to" + t);
-		if(peekToken(s)){
-		    return true;
+	private boolean peekEscaped(HashSet<Character> escaped) {
+		debug();
+		if (is.isConsumed()) return false;
+
+		// Escaped character?
+		if (is.peekToken(ESCAPE)) {
+			return escaped.contains(is.peekToken(1));
+		} else {
+			return !escaped.contains(is.peekToken());
 		}
-	    }
 	}
-	    return false;
-    }
 
-    private void definedClass() {
-	String s="",t=peekToken();
-	if(t == null)
-	    return;
-	for(int i=0; i<classes.size(); i++){
-	    HashSet<Character> chars = classes.get(i).getChars();
-	    Iterator<Character> iter = chars.iterator();
-	    while(iter.hasNext() && !(s.equals(t))){
-		s = iter.next().toString();
-		//System.out.println("Comparing: " + s + "to" + t);
-		if(peekToken(s)){
-		    matchToken(peekToken());
+	private Character matchEscaped(HashSet<Character> escaped) {
+		if (is.isConsumed()) return null;
+
+		// Escaped character?
+		Character token;
+		if (is.peekToken(ESCAPE)) {
+			token = is.peekToken(1);
+			is.advancePointer(2);
+		} else {
+			token = is.peekToken();
+			is.advancePointer();
 		}
-	    }
-	}
-    }
 
-    public NFA origRegExp() {
-	return regExp();
-	
-    }
+		return token;
+	}
 
-    public NFA regExp() {
-	NFA nfa = regExOne();
-	if(peekToken(OR)){
-	    regExPrime();
+	private boolean peekReToken() {
+		return peekEscaped(RE_CHAR);
 	}
-        return null;
-    }
 
-    public NFA regExPrime() {
-        if(peekToken(OR)) {
-            matchToken(OR);
-            regExOne();
-            regExPrime();
+	private boolean peekClsToken() {
+		return peekEscaped(CLS_CHAR);
 	}
-	else {
-	    return null;
-	}
-	return null;
-    }
 
-    public NFA regExOne() {
-	regExTwo();
-	regExOnePrime();
-	return null;
-    }
+	private Character matchReToken() {
+		return matchEscaped(CLS_CHAR);
+	}
 
-    public NFA regExOnePrime() {
-	if(peekToken(LPAREN)) {
-	    regExTwo();
-	    regExOnePrime();
+	private Character matchClsToken() {
+		return matchEscaped(CLS_CHAR);
 	}
-	else if(peekReToken()) {
-	    regExTwo();
-	    regExOnePrime();
-	}
-	else if(peekToken(PERIOD)) {
-	    regExTwo();
-	    regExOnePrime();
-	}
-	else if(peekToken(LBRAC)) {
-	    regExTwo();
-	    regExOnePrime();
-	}
-	else if(inSpecification()) {
-	    regExTwo();
-	    regExOnePrime();
-	}
-	else {
-	    return null;
-	}
-        return null;
-    }
 
-    public NFA regExTwo() {
-	if(peekToken(LPAREN)) {
-	    matchToken(LPAREN);
-	    regExp();
-	    if(peekToken(RPAREN)) {
-		matchToken(RPAREN);
-		regExTwoTail();
-	    }
-	    else {
-		invalid();
-	    }
+	private void invalid() {
+		System.out.println("Invalid Syntax");
+		System.exit(0);
 	}
-	else if(peekReToken()) {
-	    matchReToken();
-	    regExTwoTail();
-	}
-	else {
-	    if(peekToken(PERIOD)) {
-		regExThree();
-	    }
-	    else if(peekToken(LBRAC)) {
-		regExThree();
-	    }
-	    else if(inSpecification()) {
-	        regExThree();
-	    }
-	}
-	return null;
-    }
 
-    public NFA regExTwoTail() {
-	if(peekToken(MULTI)) {
-	    matchToken(MULTI);
+	private void debug() {
+		System.out.println("Pointer at: "+peekToken());
+		System.out.println(Thread.currentThread().getStackTrace()[2]);
 	}
-	else if(peekToken(PLUS)) {
-	    matchToken(PLUS);
-	}
-	else {
-	    return null;
-	}
-	return null;
-    }
 
-    public NFA regExThree() {
-	if(peekToken(PERIOD)) {
-	    charClass();
+	private boolean inSpecification() {
+		String s="", t = peekToken();
+		if(t == null)
+			return false;
+		for(int i=0; i<classes.size(); i++){
+			HashSet<Character> chars = classes.get(i).getChars();
+			Iterator<Character> iter = chars.iterator();
+			while(iter.hasNext() && !(s.equals(t))){
+				s = iter.next().toString();
+				//System.out.println("Comparing: " + s + "to" + t);
+				if(peekToken(s)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
-	else if(peekToken(LBRAC)) {
-	    charClass();
-	}
-	else if(inSpecification()) {
-	    charClass();
-	}
-	else if(peekToken("null")) {
-	    return null;
-	}
-	else {
-	    invalid();
-	}
-	return null;
-    }
 
-    public NFA charClass() {
-	if(peekToken(PERIOD)) {
-	    matchToken(PERIOD);
+	private void definedClass() {
+		debug();
+		
+		for(int i=0; i<classes.size(); i++){
+			String name = classes.get(i).getName();
+			if (is.peekToken(name)) {
+				is.matchToken(name);
+			}
+//			Iterator<Character> iter = chars.iterator();
+//			while(iter.hasNext() && !(s.equals(t))){
+//				s = iter.next().toString();
+//				//System.out.println("Comparing: " + s + "to" + t);
+//				if(peekToken(s)){
+//					matchToken(peekToken());
+//				}
+//			}
+		}
 	}
-	else if(peekToken(LBRAC)) {
-	    matchToken(LBRAC);
-	    charClassOne();
-	}
-	else {
-	    definedClass();
-	}
-	return null;
-    }
 
-    public NFA charClassOne() {
-	if(peekClsToken()) {
-	    charSetList();
+	public NFA origRegExp() {
+		debug();
+		return regExp();
 	}
-	else if(peekToken(RBRAC)) {
-	    charSetList();
-	}
-	else {
-	    excludeSet();
-	}
-	return null;
-    }
 
-    public NFA charSetList() {
-	if(peekClsToken()) {
-	    charSet();
-	    charSetList();
+	public NFA regExp() {
+		debug();
+		NFA nfa = regExOne();
+		if(peekToken(OR)){
+			regExPrime();
+		}
+		return null;
 	}
-	else if(peekToken(RBRAC)) {
-	    matchToken(RBRAC);
-	}
-	else{
-	    invalid();
-	}
-	return null;
-    }
 
-    public NFA charSet() {
-	if(peekClsToken()) {
-	    matchClsToken();
-	    charSetTail();
+	public NFA regExPrime() {
+		debug();
+		if(peekToken(OR)) {
+			matchToken(OR);
+			regExOne();
+			regExPrime();
+		}
+		else {
+			return null;
+		}
+		return null;
 	}
-	return null;
-    }
 
-    public NFA charSetTail() {
-        if(peekToken(DASH)) {
-            matchToken(DASH);
-            
-            // ???????? What should this be?????
-            //clsChar();
-            matchClsToken();
-        }
-	else{
-	    return null;
+	public NFA regExOne() {
+		debug();
+		regExTwo();
+		regExOnePrime();
+		return null;
 	}
-        return null;
-    }
 
-    public NFA excludeSet() {
-	if(peekToken(NOT)) {
-	    charSet();
-	    if(peekToken(RBRAC)) {
-	    	matchToken(RBRAC);
-		if(peekToken(IN))
-		    excludeSetTail();
-		else
-		    invalid();
-	    }
-	    else {
-	        invalid();
-	    }
+	public NFA regExOnePrime() {
+		debug();
+		if(peekToken(LPAREN)) {
+			regExTwo();
+			regExOnePrime();
+		}
+		else if(peekReToken()) {
+			regExTwo();
+			regExOnePrime();
+		}
+		else if(peekToken(PERIOD)) {
+			regExTwo();
+			regExOnePrime();
+		}
+		else if(peekToken(LBRAC)) {
+			regExTwo();
+			regExOnePrime();
+		}
+		else if(inSpecification()) {
+			
+			regExTwo();
+			regExOnePrime();
+		}
+		else {
+			return null;
+		}
+		return null;
 	}
-	else {
-	    invalid();
-	}
-	return null;
-    }
 
-    public NFA excludeSetTail() {
-	if(peekToken(LBRAC)) {
-	    matchToken(LBRAC);
-	    charSet();
-	    if(peekToken(RBRAC)) {
-		matchToken(RBRAC);
-	    }
+	public NFA regExTwo() {
+		debug();
+		if(peekToken(LPAREN)) {
+			matchToken(LPAREN);
+			regExp();
+			if(peekToken(RPAREN)) {
+				matchToken(RPAREN);
+				regExTwoTail();
+			}
+			else {
+				invalid();
+			}
+		}
+		else if(peekReToken()) {
+			matchReToken();
+			regExTwoTail();
+		}
+		else {
+			if(peekToken(PERIOD)) {
+				regExThree();
+			}
+			else if(peekToken(LBRAC)) {
+				regExThree();
+			}
+			else if(inSpecification()) {
+				regExThree();
+			}
+		}
+		return null;
 	}
-	else{
-	    definedClass();
+
+	public NFA regExTwoTail() {
+		debug();
+		if(peekToken(MULTI)) {
+			matchToken(MULTI);
+		}
+		else if(peekToken(PLUS)) {
+			matchToken(PLUS);
+		}
+		else {
+			return null;
+		}
+		return null;
 	}
-	return null;
-    }
+
+	public NFA regExThree() {
+		debug();
+		if(peekToken(PERIOD)) {
+			charClass();
+		}
+		else if(peekToken(LBRAC)) {
+			charClass();
+		}
+		else if(inSpecification()) {
+			charClass();
+		}
+		else if(peekToken("null")) {
+			return null;
+		}
+		else {
+			invalid();
+		}
+		return null;
+	}
+
+	public NFA charClass() {
+		debug();
+		if(peekToken(PERIOD)) {
+			matchToken(PERIOD);
+		}
+		else if(peekToken(LBRAC)) {
+			matchToken(LBRAC);
+			charClassOne();
+		}
+		else {
+			matchToken(DOLLAR);
+			System.out.println("I'm in char class!!!");
+			definedClass();
+		}
+		return null;
+	}
+
+	public NFA charClassOne() {
+		debug();
+		if(peekClsToken()) {
+			charSetList();
+		}
+		else if(peekToken(RBRAC)) {
+			charSetList();
+		}
+		else {
+			excludeSet();
+		}
+		return null;
+	}
+
+	public NFA charSetList() {
+		debug();
+		if(peekClsToken()) {
+			charSet();
+			charSetList();
+		}
+		else if(peekToken(RBRAC)) {
+			matchToken(RBRAC);
+		}
+		else{
+			invalid();
+		}
+		return null;
+	}
+
+	public NFA charSet() {
+		debug();
+		System.out.println(peekToken());
+		System.out.println(is.getPointer());
+		if(peekClsToken()) {
+			matchClsToken();
+			charSetTail();
+		}
+		return null;
+	}
+
+	public NFA charSetTail() {
+		debug();
+		if(peekToken(DASH)) {
+			System.out.println("We're there!");
+			matchToken(DASH);
+
+			// ???????? What should this be?????
+			//clsChar();
+			matchClsToken();
+		}
+		else{
+			return null;
+		}
+		return null;
+	}
+
+	public NFA excludeSet() {
+		debug();
+		if(peekToken(NOT)) {
+			matchToken(NOT);
+			charSet();
+			if(peekToken(RBRAC)) {
+				System.out.println("We're at the ]!");
+				matchToken(RBRAC);
+				if(peekToken(IN)) {
+					matchToken(IN);
+					excludeSetTail();
+				} else
+					invalid();
+			}
+			else {
+				invalid();
+			}
+		}
+		else {
+			invalid();
+		}
+		return null;
+	}
+
+	public NFA excludeSetTail() {
+		debug();
+		if(peekToken(LBRAC)) {
+			matchToken(LBRAC);
+			charSet();
+			if(peekToken(RBRAC)) {
+				matchToken(RBRAC);
+			}
+		}
+		else{
+			System.out.println("I'm here!!!");
+			matchToken(DOLLAR);
+			definedClass();
+		}
+		return null;
+	}
 }

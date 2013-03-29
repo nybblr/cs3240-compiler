@@ -15,6 +15,8 @@ public class DFA extends NFA {
 		StateSet start = new StateSet();
 		start.add(nfa.getStart());
 		start.states.addAll(nfa.statesReachableFrom(nfa.getStart()));
+		
+		
 	}
 
 	/* Export */
