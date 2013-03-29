@@ -32,6 +32,7 @@ public class Parser {
 				System.out.println(token);
 				RegExpFunc func = new RegExpFunc(token);
 				NFA nfa = func.origRegExp();
+				System.out.println(currClass.getName()+" "+nfa);
 				currClass.setNFA(nfa);
 			}
 		} catch(Exception e){
