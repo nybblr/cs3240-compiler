@@ -16,4 +16,8 @@ public class Transition {
 	public boolean isEmptyTransition() {
 		return c == EPSILON;
 	}
+	
+	public String toString() {
+		return "from "+from+" on "+c+" to "+to;
+	}
 }

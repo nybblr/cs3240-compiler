@@ -211,4 +211,14 @@ public class NFA {
 	public DFA toDFA() {
 		return new DFA(this);
 	}
+	
+	public String toString() {
+		String s = "States: ";
+		s += states.toString();
+		
+		s += "\nTransition: ";
+		s += transitions.toString();
+		
+		return s;
+	}
 }

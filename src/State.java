@@ -78,4 +78,8 @@ public class State {
 			return false;
 		}
 	}
+	
+	public String toString() {
+		return label;
+	}
 }
