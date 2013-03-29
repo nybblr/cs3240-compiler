@@ -1,7 +1,3 @@
 $DIGIT    		[0-9]
-$NON-ZERO    [^0]  IN  $DIGIT
 $SMALLCASE   	[a-z]
 $LETTER      	[A-Za-z]
-$UPPERCASE  [^a-z] IN $LETTER         
-$IDENTIFIER     	$SMALLCASE ($LETTER | $DIGIT)*
-$CONSTANT            $UPPERCASE ($LETTER | $DIGIT)*
