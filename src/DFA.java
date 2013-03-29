@@ -13,7 +13,7 @@ public class DFA extends NFA {
 	public DFA(NFA nfa) {
 		super(new State());
 		
-		HashMap<HashSet<State>, State> map = new HashMap<HashSet<State>, State>();
+		HashMap<StateSet, State> map = new HashMap<StateSet, State>();
 		
 		// First, add start state
 		// This is the NFA start state and all reachable states (epsilon transitions)
@@ -23,7 +23,7 @@ public class DFA extends NFA {
 		
 		setStart(startSet.toState());
 		
-		map.put(startSet.getStates(), getStart());
+		map.put(startSet, getStart());
 		
 		Queue<StateSet> queue = new LinkedList<StateSet>();
 		queue.offer(startSet);
@@ -35,8 +35,8 @@ public class DFA extends NFA {
 				StateSet trans = set.transition((char)i);
 				State to = null;
 				if (!map.containsKey(trans)) {
-					to = set.toState();
-					map.put(set.getStates(), to);
+					to = trans.toState();
+					map.put(trans, to);
 				} else {
 					to = map.get(trans);
 				}

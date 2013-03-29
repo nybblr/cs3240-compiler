@@ -18,6 +18,6 @@ public class Transition {
 	}
 	
 	public String toString() {
-		return "from "+from+" on "+c+" to "+to;
+		return ""+from+" "+c+" "+to;
 	}
 }

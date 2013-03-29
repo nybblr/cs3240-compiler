@@ -97,6 +97,8 @@ public class StateSet {
 	}
 	
 	public State toState() {
-		return new State(toString());
+		State state = new State(toString());
+		state.setAccepts(accepts());
+		return state;
 	}
 }

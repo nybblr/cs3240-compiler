@@ -71,7 +71,8 @@ public class State {
 	public boolean equals(Object other) {
 		if (other instanceof State) {
 			State state = (State)other;
-			return transitions.equals(state.getTransitions()) &&
+			if (state == other) return true;
+			return label.equals(state.getLabel()) &&
 					accepts == state.getAccepts() &&
 					nfa.equals(state.getNFA());
 		} else {

@@ -9,8 +9,7 @@ public class NFA {
 
 	/* Constructors */
 	public NFA(State start) {
-		this.start = start;
-		addState(start);
+		setStart(start);
 	}
 
 	/* Getters and setters */
@@ -20,6 +19,7 @@ public class NFA {
 
 	public void setStart(State start) {
 		this.start = start;
+		addState(start);
 	}
 
 	public HashSet<Transition> getTransitions() {
@@ -94,17 +94,17 @@ public class NFA {
 	}
 
 	/* Manipulation */
-	public Boolean addState(State state) {
+	public State addState(State state) {
 		this.states.add(state);
 		state.setNFA(this);
 		
 		if (state.getAccepts())
 			accepting.add(state);
 		
-		return false;
+		return state;
 	}
 	
-	public Boolean addTransition(State from, Character on, State to) {
+	public Transition addTransition(State from, Character on, State to) {
 		if (!equals(from.getNFA()) && from.getNFA() != null) {
 			Iterator<State> iters = from.getNFA().getStates().iterator();
 			while(iters.hasNext()) {
@@ -133,7 +133,7 @@ public class NFA {
 		this.transitions.add(transition);
 		from.addTransition(on, to);
 		
-		return false;
+		return transition;
 	}
 	
 	public boolean getAccepts(State state) {
@@ -198,7 +198,7 @@ public class NFA {
 	}
 	
 	// Add empty string transition
-	public Boolean addEpsilonTransition(State from, State to) {
+	public Transition addEpsilonTransition(State from, State to) {
 		return addTransition(from, Transition.EPSILON, to);
 	}
 
