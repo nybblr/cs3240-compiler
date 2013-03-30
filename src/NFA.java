@@ -158,6 +158,10 @@ public class NFA {
 	}
 
 	public static NFA union(NFA nfa1, NFA nfa2){
+		if(nfa1 == null)
+			return nfa2;
+		if(nfa2 == null)
+			return null;
 		State newStart = new State();
 		newStart.setLabel("Start");
 		NFA newNfa = new NFA(newStart);
@@ -167,8 +171,11 @@ public class NFA {
 		return newNfa;
 	}
 	public static NFA concat(NFA nfa1, NFA nfa2){
+		if(nfa1 == null)
+			return nfa2;
+		if(nfa2 == null)
+			return null;
 		State startState = nfa2.getStart();
-		NFA newNfa = new NFA(nfa1.getStart());
 		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
 		Iterator<State> iter = acceptingStates.iterator();
 		ArrayList<Transition> transitionsToAdd = new ArrayList<Transition>();
