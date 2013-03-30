@@ -116,15 +116,17 @@ public class RegExpFunc {
         System.out.println(Thread.currentThread().getStackTrace()[2]);
     }
 
-    private void definedClass() {
+    private String definedClass() {
         debug();
 
         for (int i = 0; i < classes.size(); i++) {
             String name = classes.get(i).getName();
             if (is.peekToken(name)) {
                 is.matchToken(name);
+                return name;
             }
         }
+        return null;
     }
 
     public void addToHashSet(String className, Character c) {
@@ -148,6 +150,32 @@ public class RegExpFunc {
             }
         }
         return null;
+    }
+    public HashSet<Character> exclude(HashSet<Character> set1, HashSet<Character> set2){
+        Iterator<Character> iter = set1.iterator();
+        HashSet<Character> newHashSet = set2;
+        while(iter.hasNext()){
+            Character c = iter.next();
+            if(newHashSet.contains(c))
+                newHashSet.remove(c);
+        }
+        return newHashSet;
+    }
+
+    public HashSet<Character> getClass(String className){
+        for(int i=0; i<classes.size(); i++){
+            if(classes.get(i).getName().equals(className))
+                return classes.get(i).getChars();
+        }
+        return null;
+    }
+
+    private void setClass(String className, HashSet<Character> exclude) {
+        HashSet<Character> hashSet;
+        for(int i=0; i<classes.size(); i++){
+            if(classes.get(i).getName().equals(className))
+                classes.get(i).setChars(exclude);
+        }        
     }
 
     public NFA origRegExp(String className) {
@@ -198,8 +226,6 @@ public class RegExpFunc {
     public NFA regExTwo(String className) {
         debug();
         NFA nfa = null;
-        // ***********************************Double check the if for minor bug
-        // issues***********************************
         if (peekToken(LPAREN)) {
             matchToken(LPAREN);
             if (peekToken(RPAREN)) {
@@ -232,6 +258,7 @@ public class RegExpFunc {
         debug();
         State s = new State();
         NFA nfa = new NFA(s);
+        /** needs major fixing----------------------------------------------------------------------------*/
         if (peekToken(MULTI)) {
             matchToken(MULTI);
             State a = new State();
@@ -244,6 +271,7 @@ public class RegExpFunc {
             nfa.addTransition(s, '+', a);
             nfa.setAccepts(a, true);
             return nfa;
+            /**-----------------------------------------------------------------------------------------------*/
         } else {
             nfa.setAccepts(s, true);
             return nfa;
@@ -267,6 +295,7 @@ public class RegExpFunc {
     public NFA charClass(String className) {
         debug();
         NFA nfa = null;
+        /** needs major fixing----------------------------------------------------------------------------*/
         if (peekToken(PERIOD)) {
             matchToken(PERIOD);
             State s = new State();
@@ -275,17 +304,16 @@ public class RegExpFunc {
             nfa.addTransition(s, '.', a);
             nfa.setAccepts(a, true);
             return nfa;
+            /**-----------------------------------------------------------------------------------------------*/
         } else if (peekToken(LBRAC)) {
             matchToken(LBRAC);
             nfa = charClassOne(className);
             return nfa;
         }
-        // ******************************Not sure what to do for
-        // transition********************************************
         else if (peekToken(DOLLAR)) {
             matchToken(DOLLAR);
             System.out.println("I'm in char class!!!");
-            definedClass();
+            String name = definedClass();
             return null;
         } else {
             invalid();
@@ -371,14 +399,12 @@ public class RegExpFunc {
     // this part
     public NFA excludeSet(String className) {
         debug();
-        State s = new State();
-        NFA nfa = new NFA(s);
-        // ***********************************Double check the if for minor bug
-        // issues***********************************
-
+        NFA nfa = null;
+        HashSet<Character> excludedChars = null;
         // Assumption made that there is an " " then "IN" then another " "
         if (peekToken(NOT)) {
             matchToken(NOT);
+            charSet(className);
             if (peekToken(RBRAC)) {
                 System.out.println("We're at the ]!");
                 matchToken(RBRAC);
@@ -387,60 +413,56 @@ public class RegExpFunc {
                     if (peekToken(DOLLAR)) {
                         matchToken(DOLLAR);
                     }
-                    nfa.addEpsilonTransition(s, excludeSetTail(className)
-                            .getStart());
+                    nfa = excludeSetTail(className);
+                    return nfa;
                 } else {
                     invalid();
                     return null;
                 }
-                State u = new State();
-                nfa.addTransition(u, ']', nfa.getStart());
-                nfa.setStart(u);
-            } else {
+            }
+            else {
                 invalid();
                 return null;
             }
-            State v = new State();
-            NFA charSetNFA = charSet(className);
-            NFA nfaNew = new NFA(v);
-            charSetNFA = NFA.concat(charSetNFA, nfa);
-            nfaNew.addTransition(v, '^', charSetNFA.getStart());
-            return nfaNew;
-        } else {
+        }
+        else {
             invalid();
             return null;
         }
     }
 
-    public NFA excludeSetTail(String className) {
-        debug();
-        State s = new State();
-        NFA nfa = new NFA(s);
-        if (peekToken(LBRAC)) {
-            matchToken(LBRAC);
-            if (peekToken(RBRAC)) {
-                matchToken(RBRAC);
-                State t = new State();
-                nfa.addTransition(s, ']', t);
-                nfa.setAccepts(t, true);
-            } else {
-                invalid();
+        public NFA excludeSetTail(String className) {
+            debug();
+            State s = new State();
+            NFA nfa = new NFA(s);
+            if (peekToken(LBRAC)) {
+                matchToken(LBRAC);
+                if (peekToken(RBRAC)) {
+                    matchToken(RBRAC);
+                    State t = new State();
+                    nfa.addTransition(s, ']', t);
+                    nfa.setAccepts(t, true);
+                } else {
+                    invalid();
+                    return null;
+                }
+                State u = new State();
+                NFA charSetNFA = charSet(className);
+                charSetNFA = NFA.concat(charSetNFA, nfa);
+                NFA nfaNew = new NFA(u);
+                nfaNew.addTransition(u, '[', charSetNFA.getStart());
+                return nfaNew;
+            }
+            // ***********************************Not sure what to do for
+            // transition***********************************
+            else {
+                System.out.println("I'm here!!!");
+                matchToken(DOLLAR);
+                String name = definedClass();
+                HashSet<Character> hashSet1 = getClass(className);
+                HashSet<Character> hashSet2 = getClass(name);
+                setClass(className, exclude(hashSet1, hashSet2));
                 return null;
             }
-            State u = new State();
-            NFA charSetNFA = charSet(className);
-            charSetNFA = NFA.concat(charSetNFA, nfa);
-            NFA nfaNew = new NFA(u);
-            nfaNew.addTransition(u, '[', charSetNFA.getStart());
-            return nfaNew;
-        }
-        // ***********************************Not sure what to do for
-        // transition***********************************
-        else {
-            System.out.println("I'm here!!!");
-            matchToken(DOLLAR);
-            definedClass();
-            return null;
         }
     }
-}
