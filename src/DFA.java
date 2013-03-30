@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Queue;
@@ -48,7 +49,20 @@ public class DFA extends NFA {
 	}
 
 	/* Export */
-	public void toTable() {
+	public State[][] toTable() {
 		// Convert to some kind of table.
+		
+		// First make a linked list so we maintain order
+		ArrayList<State> list = new ArrayList<State>();
+		list.addAll(getStates());
+		
+		State[][] table = new State[list.size()][256];
+		
+		for (Transition t : getTransitions()) {
+			int index = list.indexOf(t.from);
+			table[index][t.c] = t.to;
+		}
+		
+		return table;
 	}
 }

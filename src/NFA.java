@@ -207,9 +207,9 @@ public class NFA {
 	}
 
 	/* Export */
-	public void toTable() {
+	public State[][] toTable() {
 		// Should return some kind of transition table
-		toDFA().toTable();
+		return toDFA().toTable();
 	}
 
 	public DFA toDFA() {
