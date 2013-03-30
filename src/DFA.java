@@ -74,8 +74,12 @@ public class DFA extends NFA {
 		InputStream is = new InputStream(input);
 		
 		State start = states.get(0);
+		State lastAccept = null;
+		int acceptPointer = 0;
 		
-		
+		while(!is.isConsumed()) {
+			
+		}
 		
 		return false;
 	}
