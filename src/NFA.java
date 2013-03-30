@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 public class NFA {
 	private HashSet<Transition> transitions = new HashSet<Transition>();
@@ -166,13 +168,24 @@ public class NFA {
 	}
 	public static NFA concat(NFA nfa1, NFA nfa2){
 		State startState = nfa2.getStart();
+		NFA newNfa = new NFA(nfa1.getStart());
 		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
 		Iterator<State> iter = acceptingStates.iterator();
+		ArrayList<Transition> transitionsToAdd = new ArrayList<Transition>();
+		ArrayList<State> statesToChange = new ArrayList<State>();
 		while(iter.hasNext()){
 			State s = iter.next();
-			nfa1.setAccepts(s, false);
-			nfa1.addEpsilonTransition(s, startState);
+			statesToChange.add(s);
+			Transition t = new Transition(s, Transition.EPSILON, startState);
+			transitionsToAdd.add(t);
 		}
+		for(State s: statesToChange) {
+			nfa1.setAccepts(s, false);
+		}
+		for(Transition t: transitionsToAdd) {
+			nfa1.addTransition(t.from, t.c, t.to);
+		}
+
 		return nfa1;
 	}
 	public static NFA star(NFA nfa1){
