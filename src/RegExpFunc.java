@@ -130,7 +130,7 @@ public class RegExpFunc {
         }
     }
     
-    public void completeHashSet(String className, Character c){
+    public HashSet completeHashSet(String className, Character c){
         HashSet<Character> classHash;
         for(int i=0; i<classes.size(); i++){
             if(classes.get(i).getName().equals(className)){
@@ -143,9 +143,10 @@ public class RegExpFunc {
 	                }
                 }
                 classHash.add(c);
+                return classHash;
             }
         }
-        
+        return null;
     }
 
     public NFA origRegExp(String className) {
@@ -379,12 +380,12 @@ public class RegExpFunc {
         if(peekToken(DASH)) {
             System.out.println("We're there!");
             matchToken(DASH);
-            State t = new State();
-            nfa.addTransition(s, '-', t);
             if(peekClsToken()) {
                 char c = matchClsToken();
-                nfa.addTransition(t, c, new State());
-                completeHashSet(className, c);
+                HashSet set = completeHashSet(className, c);
+                for(int i=0; i<set.size(); i++){
+                    
+                }
                 return nfa;
             }
             else {
