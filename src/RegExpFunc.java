@@ -138,11 +138,11 @@ public class RegExpFunc {
 				Iterator<Character> iter = classHash.iterator();
 				while(iter.hasNext()){
 					Character start = iter.next();
-					for(int j=0; j<c; j++){
-						classHash.add((char)(start+1));
+					for(int j=start; j<=c; j++){
+						classHash.add((char)(j));
 					}
 				}
-				classHash.add(c);
+				//classHash.add(c);
 				return classHash;
 			}
 		}
