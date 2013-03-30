@@ -5,6 +5,7 @@ public class State {
 	private HashSet<Transition> transitions = new HashSet<Transition>();
 	private Boolean accepts = false;
 	private NFA nfa;
+	public Terminals klass;
 	
 	private static int counter = 0;
 	

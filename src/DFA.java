@@ -56,6 +56,10 @@ public class DFA extends NFA {
 		ArrayList<State> list = new ArrayList<State>();
 		list.addAll(getStates());
 		
+		// Move start state to front
+		list.remove(getStart());
+		list.add(getStart());
+		
 		State[][] table = new State[list.size()][256];
 		
 		for (Transition t : getTransitions()) {
@@ -64,5 +68,15 @@ public class DFA extends NFA {
 		}
 		
 		return table;
+	}
+	
+	public static boolean walkTable(String input, State[][] table, ArrayList<State> states) {
+		InputStream is = new InputStream(input);
+		
+		State start = states.get(0);
+		
+		
+		
+		return false;
 	}
 }
