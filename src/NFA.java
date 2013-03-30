@@ -161,7 +161,7 @@ public class NFA {
 		if(nfa1 == null)
 			return nfa2;
 		if(nfa2 == null)
-			return null;
+			return nfa1;
 		State newStart = new State();
 		newStart.setLabel("Start");
 		NFA newNfa = new NFA(newStart);
@@ -174,7 +174,7 @@ public class NFA {
 		if(nfa1 == null)
 			return nfa2;
 		if(nfa2 == null)
-			return null;
+			return nfa1;
 		State startState = nfa2.getStart();
 		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
 		Iterator<State> iter = acceptingStates.iterator();
