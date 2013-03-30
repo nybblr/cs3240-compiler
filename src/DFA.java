@@ -77,8 +77,20 @@ public class DFA extends NFA {
 		State lastAccept = null;
 		int acceptPointer = 0;
 		
+		State currState = start;
+		
+		if(currState.getAccepts()) lastAccept = start;
+		
 		while(!is.isConsumed()) {
+			char c = is.peekToken().charValue();
 			
+			int index = states.indexOf(currState);
+			currState = table[index][c];
+			
+			if(currState.getAccepts()) {
+				lastAccept = start;
+				acceptPointer = is.getPointer();
+			}
 		}
 		
 		return false;
