@@ -33,6 +33,7 @@ public class RegExpFunc {
 
     private String input;
     private InputStream is;
+    private char lastCharAdded;
 
     /* Constructor */
     public RegExpFunc(String input) {
@@ -128,8 +129,10 @@ public class RegExpFunc {
 
     public void addToHashSet(String className, Character c) {
         for (int i = 0; i < classes.size(); i++) {
-            if (classes.get(i).getName().equals(className))
+            if (classes.get(i).getName().equals(className)){
                 classes.get(i).addChar(c);
+                lastCharAdded = c;
+            }
         }
     }
 
@@ -138,12 +141,8 @@ public class RegExpFunc {
         for (int i = 0; i < classes.size(); i++) {
             if (classes.get(i).getName().equals(className)) {
                 classHash = classes.get(i).getChars();
-                Iterator<Character> iter = classHash.iterator();
-                while (iter.hasNext()) {
-                    Character start = iter.next();
-                    for (int j = start; j <= c; j++) {
-                        classHash.add((char) j);
-                    }
+                for (int j = lastCharAdded; j <= c; j++) {
+                    classHash.add((char) j);
                 }
                 return classHash;
             }
