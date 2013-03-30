@@ -361,7 +361,9 @@ public class RegExpFunc {
         State s = new State();
         NFA nfa = new NFA(s);
         if(peekClsToken()) {
-            nfa.addTransition(s, matchClsToken(),charSetTail(className).getStart());
+            Character hashChar = matchClsToken();
+            addToHashSet(className, hashChar);
+            nfa.addTransition(s, hashChar,charSetTail(className).getStart());
             return nfa;
         }
         else {

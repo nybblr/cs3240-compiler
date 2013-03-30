@@ -113,8 +113,10 @@ public class NFA {
 			}
 			
 			transitions.addAll(from.getNFA().getTransitions());
+			states.addAll(from.getNFA().getStates());
 		} else {
 			from.setNFA(this);
+			states.add(from);
 		}
 		
 		if (!equals(to.getNFA()) && to.getNFA() != null) {
@@ -125,8 +127,10 @@ public class NFA {
 			}
 			
 			transitions.addAll(to.getNFA().getTransitions());
+			states.addAll(to.getNFA().getStates());
 		} else {
 			to.setNFA(this);
+			states.add(to);
 		}
 		
 		Transition transition = new Transition(from, on, to);
