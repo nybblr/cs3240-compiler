@@ -33,6 +33,8 @@ public class Parser {
 				RegExpFunc func = new RegExpFunc(token);
 				NFA nfa = func.origRegExp(currClass.getName());
 				currClass.setNFA(nfa);
+				
+				System.out.println(nfa);
 			}
 		} catch(Exception e){
 			e.printStackTrace();
