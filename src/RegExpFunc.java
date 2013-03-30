@@ -173,10 +173,7 @@ public class RegExpFunc {
             nfa = NFA.concat(regExPrime(className), nfa);
             return nfa;
         } else {
-            State s = new State();
-            NFA nfa = new NFA(s);
-            nfa.setAccepts(s, true);
-            return nfa;
+            return null;
         }
     }
 
@@ -201,29 +198,25 @@ public class RegExpFunc {
 
     public NFA regExTwo(String className) {
         debug();
-        State s = new State();
-        NFA nfa = new NFA(s);
+        NFA nfa = null;
         // ***********************************Double check the if for minor bug
         // issues***********************************
         if (peekToken(LPAREN)) {
             matchToken(LPAREN);
             if (peekToken(RPAREN)) {
                 matchToken(RPAREN);
-                nfa.addTransition(s, ')', regExTwoTail(className).getStart());
+                nfa = regExTwoTail(className);
             } else {
                 invalid();
                 return null;
             }
-            State t = new State();
-            NFA nfaNew = new NFA(t);
             NFA rexpNFA = regExp(className);
             NFA concat = NFA.concat(rexpNFA, nfa);
-            nfaNew.addTransition(t, '(', concat.getStart());
-            return nfaNew;
+            return concat;
         } else if (peekReToken()) {
             char reChar = matchReToken();
             addToHashSet(className, reChar);
-            nfa.addTransition(s, reChar, regExTwoTail(className).getStart());
+            nfa = regExTwoTail(className);
             return nfa;
         } else {
             if (peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
@@ -260,14 +253,12 @@ public class RegExpFunc {
 
     public NFA regExThree(String className) {
         debug();
-        State s = new State();
-        NFA nfa = new NFA(s);
+        NFA nfa = null;
         if (peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
             nfa = charClass(className);
             return nfa;
         } else if (peekToken("null")) {
-            nfa.setAccepts(s, true);
-            return nfa;
+            return null;
         } else {
             invalid();
             return null;
@@ -276,11 +267,12 @@ public class RegExpFunc {
 
     public NFA charClass(String className) {
         debug();
-        State s = new State();
-        NFA nfa = new NFA(s);
+        NFA nfa = null;
         if (peekToken(PERIOD)) {
             matchToken(PERIOD);
+            State s = new State();
             State a = new State();
+            nfa = new NFA(s);
             nfa.addTransition(s, '.', a);
             nfa.setAccepts(a, true);
             return nfa;
@@ -293,8 +285,6 @@ public class RegExpFunc {
         // transition********************************************
         else if (peekToken(DOLLAR)) {
             matchToken(DOLLAR);
-            State a = new State();
-            nfa.addTransition(s, '$', a);
             System.out.println("I'm in char class!!!");
             definedClass();
             return null;
@@ -370,8 +360,7 @@ public class RegExpFunc {
                 return null;
             }
         } else {
-            nfa.setAccepts(s, true);
-            return nfa;
+            return null;
         }
     }
 
