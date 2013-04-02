@@ -462,7 +462,14 @@ public class RegExpFunc {
                 HashSet<Character> hashSet1 = getClass(className);
                 HashSet<Character> hashSet2 = getClass(name);
                 setClass(className, exclude(hashSet1, hashSet2));
-                return null;
+                HashSet set = getClass(className);
+                Iterator<Character> iter = set.iterator();
+                while (iter.hasNext()) {
+                    State t = new State();
+                    nfa.addTransition(s, iter.next(), t);
+                    nfa.setAccepts(t, true);
+                }
+                return nfa;
             }
         }
     }
