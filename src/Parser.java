@@ -1,10 +1,14 @@
 import java.io.File;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 public class Parser {
 	static ArrayList<Terminals> classes;
-	public static void main(String[] args){
+	public static void main(String[] args) throws UnsupportedEncodingException{
+		PrintStream out = new PrintStream(System.out, true, "UTF-8");
+		System.setOut(out);
 		fileParser("input_spec.txt");
 	}
 
