@@ -87,6 +87,9 @@ public class State {
 	}
 	
 	public String toString() {
-		return label;
+		String string = "";
+		if (getAccepts()) string += "\u2713";
+		string += label;
+		return string;
 	}
 }
