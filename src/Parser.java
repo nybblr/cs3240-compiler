@@ -37,8 +37,10 @@ public class Parser {
 				RegExpFunc func = new RegExpFunc(token);
 				NFA nfa = func.origRegExp(currClass.getName());
 				currClass.setNFA(nfa);
+				currClass.setDFA(nfa.toDFA());
 				
-				System.out.println(nfa);
+				System.out.println(currClass.getNFA());
+				System.out.println(currClass.getDFA());
 			}
 		} catch(Exception e){
 			e.printStackTrace();

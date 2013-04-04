@@ -41,6 +41,10 @@ public class StateSet {
 		}
 	}
 	
+	public int hashCode() {
+		return states.hashCode();
+	}
+	
 	// Do any of the states accept?
 	public boolean accepts() {
 		Iterator<State> iter = states.iterator();
@@ -86,7 +90,8 @@ public class StateSet {
 
 	public String toString() {
 		String string = "{";
-		String delim = ", ";
+		//string += ""+states.size()+":";
+		String delim = ",";
 		Iterator<State> iter = states.iterator();
 		while (iter.hasNext()) {
 			string += iter.next().toString();
