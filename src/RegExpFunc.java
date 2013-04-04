@@ -177,12 +177,12 @@ public class RegExpFunc {
 
     private NFA createNFA(HashSet set){
         State s = new State();
+        State t = new State();
         NFA nfa = new NFA(s);
+        nfa.setAccepts(t, true);
         Iterator<Character> iter = set.iterator();
         while (iter.hasNext()) {
-            State t = new State();
             nfa.addTransition(s, iter.next(), t);
-            nfa.setAccepts(t, true);
         }
         return nfa;
     }
