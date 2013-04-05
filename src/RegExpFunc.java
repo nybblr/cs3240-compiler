@@ -248,18 +248,19 @@ public class RegExpFunc {
             nfa = regExp(className);
             if (peekToken(RPAREN)) {
                 matchToken(RPAREN);
-                nfa = regExTwoTail(className);
+                regExTwoTail(className);
             } else {
                 invalid();
                 return null;
             }
-            NFA rexpNFA = regExp(className);
-            NFA concat = NFA.concat(rexpNFA, nfa);
-            return concat;
+//            NFA rexpNFA = regExp(className);
+//            NFA concat = NFA.concat(rexpNFA, nfa);
+//            return concat;
+            return nfa;
         } else if (peekReToken()) {
             char reChar = matchReToken();
             addToHashSet(className, reChar);
-            nfa = regExTwoTail(className);
+            regExTwoTail(className);
             return nfa;
         } else {
             if (peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
@@ -272,27 +273,18 @@ public class RegExpFunc {
         }
     }
 
-    public NFA regExTwoTail(String className) {
+    public void regExTwoTail(String className) {
         debug();
-        State s = new State();
-        NFA nfa = new NFA(s);
         /** needs major fixing----------------------------------------------------------------------------*/
         if (peekToken(MULTI)) {
             matchToken(MULTI);
-            State a = new State();
-            nfa.addTransition(s, '*', a);
-            nfa.setAccepts(a, true);
-            return nfa;
+            
         } else if (peekToken(PLUS)) {
             matchToken(PLUS);
-            State a = new State();
-            nfa.addTransition(s, '+', a);
-            nfa.setAccepts(a, true);
-            return nfa;
+            
             /**-----------------------------------------------------------------------------------------------*/
         } else {
-            nfa.setAccepts(s, true);
-            return nfa;
+            return;
         }
     }
 
@@ -319,9 +311,11 @@ public class RegExpFunc {
             State s = new State();
             State a = new State();
             nfa = new NFA(s);
-            nfa.addTransition(s, '.', a);
             nfa.setAccepts(a, true);
-            return nfa;
+            for(char c=' '; c >= '~'; c++){
+                getClass(className).add(c);
+            }
+            return createNFA(getClass(className));
             /**-----------------------------------------------------------------------------------------------*/
         } else if (peekToken(LBRAC)) {
             matchToken(LBRAC);
@@ -416,9 +410,9 @@ public class RegExpFunc {
                 if (peekToken(IN)) {
                     matchToken(IN);
                     if (peekToken(DOLLAR)) {
-                        matchToken(DOLLAR);
+                        excludeSetTail(className);
+                        nfa = createNFA(getClass(className));
                     }
-                    excludeSetTail(className);
                     return nfa;
                 } else {
                     invalid();
@@ -438,10 +432,9 @@ public class RegExpFunc {
 
         public void excludeSetTail(String className) {
             debug();
-            State s = new State();
-            NFA nfa = new NFA(s);
             if (peekToken(LBRAC)) {
                 matchToken(LBRAC);
+                charSet(className);
                 if (peekToken(RBRAC)) {
                     matchToken(RBRAC);
                 } else {
@@ -458,7 +451,6 @@ public class RegExpFunc {
                 HashSet<Character> hashSet1 = getClass(className);
                 HashSet<Character> hashSet2 = getClass(name);
                 setClass(className, exclude(hashSet1, hashSet2));
-                HashSet set = getClass(className);
             }
         }
     }
