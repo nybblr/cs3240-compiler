@@ -142,16 +142,20 @@ public class RegExpFunc {
         for (int i = 0; i < classes.size(); i++) {
             if (classes.get(i).getName().equals(className)) {
                 classHash = classes.get(i).getChars();
-                int diff = lastCharAdded-c;
-                if(diff >= 0){
-                    for (int j = lastCharAdded; j <= c; j++) {
-                        classHash.add((char) j);
-                    }
+                
+                char a = lastCharAdded;
+                char b = c;
+                
+                // Swap them if they're other way around
+                int diff = b - a;
+                if(b - a < 0){
+                	char swap = a;
+                	a = b;
+                	b = swap;
                 }
-                else{
-                    for (int j = c; j <= lastCharAdded; j--){
-                        classHash.add((char) j);
-                    }
+                
+                for (int j = a; j <= b; j++) {
+                    classHash.add((char) j);
                 }
                 return classHash;
             }
