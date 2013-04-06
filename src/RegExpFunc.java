@@ -12,7 +12,7 @@ import java.util.Arrays;
  * 
  */
 public class RegExpFunc {
-    private static final String SPACE = " ", BSLASH = "/", MULTI = "*",
+    private static final String SPACE = " ", BSLASH = "/", STAR = "*",
     PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
     RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"",
     IN = "IN", NOT = "^", DASH = "-", DOLLAR = "$";
@@ -151,7 +151,7 @@ public class RegExpFunc {
     
     public HashSet<Character> exclude(HashSet<Character> set1, HashSet<Character> set2){
         Iterator<Character> iter = set1.iterator();
-        HashSet<Character> newHashSet = set2;
+        HashSet<Character> newHashSet = (HashSet<Character>) set2.clone();
         while(iter.hasNext()){
             Character c = iter.next();
             if(newHashSet.contains(c))
@@ -248,21 +248,18 @@ public class RegExpFunc {
             nfa = regExp(className);
             if (peekToken(RPAREN)) {
                 matchToken(RPAREN);
-                regExTwoTail(className);
+                return regExTwoTail(className, nfa);
             } else {
                 invalid();
                 return null;
             }
-//            NFA rexpNFA = regExp(className);
-//            NFA concat = NFA.concat(rexpNFA, nfa);
-//            return concat;
-            return nfa;
-        } else if (peekReToken()) {
+        }
+        else if (peekReToken()) {
             char reChar = matchReToken();
             addToHashSet(className, reChar);
-            regExTwoTail(className);
-            return nfa;
-        } else {
+            return regExTwoTail(className, nfa);
+        }
+        else {
             if (peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
                 nfa = regExThree(className);
                 return nfa;
@@ -273,18 +270,16 @@ public class RegExpFunc {
         }
     }
 
-    public void regExTwoTail(String className) {
+    public NFA regExTwoTail(String className, NFA nfa) {
         debug();
-        /** needs major fixing----------------------------------------------------------------------------*/
-        if (peekToken(MULTI)) {
-            matchToken(MULTI);
-            
+        if (peekToken(STAR)) {
+            matchToken(STAR);
+            return NFA.star(nfa);
         } else if (peekToken(PLUS)) {
             matchToken(PLUS);
-            
-            /**-----------------------------------------------------------------------------------------------*/
+            return NFA.plus(nfa);
         } else {
-            return;
+            return nfa;
         }
     }
 
