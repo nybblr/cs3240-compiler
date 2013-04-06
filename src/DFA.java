@@ -97,8 +97,11 @@ public class DFA extends NFA {
 		
 		if(currState.getAccepts()) lastAccept = start;
 		
+		String string = "Derivation: "+currState;
+		
 		while(!is.isConsumed()) {
 			char c = is.peekToken().charValue();
+			is.advancePointer();
 			
 			int index = states.indexOf(currState);
 			currState = table[index][c+1];
@@ -107,9 +110,11 @@ public class DFA extends NFA {
 				lastAccept = start;
 				acceptPointer = is.getPointer();
 			}
+			
+			string += " => " + currState;
 		}
-		
-		return false;
+		System.out.println(string);
+		return currState.getAccepts();
 	}
 	
 	public String tableToString(State[][] table) {

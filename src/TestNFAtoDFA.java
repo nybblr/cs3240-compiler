@@ -43,6 +43,14 @@ public class TestNFAtoDFA {
 		State[][] table = klass.getDFA().toTable();
 		String string = klass.getDFA().tableToString(table);
 		System.out.println(string);
+		
+		
+		// Now try table walking!
+		String input = "A4A";
+		System.out.println("Input: "+input);
+		boolean accepts = DFA.walkTable(input, table);
+		
+		System.out.println('"'+input+'"'+" is"+((accepts) ? "" : " NOT")+" a valid "+klass);
 	}
 
 }
