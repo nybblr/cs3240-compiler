@@ -30,16 +30,18 @@ public class TestNFAtoDFA {
 		
 		ArrayList<Terminals> classes = Parser.getClasses();
 		
-		Terminals digit = null;
+		Terminals klass = null;
+		String klassName = "NON-ZERO";
+		
 		for (Terminals t : classes) {
-			if (t.getName().equals("DIGIT")) {
-				digit = t;
+			if (t.getName().equals(klassName)) {
+				klass = t;
 				break;
 			}
 		}
 		
-		State[][] table = digit.getDFA().toTable();
-		String string = digit.getDFA().tableToString(table);
+		State[][] table = klass.getDFA().toTable();
+		String string = klass.getDFA().tableToString(table);
 		System.out.println(string);
 	}
 

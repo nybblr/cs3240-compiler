@@ -319,7 +319,6 @@ public class RegExpFunc {
         }
         else if (peekToken(DOLLAR)) {
             matchToken(DOLLAR);
-            System.out.println("I'm in char class!!!");
             String name = definedClass();
             return getNFA(name);
         } else {
@@ -373,7 +372,6 @@ public class RegExpFunc {
     public void charSetTail(String className) {
         debug();
         if (peekToken(DASH)) {
-            System.out.println("We're there!");
             matchToken(DASH);
             if (peekClsToken()) {
                 char c = matchClsToken();
@@ -400,7 +398,6 @@ public class RegExpFunc {
             matchToken(NOT);
             charSet(className);
             if (peekToken(RBRAC)) {
-                System.out.println("We're at the ]!");
                 matchToken(RBRAC);
                 if (peekToken(IN)) {
                     matchToken(IN);
@@ -440,7 +437,6 @@ public class RegExpFunc {
             // ***********************************Not sure what to do for
             // transition***********************************
             else {
-                System.out.println("I'm here!!!");
                 matchToken(DOLLAR);
                 String name = definedClass();
                 HashSet<Character> hashSet1 = getClass(className);
