@@ -36,8 +36,6 @@ public class Terminals {
 
 	/* Generators */
 	public DFA getDFA() {
-		//this.dfa = null;
-		//return new DFA(new State());
 		return dfa;
 	}
 

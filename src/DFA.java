@@ -117,7 +117,7 @@ public class DFA extends NFA {
 			
 			string += " => " + currState;
 		}
-		System.out.println(string);
+		//System.out.println(string);
 		return new ScanResult(lastAccept, acceptPointer, currState.getAccepts());
 	}
 	

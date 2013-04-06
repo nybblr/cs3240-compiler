@@ -5,12 +5,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Parser {
-    static ArrayList<Terminals> classes;
+    static ArrayList<Terminals> charClasses;
+    static ArrayList<Terminals> tokenDefs;
+    static ArrayList<Terminals> charsAndTokens;
     public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
-        fileParser("input_spec.txt");
-        scanner("input.txt");
+        fileParser("input_spec2.txt");
+        scanner("input2.txt");
     }
     
     public static void scanner(String filename) throws FileNotFoundException {
@@ -25,9 +27,10 @@ public class Parser {
             	
             	// Run all the DFAs on the current string
             	// See which one matches the farthest
+            	// First defined token takes precedence
             	int maxPointer = 0;
             	Terminals maxKlass = null;
-            	for (Terminals klass : classes) {
+            	for (Terminals klass : tokenDefs) {
             		ScanResult result = klass.getDFA().walk(line);
             		results.add(result);
             		if (result.lastPointer > maxPointer) {
@@ -58,10 +61,23 @@ public class Parser {
         System.out.println("Parsing input spec...");
         Scanner scan = new Scanner(new File(filename));
         Terminals currClass = null;
-        classes = new ArrayList<Terminals>();
+        charClasses = new ArrayList<Terminals>();
+        tokenDefs = new ArrayList<Terminals>();
+        charsAndTokens = new ArrayList<Terminals>();
+        
+        // Which array are we filling?
+        ArrayList<Terminals> classes = charClasses;
         while(scan.hasNextLine()){
             String line = scan.nextLine();
-            if (line.trim().isEmpty()) continue;
+            
+            // EOF or switch arrays?
+            if (line.trim().isEmpty()) {
+            	// Time for a switch?
+            	if (classes == charClasses)
+            		classes = tokenDefs;
+            	continue;
+            }
+            
             Scanner lineScan = new Scanner(line);
 
             String token = lineScan.next();
@@ -69,6 +85,7 @@ public class Parser {
             Terminals newClass = new Terminals();
             currClass = newClass;
             classes.add(currClass);
+            charsAndTokens.add(currClass);
             currClass.setName(token.substring(1,token.length()));
             System.out.println(currClass.getName());
 
@@ -90,7 +107,7 @@ public class Parser {
      * @return the classes
      */
     public static ArrayList<Terminals> getClasses() {
-        return classes;
+        return charsAndTokens;
     }
 
     public static ArrayList<Character> getIntervalOfChars(String inside){

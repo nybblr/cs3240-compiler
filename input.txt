@@ -1,1 +1,4 @@
-Algebra2 algebra2 0 9
+Algebra2 algebra2
+CONSTANT constantly
+hell8o
+wORLD
