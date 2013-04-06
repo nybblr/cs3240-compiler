@@ -135,9 +135,9 @@ public class DFA extends NFA {
 					continue;
 				}
 				row[j] = table[i][j].toString();
-				if (i == 0 && j == 0) {
-					row[j] = "=>" + row[j];
-				}
+//				if (i == 0 && j == 0) {
+//					row[j] = "=>" + row[j];
+//				}
 			}
 			tp.add(row);
 		}

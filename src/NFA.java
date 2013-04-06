@@ -241,15 +241,16 @@ public class NFA {
 		s += "Start: "+start+"\n";
 		s += ""+states.size()+" states: ";
 		
-		s += "[";
-		int i = 0;
-		for (State state : states) {
-			if (start.equals(state)) s += "=>";
-			s += state.toString();
-			if (i != states.size() - 1) s += ", ";
-			i++;
-		}
-		s += "]\n";
+		s += states.toString();
+//		s += "[";
+//		int i = 0;
+//		for (State state : states) {
+//			if (start.equals(state)) s += "=>";
+//			s += state.toString();
+//			if (i != states.size() - 1) s += ", ";
+//			i++;
+//		}
+		s += "\n";
 
 		s += ""+transitions.size()+" transitions: ";
 		s += transitions.toString();

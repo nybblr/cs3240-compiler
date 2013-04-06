@@ -88,13 +88,18 @@ public class State {
 //		}
 //	}
 	
+	public boolean isStart() {
+		return nfa.getStart() == this;
+	}
+	
 	public String toString() {
 		String string = label;
 		if (string == null || string.equals(""))
 			string = Integer.toString(count);
 		if (getAccepts())
-			return "+"+string+"+";
-		else
-			return string;
+			string = "+"+string+"+";
+		if (isStart())
+			string = "->"+string;
+		return string;
 	}
 }
