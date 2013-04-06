@@ -142,8 +142,16 @@ public class RegExpFunc {
         for (int i = 0; i < classes.size(); i++) {
             if (classes.get(i).getName().equals(className)) {
                 classHash = classes.get(i).getChars();
-                for (int j = lastCharAdded; j <= c; j++) {
-                    classHash.add((char) j);
+                int diff = lastCharAdded-c;
+                if(diff >= 0){
+                    for (int j = lastCharAdded; j <= c; j++) {
+                        classHash.add((char) j);
+                    }
+                }
+                else{
+                    for (int j = c; j <= lastCharAdded; j--){
+                        classHash.add((char) j);
+                    }
                 }
                 return classHash;
             }
