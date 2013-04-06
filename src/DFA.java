@@ -81,6 +81,10 @@ public class DFA extends NFA {
 		return table;
 	}
 	
+	public ScanResult walk(String input) {
+		return DFA.walkTable(input, toTable());
+	}
+	
 	public static ScanResult walkTable(String input, State[][] table) {
 		InputStream is = new InputStream(input);
 		

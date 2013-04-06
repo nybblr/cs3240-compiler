@@ -10,7 +10,7 @@ public class Parser {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
         fileParser("input_spec.txt");
-        scanner("input1.txt");
+        scanner("input.txt");
     }
     
     public static void scanner(String filename) throws FileNotFoundException {
@@ -18,6 +18,39 @@ public class Parser {
         Scanner scan = new Scanner(new File(filename));
         while(scan.hasNextLine()){
             String line = scan.nextLine();
+            while(!line.isEmpty()) {
+            	line = line.trim();
+            	
+            	ArrayList<ScanResult> results = new ArrayList<ScanResult>();
+            	
+            	// Run all the DFAs on the current string
+            	// See which one matches the farthest
+            	int maxPointer = 0;
+            	Terminals maxKlass = null;
+            	for (Terminals klass : classes) {
+            		ScanResult result = klass.getDFA().walk(line);
+            		results.add(result);
+            		if (result.lastPointer > maxPointer) {
+            			maxPointer = result.lastPointer;
+            			maxKlass = klass;
+            		}
+            	}
+            	
+            	// If nothing matched, invalid input!
+            	if (maxPointer == 0) {
+            		System.out.println("INVALID INPUT!");
+            		return;
+            	}
+            	
+            	// Something matched!
+            	String token = line.substring(0, maxPointer);
+            	
+            	System.out.print(maxKlass.getName());
+            	System.out.println(" "+token);
+            	
+            	// Consume and start over!
+            	line = line.substring(maxPointer);
+            }
         }
     }
 
