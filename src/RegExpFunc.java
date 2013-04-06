@@ -259,7 +259,11 @@ public class RegExpFunc {
         else if (peekReToken()) {
             char reChar = matchReToken();
             addToHashSet(className, reChar);
-            return regExTwoTail(className, nfa);
+            nfa = regExTwoTail(className, nfa);
+            if(nfa == null){
+                nfa = createNFA(getClass(className));
+            }
+            return nfa;
         }
         else {
             if (peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
