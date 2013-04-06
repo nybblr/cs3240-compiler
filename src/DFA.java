@@ -81,7 +81,7 @@ public class DFA extends NFA {
 		return table;
 	}
 	
-	public static boolean walkTable(String input, State[][] table) {
+	public static ScanResult walkTable(String input, State[][] table) {
 		InputStream is = new InputStream(input);
 		
 		ArrayList<State> states = new ArrayList<State>();
@@ -114,7 +114,7 @@ public class DFA extends NFA {
 			string += " => " + currState;
 		}
 		System.out.println(string);
-		return currState.getAccepts();
+		return new ScanResult(lastAccept, acceptPointer, currState.getAccepts());
 	}
 	
 	public String tableToString(State[][] table) {

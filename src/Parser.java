@@ -10,7 +10,7 @@ public class Parser {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
         fileParser("input_spec.txt");
-        scanner("input1");
+        scanner("input1.txt");
     }
     
     public static void scanner(String filename) throws FileNotFoundException {

@@ -49,7 +49,7 @@ public class TestNFAtoDFA {
 		// Now try table walking!
 		String input = "Algebra2";
 		System.out.println("Input: "+input);
-		boolean accepts = DFA.walkTable(input, table);
+		boolean accepts = DFA.walkTable(input, table).accepts;
 		
 		System.out.println('"'+input+'"'+" is"+((accepts) ? "" : " NOT")+" a valid "+klass.getName());
 	}
