@@ -41,12 +41,15 @@ public class DFA extends NFA {
 				if (!map.containsKey(trans)) {
 					to = trans.toState();
 					map.put(trans, to);
-					queue.offer(trans);
+					if (!queue.contains(trans))
+						queue.offer(trans);
 				} else {
 					to = map.get(trans);
 				}
 				
 				State from = map.get(set);
+				addState(from);
+				addState(to);
 				addTransition(from, (char)i, to);
 			}
 		}

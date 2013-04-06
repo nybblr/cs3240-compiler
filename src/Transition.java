@@ -13,6 +13,24 @@ public class Transition {
 		this.c = on;
 	}
 	
+	public boolean equals(Object other) {
+		if (other instanceof Transition) {
+			Transition trans = (Transition)other;
+			if (trans == this) return true;
+			return from.equals(trans.from) &&
+					to.equals(trans.to) &&
+					(c == trans.c || c.equals(trans.c));
+		} else {
+			return false;
+		}
+	}
+	
+	public int hashCode() {
+		int code = from.hashCode() + to.hashCode();
+		if (c != EPSILON) code += c.hashCode();
+		return code;
+	}
+	
 	public boolean isEmptyTransition() {
 		return c == EPSILON;
 	}

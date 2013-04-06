@@ -237,10 +237,21 @@ public class NFA {
 	}
 
 	public String toString() {
-		String s = ""+states.size()+" states: ";
-		s += states.toString();
+		String s = "";
+		s += "Start: "+start+"\n";
+		s += ""+states.size()+" states: ";
+		
+		s += "[";
+		int i = 0;
+		for (State state : states) {
+			if (start.equals(state)) s += "=>";
+			s += state.toString();
+			if (i != states.size() - 1) s += ", ";
+			i++;
+		}
+		s += "]\n";
 
-		s += "\n"+transitions.size()+" transitions: ";
+		s += ""+transitions.size()+" transitions: ";
 		s += transitions.toString();
 
 		return s;

@@ -75,18 +75,18 @@ public class State {
 		return false;
 	}
 	
-	public boolean equals(Object other) {
-		if (other instanceof State) {
-			State state = (State)other;
-			if (state == other) return true;
-//			return label.equals(state.getLabel()) &&
-//					accepts == state.getAccepts() &&
-//					nfa.equals(state.getNFA());
-			return false;
-		} else {
-			return false;
-		}
-	}
+//	public boolean equals(Object other) {
+//		if (other instanceof State) {
+//			State state = (State)other;
+//			if (state == this) return true;
+////			return label.equals(state.getLabel()) &&
+////					accepts == state.getAccepts() &&
+////					nfa.equals(state.getNFA());
+//			return false;
+//		} else {
+//			return false;
+//		}
+//	}
 	
 	public String toString() {
 		String string = label;
