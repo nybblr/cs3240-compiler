@@ -33,7 +33,7 @@ public class DFA extends NFA {
 		while(!queue.isEmpty()) {
 			StateSet set = queue.poll();
 			
-			for (int i = 0; i < 128; i++) {
+			for (int i = Helpers.PRINTSTART; i < Helpers.PRINTEND; i++) {
 				StateSet trans = set.transition((char)i);
 				State to = null;
 				if (!map.containsKey(trans)) {
@@ -65,7 +65,7 @@ public class DFA extends NFA {
 		list.remove(getStart());
 		list.addFirst(getStart());
 		
-		State[][] table = new State[list.size()][128+1]; // first column is from state
+		State[][] table = new State[list.size()][Helpers.PRINTSIZE+1]; // first column is from state
 		
 		int i = 0;
 		for (State s : list) {
@@ -75,7 +75,7 @@ public class DFA extends NFA {
 		
 		for (Transition t : getTransitions()) {
 			int index = list.indexOf(t.from);
-			table[index][t.c+1] = t.to;
+			table[index][t.c-Helpers.PRINTSTART+1] = t.to;
 		}
 		
 		return table;
@@ -104,7 +104,7 @@ public class DFA extends NFA {
 			is.advancePointer();
 			
 			int index = states.indexOf(currState);
-			currState = table[index][c+1];
+			currState = table[index][c-Helpers.PRINTSTART+1];
 			
 			if(currState.getAccepts()) {
 				lastAccept = start;
@@ -122,10 +122,10 @@ public class DFA extends NFA {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		tp.stream = new PrintStream(baos);
 		
-		String[] ascii = new String[129];
+		String[] ascii = new String[Helpers.PRINTSIZE+1];
 		ascii[0] = "State";
-		for (int i = 0; i < 128; i++) {
-			ascii[i+1] = Helpers.niceCharToString((char)i);
+		for (int i = Helpers.PRINTSTART; i < Helpers.PRINTEND; i++) {
+			ascii[i-Helpers.PRINTSTART+1] = Helpers.niceCharToString((char)i);
 		}
 		
 		tp.addTitle(ascii);

@@ -19,6 +19,7 @@ public class Parser {
             classes = new ArrayList<Terminals>();
             while(scan.hasNextLine()){
                 String line = scan.nextLine();
+                if (line.trim().isEmpty()) continue;
                 Scanner lineScan = new Scanner(line);
 
                 String token = lineScan.next();
