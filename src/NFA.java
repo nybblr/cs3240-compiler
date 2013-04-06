@@ -10,6 +10,10 @@ public class NFA {
 	private State start;
 
 	/* Constructors */
+	public NFA() {
+		// Blank constructor. Invalid NFA though!
+	}
+	
 	public NFA(State start) {
 		setStart(start);
 	}

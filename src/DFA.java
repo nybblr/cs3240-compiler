@@ -15,8 +15,6 @@ public class DFA extends NFA {
 
 	// Convert NFA to DFA
 	public DFA(NFA nfa) {
-		super(new State());
-		
 		HashMap<StateSet, State> map = new HashMap<StateSet, State>();
 		
 		// First, add start state
