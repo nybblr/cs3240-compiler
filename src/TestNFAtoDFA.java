@@ -1,5 +1,6 @@
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import org.junit.Test;
 public class TestNFAtoDFA {
 
 	@Test
-	public void test() throws UnsupportedEncodingException {
+	public void test() throws UnsupportedEncodingException, FileNotFoundException {
 //		NFA nfa = new NFA(new State("Start"));
 //		State start = nfa.getStart();
 //		
