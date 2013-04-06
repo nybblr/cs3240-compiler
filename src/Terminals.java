@@ -53,4 +53,8 @@ public class Terminals {
 		this.nfa = nfa;
 	}
 	
+	public String toString() {
+		return "$"+name+": "+chars.toString();
+	}
+	
 }

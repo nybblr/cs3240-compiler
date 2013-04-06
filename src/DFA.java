@@ -1,10 +1,15 @@
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.LinkedList;
 
-public class DFA extends NFA {	
+public class DFA extends NFA {
+	public ArrayList<State> list = null;
+	
 	/* Constructors */
 	public DFA(State start) {
 		super(start);
@@ -32,7 +37,7 @@ public class DFA extends NFA {
 		while(!queue.isEmpty()) {
 			StateSet set = queue.poll();
 			
-			for (int i = 0; i < 256; i++) {
+			for (int i = 0; i < 128; i++) {
 				StateSet trans = set.transition((char)i);
 				State to = null;
 				if (!map.containsKey(trans)) {
@@ -53,14 +58,14 @@ public class DFA extends NFA {
 		// Convert to some kind of table.
 		
 		// First make a linked list so we maintain order
-		ArrayList<State> list = new ArrayList<State>();
+		list = new ArrayList<State>();
 		list.addAll(getStates());
 		
 		// Move start state to front
 		list.remove(getStart());
 		list.add(getStart());
 		
-		State[][] table = new State[list.size()][256];
+		State[][] table = new State[list.size()][128];
 		
 		for (Transition t : getTransitions()) {
 			int index = list.indexOf(t.from);
@@ -94,5 +99,40 @@ public class DFA extends NFA {
 		}
 		
 		return false;
+	}
+	
+	public String tableToString(State[][] table, ArrayList<State> states) {
+		MultiColumnPrinter tp = new MultiColumnPrinter(table[0].length, 2, "-");
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		tp.stream = new PrintStream(baos);
+		
+		String[] ascii = new String[128];
+		for (int i = 0; i < 128; i++) {
+			ascii[i] = Helpers.niceCharToString((char)i);
+		}
+		
+		tp.addTitle(ascii);
+		
+		for (int i = 0; i < table.length; i++) {
+			String[] row = new String[table[i].length];
+			for (int j = 0; j < row.length; j++) {
+				if (table[i][j] == null) {
+					row[j] = "~~";
+					continue;
+				}
+				row[j] = table[i][j].toString();
+			}
+			tp.add(row);
+		}
+		
+		tp.print();
+		try {
+			return baos.toString("UTF8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

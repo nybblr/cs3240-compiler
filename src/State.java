@@ -5,6 +5,7 @@ public class State {
 	private HashSet<Transition> transitions = new HashSet<Transition>();
 	private Boolean accepts = false;
 	private NFA nfa;
+	private int count;
 	public Terminals klass;
 	
 	private static int counter = 0;
@@ -13,12 +14,13 @@ public class State {
 	
 	/* Constructors */
 	public State() {
-		this(""+counter);
-		counter++;
+		this(null);
 	}
 	
 	public State(String label) {
 		this.label = label;
+		count = counter;
+		counter++;
 	}
 
 	/* Getters and setters */
@@ -87,9 +89,12 @@ public class State {
 	}
 	
 	public String toString() {
-		String string = "";
-		if (getAccepts()) string += "\u2713".toString();
-		string += label;
-		return string;
+		String string = label;
+		if (string == null || string.equals(""))
+			string = Integer.toString(count);
+		if (getAccepts())
+			return "+"+string+"+";
+		else
+			return string;
 	}
 }

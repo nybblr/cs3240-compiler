@@ -1,27 +1,46 @@
 import static org.junit.Assert.*;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 
 public class TestNFAtoDFA {
 
 	@Test
-	public void test() {
-		NFA nfa = new NFA(new State("Start"));
-		State start = nfa.getStart();
+	public void test() throws UnsupportedEncodingException {
+//		NFA nfa = new NFA(new State("Start"));
+//		State start = nfa.getStart();
+//		
+//		State state1 = new State("1");
+//		nfa.addState(state1);
+//		state1.setAccepts(true);
+//		
+//		nfa.addTransition(start, 'h', state1);
+//		
+//		DFA dfa = nfa.toDFA();
+//		
+//		System.out.println(nfa.toString());
+//		System.out.println(dfa.toString());
+//		
+//		System.out.println(nfa.statesReachableFrom(start));
 		
-		State state1 = new State("1");
-		nfa.addState(state1);
-		state1.setAccepts(true);
+		Parser.main(null);
 		
-		nfa.addTransition(start, 'h', state1);
+		ArrayList<Terminals> classes = Parser.getClasses();
 		
-		DFA dfa = nfa.toDFA();
+		Terminals digit = null;
+		for (Terminals t : classes) {
+			if (t.getName().equals("DIGIT")) {
+				digit = t;
+				break;
+			}
+		}
 		
-		System.out.println(nfa.toString());
-		System.out.println(dfa.toString());
-		
-		System.out.println(nfa.statesReachableFrom(start));
+		State[][] table = digit.getDFA().toTable();
+		String string = digit.getDFA().tableToString(table, digit.getDFA().list);
+		System.out.println(string);
 	}
 
 }

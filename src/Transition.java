@@ -18,6 +18,6 @@ public class Transition {
 	}
 	
 	public String toString() {
-		return ""+from+" "+c+" "+to;
+		return ""+from+"=>'"+Helpers.niceCharToString(c)+"'=>"+to;
 	}
 }
