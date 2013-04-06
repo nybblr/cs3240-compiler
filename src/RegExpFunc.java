@@ -109,8 +109,10 @@ public class RegExpFunc {
     }
 
     private void debug() {
-        System.out.println("Pointer at: " + peekToken());
-        System.out.println(Thread.currentThread().getStackTrace()[2]);
+    	if (true) {
+	        System.out.println("Pointer at: " + peekToken());
+	        System.out.println(Thread.currentThread().getStackTrace()[2]);
+    	}
     }
 
     private String definedClass() {
