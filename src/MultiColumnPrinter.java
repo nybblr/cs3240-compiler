@@ -170,7 +170,7 @@ public class MultiColumnPrinter {
         this.gap = gap;
         this.border = border;
         this.align = align;
-        this.titleAlign = LEFT;
+        this.titleAlign = align;
 	this.sortNeeded = sort;
     }
 

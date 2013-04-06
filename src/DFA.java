@@ -102,7 +102,7 @@ public class DFA extends NFA {
 	}
 	
 	public String tableToString(State[][] table, ArrayList<State> states) {
-		MultiColumnPrinter tp = new MultiColumnPrinter(table[0].length, 2, "-");
+		MultiColumnPrinter tp = new MultiColumnPrinter(table[0].length, 2, "-", MultiColumnPrinter.CENTER, false);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		tp.stream = new PrintStream(baos);
 		
