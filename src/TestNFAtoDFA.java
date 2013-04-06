@@ -39,7 +39,7 @@ public class TestNFAtoDFA {
 		}
 		
 		State[][] table = digit.getDFA().toTable();
-		String string = digit.getDFA().tableToString(table, digit.getDFA().list);
+		String string = digit.getDFA().tableToString(table);
 		System.out.println(string);
 	}
 

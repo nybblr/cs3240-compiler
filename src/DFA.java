@@ -65,18 +65,29 @@ public class DFA extends NFA {
 		list.remove(getStart());
 		list.add(getStart());
 		
-		State[][] table = new State[list.size()][128];
+		State[][] table = new State[list.size()][128+1]; // first column is from state
+		
+		int i = 0;
+		for (State s : list) {
+			table[i][0] = s;
+			i++;
+		}
 		
 		for (Transition t : getTransitions()) {
 			int index = list.indexOf(t.from);
-			table[index][t.c] = t.to;
+			table[index][t.c+1] = t.to;
 		}
 		
 		return table;
 	}
 	
-	public static boolean walkTable(String input, State[][] table, ArrayList<State> states) {
+	public static boolean walkTable(String input, State[][] table) {
 		InputStream is = new InputStream(input);
+		
+		ArrayList<State> states = new ArrayList<State>();
+		for (int i = 0; i < table.length; i++) {
+			states.add(table[i][0]);
+		}
 		
 		State start = states.get(0);
 		State lastAccept = null;
@@ -90,7 +101,7 @@ public class DFA extends NFA {
 			char c = is.peekToken().charValue();
 			
 			int index = states.indexOf(currState);
-			currState = table[index][c];
+			currState = table[index][c+1];
 			
 			if(currState.getAccepts()) {
 				lastAccept = start;
@@ -101,14 +112,15 @@ public class DFA extends NFA {
 		return false;
 	}
 	
-	public String tableToString(State[][] table, ArrayList<State> states) {
+	public String tableToString(State[][] table) {
 		MultiColumnPrinter tp = new MultiColumnPrinter(table[0].length, 2, "-", MultiColumnPrinter.CENTER, false);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		tp.stream = new PrintStream(baos);
 		
-		String[] ascii = new String[128];
+		String[] ascii = new String[129];
+		ascii[0] = "State";
 		for (int i = 0; i < 128; i++) {
-			ascii[i] = Helpers.niceCharToString((char)i);
+			ascii[i+1] = Helpers.niceCharToString((char)i);
 		}
 		
 		tp.addTitle(ascii);
@@ -121,6 +133,9 @@ public class DFA extends NFA {
 					continue;
 				}
 				row[j] = table[i][j].toString();
+				if (i == 0 && j == 0) {
+					row[j] = "=>" + row[j];
+				}
 			}
 			tp.add(row);
 		}
