@@ -60,12 +60,12 @@ public class DFA extends NFA {
 		// Convert to some kind of table.
 		
 		// First make a linked list so we maintain order
-		ArrayList<State> list = new ArrayList<State>();
+		LinkedList<State> list = new LinkedList<State>();
 		list.addAll(getStates());
 		
 		// Move start state to front
 		list.remove(getStart());
-		list.add(getStart());
+		list.addFirst(getStart());
 		
 		State[][] table = new State[list.size()][128+1]; // first column is from state
 		
@@ -135,9 +135,6 @@ public class DFA extends NFA {
 					continue;
 				}
 				row[j] = table[i][j].toString();
-//				if (i == 0 && j == 0) {
-//					row[j] = "=>" + row[j];
-//				}
 			}
 			tp.add(row);
 		}
