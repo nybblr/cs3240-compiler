@@ -31,7 +31,7 @@ public class TestNFAtoDFA {
 		ArrayList<Terminals> classes = Parser.getClasses();
 		
 		Terminals klass = null;
-		String klassName = "NON-ZERO";
+		String klassName = "LETTER";
 		
 		for (Terminals t : classes) {
 			if (t.getName().equals(klassName)) {

@@ -6,7 +6,7 @@ public class State {
 	private Boolean accepts = false;
 	private NFA nfa;
 	private int count;
-	public Terminals klass;
+	public Terminals klass; // used in the walker to determine what klass the state belongs to
 	
 	private static int counter = 0;
 	
