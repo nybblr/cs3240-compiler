@@ -8,8 +8,6 @@ import java.util.Queue;
 import java.util.LinkedList;
 
 public class DFA extends NFA {
-	public ArrayList<State> list = null;
-	
 	/* Constructors */
 	public DFA(State start) {
 		super(start);
@@ -43,6 +41,7 @@ public class DFA extends NFA {
 				if (!map.containsKey(trans)) {
 					to = trans.toState();
 					map.put(trans, to);
+					queue.offer(trans);
 				} else {
 					to = map.get(trans);
 				}
@@ -58,7 +57,7 @@ public class DFA extends NFA {
 		// Convert to some kind of table.
 		
 		// First make a linked list so we maintain order
-		list = new ArrayList<State>();
+		ArrayList<State> list = new ArrayList<State>();
 		list.addAll(getStates());
 		
 		// Move start state to front

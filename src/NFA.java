@@ -237,10 +237,10 @@ public class NFA {
 	}
 
 	public String toString() {
-		String s = "States: ";
+		String s = ""+states.size()+" states: ";
 		s += states.toString();
 
-		s += "\nTransition: ";
+		s += "\n"+transitions.size()+" transitions: ";
 		s += transitions.toString();
 
 		return s;
