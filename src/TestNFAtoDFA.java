@@ -27,7 +27,7 @@ public class TestNFAtoDFA {
 		ArrayList<Terminals> classes = Parser.getClasses();
 		
 		Terminals klass = null;
-		String klassName = "INT";
+		String klassName = "FLOAT";
 		
 		for (Terminals t : classes) {
 			if (t.getName().equals(klassName)) {
@@ -42,7 +42,7 @@ public class TestNFAtoDFA {
 		
 		
 		// Now try table walking!
-		String input = "Algebra2";
+		String input = "3.4";
 		System.out.println("Input: "+input);
 		boolean accepts = DFA.walkTable(input, table).accepts;
 		
