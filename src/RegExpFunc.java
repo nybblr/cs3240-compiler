@@ -66,7 +66,8 @@ public class RegExpFunc {
         if (is.peekToken(ESCAPE)) {
             return escaped.contains(is.peekToken(1));
         } else {
-            return !escaped.contains(is.peekToken());
+        	// Is it in the ASCII printable?
+            return !escaped.contains(is.peekToken()) && (is.peekToken() >= 32 && is.peekToken() < 127);
         }
     }
 
