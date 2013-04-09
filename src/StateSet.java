@@ -104,6 +104,14 @@ public class StateSet {
 	public State toState() {
 		State state = new State(toString());
 		state.setAccepts(accepts());
+		
+		for(State currState : states){
+			if(currState.getAccepts() && state.klass == null)
+				state.klass = currState.klass;
+			else if(currState.getAccepts())
+				System.out.println("MORE THAN ONE KLASS IN A STATE SET");
+		}
+		
 		return state;
 	}
 }
