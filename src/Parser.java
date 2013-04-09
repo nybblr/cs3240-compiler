@@ -8,6 +8,8 @@ public class Parser {
     static ArrayList<Terminals> charClasses;
     static ArrayList<Terminals> tokenDefs;
     static ArrayList<Terminals> charsAndTokens;
+    static NFA bigNFA;
+    static DFA bigDFA;
     public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
@@ -102,7 +104,16 @@ public class Parser {
             System.out.println(currClass.getNFA());
             System.out.println(currClass.getDFA());
         }
-    }
+        State newStart = new State();
+		newStart.setLabel("Start");
+		NFA newNfa = new NFA(newStart);
+		newNfa.setAccepts(newStart, false);
+		for(Terminals each : tokenDefs){
+			newNfa.addEpsilonTransition(newStart, each.getNFA().getStart());
+		}
+		bigNFA = newNfa;
+		bigDFA = newNfa.toDFA();
+	}
     //	}
     /**
      * @return the classes
