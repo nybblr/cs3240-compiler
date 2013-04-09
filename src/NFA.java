@@ -261,4 +261,10 @@ public class NFA {
 
 		return s;
 	}
+	
+	public void setKlass(Terminals klass){
+		for(State state : states){
+			state.klass = klass;
+		}
+	}
 }

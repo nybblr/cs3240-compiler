@@ -97,6 +97,7 @@ public class Parser {
             NFA nfa = func.origRegExp(currClass.getName());
             currClass.setNFA(nfa);
             currClass.setDFA(nfa.toDFA());
+            nfa.setKlass(currClass);
 
             System.out.println(currClass.getNFA());
             System.out.println(currClass.getDFA());
