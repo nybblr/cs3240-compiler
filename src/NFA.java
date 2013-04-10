@@ -1,270 +1,295 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
-public class NFA {
-	private HashSet<Transition> transitions = new HashSet<Transition>();
-	private HashSet<State> states = new HashSet<State>();
-	private HashSet<State> accepting = new HashSet<State>();
-	private State start;
+public class NFA implements Cloneable {
+    private HashSet<Transition> transitions = new HashSet<Transition>();
+    private HashSet<State> states = new HashSet<State>();
+    private HashSet<State> accepting = new HashSet<State>();
+    private State start;
 
-	/* Constructors */
-	public NFA() {
-		// Blank constructor. Invalid NFA though!
-	}
-	
-	public NFA(State start) {
-		setStart(start);
-	}
+    /* Constructors */
+    public NFA() {
+        // Blank constructor. Invalid NFA though!
+    }
 
-	/* Getters and setters */
-	public State getStart() {
-		return start;
-	}
+    public NFA(State start) {
+        setStart(start);
+    }
 
-	public void setStart(State start) {
-		this.start = start;
-		addState(start);
-	}
+    /* Getters and setters */
+    public State getStart() {
+        return start;
+    }
 
-	public HashSet<Transition> getTransitions() {
-		return transitions;
-	}
+    public void setStart(State start) {
+        this.start = start;
+        addState(start);
+    }
 
-	public HashSet<State> getStates() {
-		return states;
-	}
+    public HashSet<Transition> getTransitions() {
+        return transitions;
+    }
 
-	public HashSet<State> getAcceptingStates() {
-		return accepting;
-	}
+    public HashSet<State> getStates() {
+        return states;
+    }
 
-	/* Traversal */
-	public Boolean isAccepted(String string) {
-		return false;
-	}
+    public HashSet<State> getAcceptingStates() {
+        return accepting;
+    }
 
-	public State step(State from, Character on) {
-		return from;
-	}
+    /* Traversal */
+    public Boolean isAccepted(String string) {
+        return false;
+    }
 
-	// Which states can be reached on a certain character?
-	public HashSet<State> statesReachableOn(State from, Character on) {
-		HashSet<State> reachable = new HashSet<State>();
-		Iterator<Transition> iter = from.getTransitions().iterator();
-		while (iter.hasNext()) {
-			Transition t = iter.next();
+    public State step(State from, Character on) {
+        return from;
+    }
 
-			// Do they want the epsilon transitions?
-			boolean equals = false;
-			if (on == null)
-				equals = on == t.c;
-			else
-				equals = on.equals(t.c);
+    // Which states can be reached on a certain character?
+    public HashSet<State> statesReachableOn(State from, Character on) {
+        HashSet<State> reachable = new HashSet<State>();
+        Iterator<Transition> iter = from.getTransitions().iterator();
+        while (iter.hasNext()) {
+            Transition t = iter.next();
 
-			// Add all matching transitions
-			// Skip if already added to prevent loops
-			if (equals  && !reachable.contains(t.to)) {
-				// Add this state
-				reachable.add(t.to);
+            // Do they want the epsilon transitions?
+            boolean equals = false;
+            if (on == null)
+                equals = on == t.c;
+            else
+                equals = on.equals(t.c);
 
-				// Recurse and add all reachable from this state (epsilon transitions)
-				reachable.addAll(statesReachableFrom(t.to));
-			}
-		}
+            // Add all matching transitions
+            // Skip if already added to prevent loops
+            if (equals  && !reachable.contains(t.to)) {
+                // Add this state
+                reachable.add(t.to);
 
-		return reachable;
-	}
+                // Recurse and add all reachable from this state (epsilon transitions)
+                reachable.addAll(statesReachableFrom(t.to));
+            }
+        }
 
-	// Which states can be reached via empty string?
-	public HashSet<State> statesReachableFrom(State from) {
-		return statesReachableOn(from, null);
-		//		HashSet<State> reachable = new HashSet<State>();
-		//		Iterator<Transition> iter = from.getTransitions().iterator();
-		//		while (iter.hasNext()) {
-		//			Transition t = iter.next();
-		//			
-		//			// Add all empty transitions
-		//			// Skip if already added to prevent loops
-		//			if (t.isEmptyTransition() && !reachable.contains(t.to)) {
-		//				// Add this state
-		//				reachable.add(t.to);
-		//				
-		//				// Recurse and add all reachable from this state
-		//				reachable.addAll(statesReachableFrom(t.to));
-		//			}
-		//		}
-		//		
-		//		return reachable;
-	}
+        return reachable;
+    }
 
-	/* Manipulation */
-	public State addState(State state) {
-		this.states.add(state);
-		state.setNFA(this);
+    // Which states can be reached via empty string?
+    public HashSet<State> statesReachableFrom(State from) {
+        return statesReachableOn(from, null);
+        //		HashSet<State> reachable = new HashSet<State>();
+        //		Iterator<Transition> iter = from.getTransitions().iterator();
+        //		while (iter.hasNext()) {
+        //			Transition t = iter.next();
+        //			
+        //			// Add all empty transitions
+        //			// Skip if already added to prevent loops
+        //			if (t.isEmptyTransition() && !reachable.contains(t.to)) {
+        //				// Add this state
+        //				reachable.add(t.to);
+        //				
+        //				// Recurse and add all reachable from this state
+        //				reachable.addAll(statesReachableFrom(t.to));
+        //			}
+        //		}
+        //		
+        //		return reachable;
+    }
 
-		if (state.getAccepts())
-			accepting.add(state);
+    /* Manipulation */
+    public State addState(State state) {
+        this.states.add(state);
+        state.setNFA(this);
 
-		return state;
-	}
+        if (state.getAccepts())
+            accepting.add(state);
 
-	public Transition addTransition(State from, Character on, State to) {
-		if (!equals(from.getNFA()) && from.getNFA() != null) {
-			transitions.addAll(from.getNFA().getTransitions());
-			Iterator<State> iters = from.getNFA().getStates().iterator();
-			while(iters.hasNext()) {
-				State state = iters.next();
-				addState(state);
-			}
+        return state;
+    }
 
-			states.addAll(from.getNFA().getStates());
-		} else {
-			from.setNFA(this);
-			states.add(from);
-		}
+    public Transition addTransition(State from, Character on, State to) {
+        if (!equals(from.getNFA()) && from.getNFA() != null) {
+            transitions.addAll(from.getNFA().getTransitions());
+            Iterator<State> iters = from.getNFA().getStates().iterator();
+            while(iters.hasNext()) {
+                State state = iters.next();
+                addState(state);
+            }
 
-		if (!equals(to.getNFA()) && to.getNFA() != null) {
-			transitions.addAll(to.getNFA().getTransitions());
-			Iterator<State> iters = to.getNFA().getStates().iterator();
-			while(iters.hasNext()) {
-				State state = iters.next();
-				addState(state);
-			}
+            states.addAll(from.getNFA().getStates());
+        } else {
+            from.setNFA(this);
+            states.add(from);
+        }
 
-			states.addAll(to.getNFA().getStates());
-		} else {
-			to.setNFA(this);
-			states.add(to);
-		}
+        if (!equals(to.getNFA()) && to.getNFA() != null) {
+            transitions.addAll(to.getNFA().getTransitions());
+            Iterator<State> iters = to.getNFA().getStates().iterator();
+            while(iters.hasNext()) {
+                State state = iters.next();
+                addState(state);
+            }
 
-		Transition transition = new Transition(from, on, to);
-		this.transitions.add(transition);
-		from.addTransition(on, to);
+            states.addAll(to.getNFA().getStates());
+        } else {
+            to.setNFA(this);
+            states.add(to);
+        }
 
-		return transition;
-	}
+        Transition transition = new Transition(from, on, to);
+        this.transitions.add(transition);
+        from.addTransition(on, to);
 
-	public boolean getAccepts(State state) {
-		return state.getAccepts();
-	}
+        return transition;
+    }
 
-	public void setAccepts(State state, boolean accepts) {
-		if (accepts)
-			accepting.add(state);
-		else
-			accepting.remove(state);
+    public boolean getAccepts(State state) {
+        return state.getAccepts();
+    }
 
-		// Prevent loops
-		if (state.getAccepts() != accepts)
-			state.setAccepts(accepts);
-	}
+    public void setAccepts(State state, boolean accepts) {
+        if (accepts)
+            accepting.add(state);
+        else
+            accepting.remove(state);
 
-	public static NFA union(NFA nfa1, NFA nfa2){
-		if(nfa1 == null)
-			return nfa2;
-		if(nfa2 == null)
-			return nfa1;
-		State newStart = new State();
-		newStart.setLabel("Start");
-		NFA newNfa = new NFA(newStart);
-		newNfa.setAccepts(newStart, false);
-		newNfa.addEpsilonTransition(newStart, nfa1.getStart());
-		newNfa.addEpsilonTransition(newStart, nfa2.getStart());
-		return newNfa;
-	}
-	public static NFA concat(NFA nfa1, NFA nfa2){
-		if(nfa1 == null)
-			return nfa2;
-		if(nfa2 == null)
-			return nfa1;
-		State startState = nfa2.getStart();
-		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
-		Iterator<State> iter = acceptingStates.iterator();
-		ArrayList<Transition> transitionsToAdd = new ArrayList<Transition>();
-		ArrayList<State> statesToChange = new ArrayList<State>();
-		while(iter.hasNext()){
-			State s = iter.next();
-			statesToChange.add(s);
-			Transition t = new Transition(s, Transition.EPSILON, startState);
-			transitionsToAdd.add(t);
-		}
-		for(State s: statesToChange) {
-			nfa1.setAccepts(s, false);
-		}
-		for(Transition t: transitionsToAdd) {
-			nfa1.addTransition(t.from, t.c, t.to);
-		}
+        // Prevent loops
+        if (state.getAccepts() != accepts)
+            state.setAccepts(accepts);
+    }
 
-		return nfa1;
-	}
-	public static NFA star(NFA nfa1){
-		State startState = nfa1.getStart();
-		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
-		Iterator<State> iter = acceptingStates.iterator();
-		while(iter.hasNext()){
-			State s = iter.next();
-			nfa1.addEpsilonTransition(s, startState);
-		}
-		State newStart = new State();
-		newStart.setLabel("Start");
-		NFA newNfa = new NFA(newStart);
-		newNfa.setAccepts(newStart, true);
-		newNfa.addEpsilonTransition(newStart, startState);
-		return newNfa;
-	}
-	public static NFA plus(NFA nfa1){
-		State startState = nfa1.getStart();
-		HashSet<State> acceptingStates = nfa1.getAcceptingStates();
-		Iterator<State> iter = acceptingStates.iterator();
-		while(iter.hasNext()){
-			State s = iter.next();
-			nfa1.addEpsilonTransition(s, startState);
-		}
-		return nfa1;
-	}
+    public static NFA union(NFA nfa1, NFA nfa2){
+        if(nfa1 == null){
+            return nfa2;
+        }
+        if(nfa2 == null){
+            return nfa1;
+        }
+        
+        State newStart = new State();
+        newStart.setLabel("Start");
+        NFA newNfa = new NFA(newStart);
+        newNfa.setAccepts(newStart, false);
+        newNfa.addEpsilonTransition(newStart, nfa1.getStart());
+        newNfa.addEpsilonTransition(newStart, nfa2.getStart());
+        return newNfa;
+    }
 
-	// Add empty string transition
-	public Transition addEpsilonTransition(State from, State to) {
-		return addTransition(from, Transition.EPSILON, to);
-	}
+    public static NFA concat(NFA nfa1, NFA nfa2){
+        if(nfa1 == null){
+            return nfa2;
+        }
+        if(nfa2 == null){
+            return nfa1;
+        }
 
-	/* Export */
-	public State[][] toTable() {
-		// Should return some kind of transition table
-		return toDFA().toTable();
-	}
+        State startState = nfa2.getStart();
+        HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+        Iterator<State> iter = acceptingStates.iterator();
+        ArrayList<Transition> transitionsToAdd = new ArrayList<Transition>();
+        ArrayList<State> statesToChange = new ArrayList<State>();
+        while(iter.hasNext()){
+            State s = iter.next();
+            statesToChange.add(s);
+            Transition t = new Transition(s, Transition.EPSILON, startState);
+            transitionsToAdd.add(t);
+        }
+        for(State s: statesToChange) {
+            nfa1.setAccepts(s, false);
+        }
+        for(Transition t: transitionsToAdd) {
+            nfa1.addTransition(t.from, t.c, t.to);
+        }
 
-	public DFA toDFA() {
-		return new DFA(this);
-	}
+        return nfa1;
+    }
 
-	public String toString() {
-		String s = "";
-		s += "Start: "+start+"\n";
-		s += ""+states.size()+" states: ";
-		
-		s += states.toString();
-//		s += "[";
-//		int i = 0;
-//		for (State state : states) {
-//			if (start.equals(state)) s += "=>";
-//			s += state.toString();
-//			if (i != states.size() - 1) s += ", ";
-//			i++;
-//		}
-		s += "\n";
+    public static NFA star(NFA nfa1){
 
-		s += ""+transitions.size()+" transitions: ";
-		s += transitions.toString();
+        State startState = nfa1.getStart();
+        HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+        Iterator<State> iter = acceptingStates.iterator();
+        while(iter.hasNext()){
+            State s = iter.next();
+            nfa1.addEpsilonTransition(s, startState);
+        }
+        State newStart = new State();
+        newStart.setLabel("Start");
+        NFA newNfa = new NFA(newStart);
+        newNfa.setAccepts(newStart, true);
+        newNfa.addEpsilonTransition(newStart, startState);
 
-		return s;
-	}
-	
-	public void setKlass(Terminals klass){
-		for(State state : states){
-			state.klass = klass;
-		}
-	}
+        return newNfa;
+    }
+    public static NFA plus(NFA nfa1){
+        State startState = nfa1.getStart();
+        HashSet<State> acceptingStates = nfa1.getAcceptingStates();
+        Iterator<State> iter = acceptingStates.iterator();
+        while(iter.hasNext()){
+            State s = iter.next();
+            nfa1.addEpsilonTransition(s, startState);
+        }
+
+        return nfa1;
+    }
+
+    // Add empty string transition
+    public Transition addEpsilonTransition(State from, State to) {
+        return addTransition(from, Transition.EPSILON, to);
+    }
+
+    /* Export */
+    public State[][] toTable() {
+        // Should return some kind of transition table
+        return toDFA().toTable();
+    }
+
+    public DFA toDFA() {
+        return new DFA(this);
+    }
+
+    public String toString() {
+        String s = "";
+        s += "Start: "+start+"\n";
+        s += ""+states.size()+" states: ";
+
+        s += states.toString();
+        //		s += "[";
+        //		int i = 0;
+        //		for (State state : states) {
+        //			if (start.equals(state)) s += "=>";
+        //			s += state.toString();
+        //			if (i != states.size() - 1) s += ", ";
+        //			i++;
+        //		}
+        s += "\n";
+
+        s += ""+transitions.size()+" transitions: ";
+        s += transitions.toString();
+
+        return s;
+    }
+
+    public void setKlass(Terminals klass){
+        for(State state : states){
+            state.klass = klass;
+        }
+    }
+    
+    public Object clone(){
+        try {
+            NFA nfa = (NFA) super.clone();
+            nfa.accepting = (HashSet<State>) accepting.clone();
+            nfa.start = (State) start.clone();
+            nfa.states = (HashSet<State>) states.clone();
+            nfa.transitions = (HashSet<Transition>) transitions.clone();
+            return nfa;
+        } catch (CloneNotSupportedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

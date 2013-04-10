@@ -1,7 +1,7 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Arrays;
 
 /**
  *
@@ -66,7 +66,7 @@ public class RegExpFunc {
         if (is.peekToken(ESCAPE)) {
             return escaped.contains(is.peekToken(1));
         } else {
-        	// Is it in the ASCII printable?
+            // Is it in the ASCII printable?
             return !escaped.contains(is.peekToken()) && (is.peekToken() >= 32 && is.peekToken() < 127);
         }
     }
@@ -110,10 +110,10 @@ public class RegExpFunc {
     }
 
     private void debug() {
-    	if (false) {
-	        System.out.println("Pointer at: " + peekToken());
-	        System.out.println(Thread.currentThread().getStackTrace()[2]);
-    	}
+        if (false) {
+            System.out.println("Pointer at: " + peekToken());
+            System.out.println(Thread.currentThread().getStackTrace()[2]);
+        }
     }
 
     private String definedClass() {
@@ -143,18 +143,18 @@ public class RegExpFunc {
         for (int i = 0; i < classes.size(); i++) {
             if (classes.get(i).getName().equals(className)) {
                 classHash = classes.get(i).getChars();
-                
+
                 char a = lastCharAdded;
                 char b = c;
-                
+
                 // Swap them if they're other way around
                 int diff = b - a;
                 if(b - a < 0){
-                	char swap = a;
-                	a = b;
-                	b = swap;
+                    char swap = a;
+                    a = b;
+                    b = swap;
                 }
-                
+
                 for (int j = a; j <= b; j++) {
                     classHash.add((char) j);
                 }
@@ -163,7 +163,7 @@ public class RegExpFunc {
         }
         return null;
     }
-    
+
     public HashSet<Character> exclude(HashSet<Character> set1, HashSet<Character> set2){
         Iterator<Character> iter = set1.iterator();
         HashSet<Character> newHashSet = (HashSet<Character>) set2.clone();
@@ -175,22 +175,22 @@ public class RegExpFunc {
         return newHashSet;
     }
 
-    public HashSet<Character> getClass(String className){
-        for(int i=0; i<classes.size(); i++){
-            if(classes.get(i).getName().equals(className))
-                return classes.get(i).getChars();
-        }
-        return null;
-    }
+    //    public HashSet<Character> getClass(String className){
+    //        for(int i=0; i<classes.size(); i++){
+    //            if(classes.get(i).getName().equals(className))
+    //                return classes.get(i).getChars();
+    //        }
+    //        return null;
+    //    }
+    //
+    //    private void setClass(String className, HashSet<Character> exclude) {
+    //        for(int i=0; i<classes.size(); i++){
+    //            if(classes.get(i).getName().equals(className))
+    //                classes.get(i).setChars(exclude);
+    //        }        
+    //    }
 
-    private void setClass(String className, HashSet<Character> exclude) {
-        for(int i=0; i<classes.size(); i++){
-            if(classes.get(i).getName().equals(className))
-                classes.get(i).setChars(exclude);
-        }        
-    }
-
-    private NFA createNFA(HashSet set){
+    public static NFA createNFA(HashSet set, String name){
         State s = new State();
         State t = new State();
         NFA nfa = new NFA(s);
@@ -201,7 +201,7 @@ public class RegExpFunc {
         }
         return nfa;
     }
-    
+
     private NFA getNFA(String className){
         for(int i=0; i<classes.size(); i++){
             if(classes.get(i).getName().equals(className))
@@ -209,7 +209,7 @@ public class RegExpFunc {
         }
         return null;
     }
-    
+
     public NFA origRegExp(String className) {
         debug();
         return regExp(className);
@@ -274,7 +274,7 @@ public class RegExpFunc {
             addToHashSet(className, reChar);
             nfa = regExTwoTail(className, nfa);
             if(nfa == null){
-                nfa = createNFA(getClass(className));
+                nfa = createNFA(Parser.getClass(className), className);
             }
             return nfa;
         }
@@ -327,9 +327,9 @@ public class RegExpFunc {
             nfa = new NFA(s);
             nfa.setAccepts(a, true);
             for(char c=' '; c >= '~'; c++){
-                getClass(className).add(c);
+                Parser.getClass(className).add(c);
             }
-            return createNFA(getClass(className));
+            return createNFA(Parser.getClass(className), className);
             /**-----------------------------------------------------------------------------------------------*/
         } else if (peekToken(LBRAC)) {
             matchToken(LBRAC);
@@ -365,7 +365,7 @@ public class RegExpFunc {
         if (peekClsToken()) {
             charSet(className);
             charSetList(className);
-            return createNFA(getClass(className));
+            return createNFA(Parser.getClass(className), className);
         } else if (peekToken(RBRAC)) {
             matchToken(RBRAC);
             return null;
@@ -422,7 +422,7 @@ public class RegExpFunc {
                     matchToken(IN);
                     if (peekToken(DOLLAR)) {
                         excludeSetTail(className);
-                        nfa = createNFA(getClass(className));
+                        nfa = createNFA(Parser.getClass(className), className);
                     }
                     return nfa;
                 } else {
@@ -441,26 +441,26 @@ public class RegExpFunc {
         }
     }
 
-        public void excludeSetTail(String className) {
-            debug();
-            if (peekToken(LBRAC)) {
-                matchToken(LBRAC);
-                charSet(className);
-                if (peekToken(RBRAC)) {
-                    matchToken(RBRAC);
-                } else {
-                    invalid();
-                }
-                
+    public void excludeSetTail(String className) {
+        debug();
+        if (peekToken(LBRAC)) {
+            matchToken(LBRAC);
+            charSet(className);
+            if (peekToken(RBRAC)) {
+                matchToken(RBRAC);
+            } else {
+                invalid();
             }
-            // ***********************************Not sure what to do for
-            // transition***********************************
-            else {
-                matchToken(DOLLAR);
-                String name = definedClass();
-                HashSet<Character> hashSet1 = getClass(className);
-                HashSet<Character> hashSet2 = getClass(name);
-                setClass(className, exclude(hashSet1, hashSet2));
-            }
+
+        }
+        // ***********************************Not sure what to do for
+        // transition***********************************
+        else {
+            matchToken(DOLLAR);
+            String name = definedClass();
+            HashSet<Character> hashSet1 = Parser.getClass(className);
+            HashSet<Character> hashSet2 = Parser.getClass(name);
+            Parser.setClass(className, exclude(hashSet1, hashSet2));
         }
     }
+}

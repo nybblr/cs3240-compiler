@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 public class Parser {
     static ArrayList<Terminals> charClasses;
@@ -16,45 +17,45 @@ public class Parser {
         fileParser("input_spec2.txt");
         scanner("input2.txt");
     }
-    
+
     public static void scanner(String filename) throws FileNotFoundException {
-    	System.out.println("Scanning input file...");
+        System.out.println("Scanning input file...");
         Scanner scan = new Scanner(new File(filename));
         while(scan.hasNextLine()){
             String line = scan.nextLine();
             while(!line.isEmpty()) {
-            	line = line.trim();
-            	
-            	ArrayList<ScanResult> results = new ArrayList<ScanResult>();
-            	
-            	// Run all the DFAs on the current string
-            	// See which one matches the farthest
-            	// First defined token takes precedence
-            	int maxPointer = 0;
-            	Terminals maxKlass = null;
-            	for (Terminals klass : tokenDefs) {
-            		ScanResult result = klass.getDFA().walk(line);
-            		results.add(result);
-            		if (result.lastPointer > maxPointer) {
-            			maxPointer = result.lastPointer;
-            			maxKlass = klass;
-            		}
-            	}
-            	
-            	// If nothing matched, invalid input!
-            	if (maxPointer == 0) {
-            		System.out.println("INVALID INPUT!");
-            		return;
-            	}
-            	
-            	// Something matched!
-            	String token = line.substring(0, maxPointer);
-            	
-            	System.out.print(maxKlass.getName());
-            	System.out.println(" "+token);
-            	
-            	// Consume and start over!
-            	line = line.substring(maxPointer);
+                line = line.trim();
+
+                ArrayList<ScanResult> results = new ArrayList<ScanResult>();
+
+                // Run all the DFAs on the current string
+                // See which one matches the farthest
+                // First defined token takes precedence
+                int maxPointer = 0;
+                Terminals maxKlass = null;
+                for (Terminals klass : tokenDefs) {
+                    ScanResult result = klass.getDFA().walk(line);
+                    results.add(result);
+                    if (result.lastPointer > maxPointer) {
+                        maxPointer = result.lastPointer;
+                        maxKlass = klass;
+                    }
+                }
+
+                // If nothing matched, invalid input!
+                if (maxPointer == 0) {
+                    System.out.println("INVALID INPUT!");
+                    return;
+                }
+
+                // Something matched!
+                String token = line.substring(0, maxPointer);
+
+                System.out.print(maxKlass.getName());
+                System.out.println(" "+token);
+
+                // Consume and start over!
+                line = line.substring(maxPointer);
             }
         }
     }
@@ -66,20 +67,20 @@ public class Parser {
         charClasses = new ArrayList<Terminals>();
         tokenDefs = new ArrayList<Terminals>();
         charsAndTokens = new ArrayList<Terminals>();
-        
+
         // Which array are we filling?
         ArrayList<Terminals> classes = charClasses;
         while(scan.hasNextLine()){
             String line = scan.nextLine();
-            
+
             // EOF or switch arrays?
             if (line.trim().isEmpty()) {
-            	// Time for a switch?
-            	if (classes == charClasses)
-            		classes = tokenDefs;
-            	continue;
+                // Time for a switch?
+                if (classes == charClasses)
+                    classes = tokenDefs;
+                continue;
             }
-            
+
             Scanner lineScan = new Scanner(line);
 
             String token = lineScan.next();
@@ -105,15 +106,15 @@ public class Parser {
             System.out.println(currClass.getDFA());
         }
         State newStart = new State();
-		newStart.setLabel("Start");
-		NFA newNfa = new NFA(newStart);
-		newNfa.setAccepts(newStart, false);
-		for(Terminals each : tokenDefs){
-			newNfa.addEpsilonTransition(newStart, each.getNFA().getStart());
-		}
-		bigNFA = newNfa;
-		bigDFA = newNfa.toDFA();
-	}
+        newStart.setLabel("Start");
+        NFA newNfa = new NFA(newStart);
+        newNfa.setAccepts(newStart, false);
+        for(Terminals each : tokenDefs){
+            newNfa.addEpsilonTransition(newStart, each.getNFA().getStart());
+        }
+        bigNFA = newNfa;
+        bigDFA = newNfa.toDFA();
+    }
     //	}
     /**
      * @return the classes
@@ -146,5 +147,20 @@ public class Parser {
             index++;
         }
         return list;
+    }
+
+    public static HashSet<Character> getClass(String className){
+        for(int i=0; i<charsAndTokens.size(); i++){
+            if(charsAndTokens.get(i).getName().equals(className))
+                return charsAndTokens.get(i).getChars();
+        }
+        return null;
+    }
+
+    public static void setClass(String className, HashSet<Character> exclude) {
+        for(int i=0; i<charsAndTokens.size(); i++){
+            if(charsAndTokens.get(i).getName().equals(className))
+                charsAndTokens.get(i).setChars(exclude);
+        }        
     }
 }
