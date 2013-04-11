@@ -190,7 +190,7 @@ public class RegExpFunc {
     //        }        
     //    }
 
-    public static NFA createNFA(HashSet set, String name){
+    public static NFA createNFA(HashSet set){
         State s = new State();
         State t = new State();
         NFA nfa = new NFA(s);
@@ -274,7 +274,7 @@ public class RegExpFunc {
             addToHashSet(className, reChar);
             nfa = regExTwoTail(className, nfa);
             if(nfa == null){
-                nfa = createNFA(Parser.getClass(className), className);
+                nfa = createNFA(Parser.getClass(className));
             }
             return nfa;
         }
@@ -329,7 +329,7 @@ public class RegExpFunc {
             for(char c=' '; c >= '~'; c++){
                 Parser.getClass(className).add(c);
             }
-            return createNFA(Parser.getClass(className), className);
+            return createNFA(Parser.getClass(className));
             /**-----------------------------------------------------------------------------------------------*/
         } else if (peekToken(LBRAC)) {
             matchToken(LBRAC);
@@ -365,7 +365,7 @@ public class RegExpFunc {
         if (peekClsToken()) {
             charSet(className);
             charSetList(className);
-            return createNFA(Parser.getClass(className), className);
+            return createNFA(Parser.getClass(className));
         } else if (peekToken(RBRAC)) {
             matchToken(RBRAC);
             return null;
@@ -422,7 +422,7 @@ public class RegExpFunc {
                     matchToken(IN);
                     if (peekToken(DOLLAR)) {
                         excludeSetTail(className);
-                        nfa = createNFA(Parser.getClass(className), className);
+                        nfa = createNFA(Parser.getClass(className));
                     }
                     return nfa;
                 } else {

@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Iterator;
 
 
 public class Terminals implements Cloneable{
@@ -54,19 +55,16 @@ public class Terminals implements Cloneable{
     public String toString() {
         return "$"+name+": "+chars.toString();
     }
-
+    
+    @Override
     public Object clone() {
         try {
-            Terminals terminals = (Terminals) super.clone();
-            terminals.chars = (HashSet<Character>) chars.clone();
-            terminals.dfa = (DFA) dfa.clone();
-            terminals.nfa = (NFA) nfa.clone();
-            return terminals;
+            Terminals t = (Terminals) super.clone();
+            return t;
         } catch (CloneNotSupportedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
-        }
-        
+        }  
     }
 }

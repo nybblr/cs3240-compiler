@@ -99,6 +99,20 @@ public class State implements Cloneable {
         return nfa.getStart() == this;
     }
 
+    /**
+     * @return the count
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     * @param count the count to set
+     */
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     public String toString() {
         String string = label;
         if (string == null || string.equals(""))
@@ -110,14 +124,26 @@ public class State implements Cloneable {
         return string;
     }
 
+    public State rename(){
+        State s = (State) this.clone();
+        s.setCount(getCounter());
+        counter++;
+        return s;
+    }
+    
     @Override
     public Object clone(){
         try {
             State s = (State) super.clone();
             s.transitions = (HashSet<Transition>) transitions.clone();
-            s.klass = (Terminals) klass.clone();
-            s.nfa = (NFA) nfa.clone();
-            s.set = (StateSet) set.clone();
+            if(klass == null)
+                s.klass = null;
+            else
+                s.klass = (Terminals) klass.clone();
+            if(set == null)
+                s.set = null;
+            else
+                s.set = (StateSet) set.clone();
             return s;
         }
         catch (CloneNotSupportedException e) {

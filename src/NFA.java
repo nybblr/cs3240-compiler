@@ -159,13 +159,73 @@ public class NFA implements Cloneable {
         if (state.getAccepts() != accepts)
             state.setAccepts(accepts);
     }
+    
+    public NFA recreateNFA(){
+        HashSet<State> states = (HashSet<State>) this.states.clone();
+        HashSet<State> accepting = this.accepting;
+        HashSet<Transition> transitions = (HashSet<Transition>) this.transitions.clone();
+        State start = this.start;
+        Iterator<State> statIter = states.iterator();
+        
+        while(statIter.hasNext()){
+            State s = statIter.next();
+            State newS = s.rename();
+            this.states.remove(s);
+            this.states.add(newS);
+            
+            if(s.getCount() == start.getCount()){
+                this.start = newS;
+            }
+            if(s.getAccepts()){
+                accepting.remove(s);
+                accepting.add(newS);
+            }
+
+            Iterator<Transition> tranIter = transitions.iterator();
+            while(tranIter.hasNext()){
+                Transition t = tranIter.next();
+                State to = t.to;
+                State from = t.from;
+                if(to.getCount() == s.getCount())
+                    t.to = newS;
+                if(from.getCount() == s.getCount())
+                    t.from = newS;
+            }
+        }
+        
+//        this.states.remove(start);
+//        states.add(startClone);
+        
+        return this;
+    }
 
     public static NFA union(NFA nfa1, NFA nfa2){
         if(nfa1 == null){
-            return nfa2;
+            return (NFA) nfa2.clone();
         }
         if(nfa2 == null){
-            return nfa1;
+            return (NFA) nfa1.clone();
+        }
+        
+        HashSet<State> states1 = ((NFA) nfa1.clone()).getStates();
+        HashSet<State> states2 = ((NFA) nfa2.clone()).getStates();
+        HashSet<State> newStates1 = new HashSet<State>();
+        Iterator<State> iter1 = states1.iterator();
+        boolean foundMatch = false;
+        while(iter1.hasNext() && !foundMatch){
+            State s1 = iter1.next();
+            Iterator<State> iter2 = states2.iterator();
+            while(iter2.hasNext()){
+                State s2 = iter2.next();
+                if(s1.equals(s2)){
+                    nfa1.recreateNFA();
+                    foundMatch = true;
+                    break;
+                }
+            }
+        }
+        if(foundMatch){
+            states1 = newStates1;
         }
         
         State newStart = new State();
@@ -185,6 +245,25 @@ public class NFA implements Cloneable {
             return nfa1;
         }
 
+        nfa1 = (NFA) nfa1.clone();
+        nfa2 = (NFA) nfa2.clone();
+        HashSet<State> states1 = nfa1.getStates();
+        HashSet<State> states2 = nfa2.getStates();
+        Iterator<State> iter1 = states1.iterator();
+        boolean foundMatch = false;
+        while(iter1.hasNext() && !foundMatch){
+            State s1 = iter1.next();
+            Iterator<State> iter2 = states2.iterator();
+            while(iter2.hasNext()){
+                State s2 = iter2.next();
+                if(s1.equals(s2)){
+                    nfa1.recreateNFA();
+                    foundMatch = true;
+                    break;
+                }
+            }
+        }
+        
         State startState = nfa2.getStart();
         HashSet<State> acceptingStates = nfa1.getAcceptingStates();
         Iterator<State> iter = acceptingStates.iterator();
@@ -278,6 +357,7 @@ public class NFA implements Cloneable {
         }
     }
     
+    @Override
     public Object clone(){
         try {
             NFA nfa = (NFA) super.clone();
