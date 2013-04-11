@@ -82,6 +82,17 @@ public class InputStream {
 		return pointer;
 	}
 	
+	// Skip over whitespace
+	public int skipWhitespace() {
+		int i = 0;
+    	while (!isConsumed() && Character.isWhitespace(peekToken())) {
+    		advancePointer();
+    		i++;
+    	}
+    	
+    	return i;
+	}
+	
 	public void resetPointer() {
 		pointer = 0;
 	}

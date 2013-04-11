@@ -14,8 +14,8 @@ public class Parser {
     public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
-        fileParser("input_spec2.txt");
-        scanner("input2.txt");
+        fileParser("input_spec.txt");
+        scanner("input.txt");
     }
 
     public static void scanner(String filename) throws FileNotFoundException {
@@ -94,7 +94,9 @@ public class Parser {
 
             token = line.substring(token.length());
 
-            token = token.replaceAll("\\s","");
+            //token = token.replaceAll("\\s","");
+            // Strip out leading space only
+            token = token.replaceAll("^\\s*", "");
             System.out.println(token);
             RegExpFunc func = new RegExpFunc(token);
             NFA nfa = func.origRegExp(currClass.getName());
