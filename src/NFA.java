@@ -162,41 +162,52 @@ public class NFA implements Cloneable {
     
     public NFA recreateNFA(){
         HashSet<State> states = (HashSet<State>) this.states.clone();
-        HashSet<State> accepting = this.accepting;
-        HashSet<Transition> transitions = (HashSet<Transition>) this.transitions.clone();
+        HashSet<Transition> transitions = this.transitions;
         State start = this.start;
+        NFA nfa = new NFA();
         Iterator<State> statIter = states.iterator();
+        
+        Iterator<Transition> tranIter = transitions.iterator();
+        while(tranIter.hasNext()){
+            Transition t = tranIter.next();
+            State to = (State) t.to.clone();
+            State from = (State) t.from.clone();
+            nfa.transitions.add(new Transition(from, t.c, to));
+        }
         
         while(statIter.hasNext()){
             State s = statIter.next();
             State newS = s.rename();
-            this.states.remove(s);
-            this.states.add(newS);
+            newS.setNFA(nfa);
             
             if(s.getCount() == start.getCount()){
-                this.start = newS;
+                nfa.setStart(newS);
             }
             if(s.getAccepts()){
-                accepting.remove(s);
-                accepting.add(newS);
+                nfa.accepting.add(newS);
             }
+            
+            nfa.states.add(newS);
 
-            Iterator<Transition> tranIter = transitions.iterator();
-            while(tranIter.hasNext()){
-                Transition t = tranIter.next();
-                State to = t.to;
-                State from = t.from;
-                if(to.getCount() == s.getCount())
+            Iterator<Transition> newTranIter = nfa.transitions.iterator();
+            while(newTranIter.hasNext()){
+                Transition newT;
+                Transition t = newTranIter.next();
+                State to = (State)t.to;
+                State from = (State) t.from;
+                Character c = t.c;
+                if(to.getCount() == s.getCount()) {
                     t.to = newS;
-                if(from.getCount() == s.getCount())
+                }
+                if(from.getCount() == s.getCount()) {
                     t.from = newS;
+                }
             }
         }
-        
 //        this.states.remove(start);
 //        states.add(startClone);
         
-        return this;
+        return nfa;
     }
 
     public static NFA union(NFA nfa1, NFA nfa2){
@@ -207,26 +218,26 @@ public class NFA implements Cloneable {
             return (NFA) nfa1.clone();
         }
         
-        HashSet<State> states1 = ((NFA) nfa1.clone()).getStates();
-        HashSet<State> states2 = ((NFA) nfa2.clone()).getStates();
-        HashSet<State> newStates1 = new HashSet<State>();
-        Iterator<State> iter1 = states1.iterator();
-        boolean foundMatch = false;
-        while(iter1.hasNext() && !foundMatch){
-            State s1 = iter1.next();
-            Iterator<State> iter2 = states2.iterator();
-            while(iter2.hasNext()){
-                State s2 = iter2.next();
-                if(s1.equals(s2)){
-                    nfa1.recreateNFA();
-                    foundMatch = true;
-                    break;
-                }
-            }
-        }
-        if(foundMatch){
-            states1 = newStates1;
-        }
+//        HashSet<State> states1 = ((NFA) nfa1.clone()).getStates();
+//        HashSet<State> states2 = ((NFA) nfa2.clone()).getStates();
+//        HashSet<State> newStates1 = new HashSet<State>();
+//        Iterator<State> iter1 = states1.iterator();
+//        boolean foundMatch = false;
+//        while(iter1.hasNext() && !foundMatch){
+//            State s1 = iter1.next();
+//            Iterator<State> iter2 = states2.iterator();
+//            while(iter2.hasNext()){
+//                State s2 = iter2.next();
+//                if(s1.equals(s2)){
+//                    nfa1.recreateNFA();
+//                    foundMatch = true;
+//                    break;
+//                }
+//            }
+//        }
+//        if(foundMatch){
+//            states1 = newStates1;
+//        }
         
         State newStart = new State();
         newStart.setLabel("Start");
@@ -245,24 +256,24 @@ public class NFA implements Cloneable {
             return nfa1;
         }
 
-        nfa1 = (NFA) nfa1.clone();
-        nfa2 = (NFA) nfa2.clone();
-        HashSet<State> states1 = nfa1.getStates();
-        HashSet<State> states2 = nfa2.getStates();
-        Iterator<State> iter1 = states1.iterator();
-        boolean foundMatch = false;
-        while(iter1.hasNext() && !foundMatch){
-            State s1 = iter1.next();
-            Iterator<State> iter2 = states2.iterator();
-            while(iter2.hasNext()){
-                State s2 = iter2.next();
-                if(s1.equals(s2)){
-                    nfa1.recreateNFA();
-                    foundMatch = true;
-                    break;
-                }
-            }
-        }
+//        nfa1 = (NFA) nfa1.clone();
+//        nfa2 = (NFA) nfa2.clone();
+//        HashSet<State> states1 = nfa1.getStates();
+//        HashSet<State> states2 = nfa2.getStates();
+//        Iterator<State> iter1 = states1.iterator();
+//        boolean foundMatch = false;
+//        while(iter1.hasNext() && !foundMatch){
+//            State s1 = iter1.next();
+//            Iterator<State> iter2 = states2.iterator();
+//            while(iter2.hasNext()){
+//                State s2 = iter2.next();
+//                if(s1.equals(s2)){
+//                    nfa1.recreateNFA();
+//                    foundMatch = true;
+//                    break;
+//                }
+//            }
+//        }
         
         State startState = nfa2.getStart();
         HashSet<State> acceptingStates = nfa1.getAcceptingStates();
@@ -286,7 +297,6 @@ public class NFA implements Cloneable {
     }
 
     public static NFA star(NFA nfa1){
-
         State startState = nfa1.getStart();
         HashSet<State> acceptingStates = nfa1.getAcceptingStates();
         Iterator<State> iter = acceptingStates.iterator();

@@ -204,8 +204,11 @@ public class RegExpFunc {
 
     private NFA getNFA(String className){
         for(int i=0; i<classes.size(); i++){
-            if(classes.get(i).getName().equals(className))
-                return classes.get(i).getNFA();
+            if(classes.get(i).getName().equals(className)){
+                NFA nfa = classes.get(i).getNFA();
+                nfa = nfa.recreateNFA();
+                return nfa;
+            }
         }
         return null;
     }
