@@ -333,7 +333,7 @@ public class RegExpFunc {
             State a = new State();
             nfa = new NFA(s);
             nfa.setAccepts(a, true);
-            for(char c=' '; c >= '~'; c++){
+            for(char c=Helpers.PRINTSTART; c < Helpers.PRINTEND; c++){
                 Parser.getClass(className).add(c);
             }
             return createNFA(Parser.getClass(className));

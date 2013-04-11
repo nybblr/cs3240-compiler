@@ -42,7 +42,7 @@ public class TestNFAtoDFA {
 		
 		
 		// Now try table walking!
-		String input = "Algebra2";
+		String input = "algebra2";
 		System.out.println("Input: "+input);
 		boolean accepts = DFA.walkTable(input, table).accepts;
 		
