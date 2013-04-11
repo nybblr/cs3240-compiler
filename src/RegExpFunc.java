@@ -18,6 +18,7 @@ public class RegExpFunc {
     IN = "IN", NOT = "^", DASH = "-", DOLLAR = "$";
 
     private static final Character ESCAPE = new Character('\\');
+    private static final Character SPACEC = new Character(' ');
 
     private static final Character[] EX_RE_CHAR = { ' ', '\\', '*', '+', '?',
         '|', '[', ']', '(', ')', '.', '\'', '"', '$' };
@@ -42,7 +43,12 @@ public class RegExpFunc {
     }
 
     private boolean matchToken(String token) {
-        return is.matchToken(token);
+        boolean matched = is.matchToken(token);
+        if (matched) {
+        	is.skipWhitespace();
+        }
+        
+        return matched;
     }
 
     private String peekToken() {
@@ -123,6 +129,7 @@ public class RegExpFunc {
             String name = classes.get(i).getName();
             if (is.peekToken(name)) {
                 is.matchToken(name);
+                is.skipWhitespace();
                 return name;
             }
         }
@@ -329,7 +336,7 @@ public class RegExpFunc {
             State a = new State();
             nfa = new NFA(s);
             nfa.setAccepts(a, true);
-            for(char c=' '; c >= '~'; c++){
+            for(char c=Helpers.PRINTSTART; c < Helpers.PRINTEND; c++){
                 Parser.getClass(className).add(c);
             }
             return createNFA(Parser.getClass(className));
