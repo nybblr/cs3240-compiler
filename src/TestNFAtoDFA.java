@@ -37,7 +37,8 @@ public class TestNFAtoDFA {
 		}
 		
 		//if (klass.getNFA() != klass.getNFA().getStart().getNFA()) System.out.println("THAT'S AN ISSUE!");
-		DFA dfa = klass.getNFA().toDFA();
+		DFA dfa = klass.getDFA();
+		dfa.friendlyNames();
 		State[][] table = dfa.toTable();
 		String string = dfa.tableToString(table);
 		System.out.println(string);

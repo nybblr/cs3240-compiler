@@ -359,6 +359,13 @@ public class NFA implements Cloneable {
         }
     }
     
+    public void friendlyNames() {
+    	int i = 0;
+    	for (State s : states) {
+    		s.setLabel("s"+i++);
+    	}
+    }
+    
 //    @Override
 //    public Object clone(){
 //        try {
