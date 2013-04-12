@@ -55,7 +55,6 @@ public class RegExpFunc {
 		if (is.peekToken() == null)
 			return null;
 		String s = String.valueOf(is.peekToken());
-		System.out.println("Current regex char: " + s);
 		return s;
 	}
 
@@ -370,8 +369,6 @@ public class RegExpFunc {
 
 	public void charSet(String className) {
 		debug();
-		System.out.println(peekToken());
-		System.out.println(is.getPointer());
 		if (peekClsToken()) {
 			Character hashChar = matchClsToken();
 			addToHashSet(className, hashChar);

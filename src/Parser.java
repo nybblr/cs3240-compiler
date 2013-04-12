@@ -135,11 +135,11 @@ public class Parser {
 			NFA nfa = func.origRegExp(currClass.getName());
 			currClass.setNFA(nfa);
 			currClass.setDFA(nfa.toDFA());
-			System.out.println("currClass "+currClass);
+			System.out.println("Parsing class "+currClass);
 			nfa.setKlass(currClass);
 
-			System.out.println(currClass.getNFA());
-			System.out.println(currClass.getDFA());
+			//System.out.println(currClass.getNFA());
+			//System.out.println(currClass.getDFA());
 		}
 		State newStart = new State();
 		//newStart.setLabel("Start");
@@ -171,7 +171,6 @@ public class Parser {
 				char endChar = inside.charAt(index+1);
 				while (currentChar < endChar){
 					list.add(currentChar);
-					//System.out.println("added "+currentChar+" to "+currClass.getName());
 					currentChar++;
 				}
 			}
