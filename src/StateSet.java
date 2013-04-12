@@ -89,16 +89,17 @@ public class StateSet implements Cloneable {
     }
 
     public String toString() {
-        String string = "{";
-        //string += ""+states.size()+":";
-        String delim = ",";
-        Iterator<State> iter = states.iterator();
-        while (iter.hasNext()) {
-            string += iter.next().toString();
-            if (iter.hasNext()) string += delim;
-        }
-        string += "}";
-        return string;
+//        String string = "{";
+//        //string += ""+states.size()+":";
+//        String delim = ",";
+//        Iterator<State> iter = states.iterator();
+//        while (iter.hasNext()) {
+//            string += iter.next().toString();
+//            if (iter.hasNext()) string += delim;
+//        }
+//        string += "}";
+//        return string;
+    	return states.toString();
     }
 
     public State toState() {

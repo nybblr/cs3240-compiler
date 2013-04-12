@@ -194,7 +194,7 @@ public class NFA implements Cloneable {
                 Transition newT;
                 Transition t = newTranIter.next();
                 State to = (State)t.to;
-                State from = (State) t.from;
+                State from = (State)t.from;
                 Character c = t.c;
                 if(to.getCount() == s.getCount()) {
                     t.to = newS;

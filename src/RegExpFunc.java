@@ -90,6 +90,7 @@ public class RegExpFunc {
             token = is.peekToken();
             is.advancePointer();
         }
+        is.skipWhitespace();
 
         return token;
     }
@@ -210,14 +211,18 @@ public class RegExpFunc {
     }
 
     private NFA getNFA(String className){
-        for(int i=0; i<classes.size(); i++){
-            if(classes.get(i).getName().equals(className)){
-                NFA nfa = classes.get(i).getNFA();
-                nfa = nfa.recreateNFA();
-                return nfa;
-            }
-        }
-        return null;
+    	HashSet<Character> chars = Parser.getClass(className);
+    	if (chars != null)
+    		return createNFA(chars);
+    	else
+    		return null;
+//        for(int i=0; i<classes.size(); i++){
+//            if(classes.get(i).getName().equals(className)){
+//                NFA nfa = classes.get(i).getNFA();
+//                nfa = nfa.recreateNFA();
+//                return nfa;
+//            }
+//        }
     }
 
     public NFA origRegExp(String className) {

@@ -14,8 +14,8 @@ public class Parser {
     public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
-        fileParser("input_spec.txt");
-        scanner("input.txt");
+        fileParser("input_spec2.txt");
+        scanner("input2.txt");
     }
 
     public static void scanner(String filename) throws FileNotFoundException {

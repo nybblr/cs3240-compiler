@@ -27,7 +27,7 @@ public class TestNFAtoDFA {
 		ArrayList<Terminals> classes = Parser.getClasses();
 		
 		Terminals klass = null;
-		String klassName = "IDENTIFIER";
+		String klassName = "FLOAT";
 		
 		for (Terminals t : classes) {
 			if (t.getName().equals(klassName)) {
@@ -36,13 +36,15 @@ public class TestNFAtoDFA {
 			}
 		}
 		
-		State[][] table = klass.getDFA().toTable();
-		String string = klass.getDFA().tableToString(table);
+		//if (klass.getNFA() != klass.getNFA().getStart().getNFA()) System.out.println("THAT'S AN ISSUE!");
+		DFA dfa = klass.getNFA().toDFA();
+		State[][] table = dfa.toTable();
+		String string = dfa.tableToString(table);
 		System.out.println(string);
 		
 		
 		// Now try table walking!
-		String input = "algebra2";
+		String input = "3.4";
 		System.out.println("Input: "+input);
 		boolean accepts = DFA.walkTable(input, table).accepts;
 		
