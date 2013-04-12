@@ -16,7 +16,7 @@ public class Parser {
 		PrintStream out = new PrintStream(System.out, true, "UTF-8");
 		System.setOut(out);
 		fileParser("specs/java.txt");
-		scannerDFA("inputs/java.txt");
+		scannerDFA("inputs/java2.txt");
 		//System.out.println(bigDFA.toTableString(true));
 	}
 
