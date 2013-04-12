@@ -15,7 +15,7 @@ public class Parser {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
         fileParser("input_spec2.txt");
-        scanner("input2.txt");
+        scannerDFA("input2.txt");
     }
 
     public static void scanner(String filename) throws FileNotFoundException {
@@ -56,6 +56,56 @@ public class Parser {
 
                 // Consume and start over!
                 line = line.substring(maxPointer);
+            }
+        }
+    }
+    public static void scannerDFA(String filename) throws FileNotFoundException {
+    	System.out.println("Scanning input file wih big dfa...");
+        Scanner scan = new Scanner(new File(filename));
+        while(scan.hasNextLine()){
+            String line = scan.nextLine();
+            //System.out.println(line);
+            while(!line.isEmpty()) {
+            	line = line.trim();
+            	
+            	ArrayList<ScanResult> results = new ArrayList<ScanResult>();
+            	
+            	// Run all the DFAs on the current string
+            	// See which one matches the farthest
+            	// First defined token takes precedence
+            	//int maxPointer = 0;
+            	//Terminals maxKlass = null;
+            	//for (Terminals klass : tokenDefs) {
+            	ScanResult result = bigDFA.walk(line);
+            	results.add(result);
+            	System.out.println("last pointer "+result.lastPointer);
+            	//if (result.lastPointer > maxPointer) {
+            		//	maxPointer = result.lastPointer;
+            			//System.out.println("lastAccpt "+result.lastAccept);
+            			//maxKlass = result.lastAccept.klass;
+            			//System.out.println("maxKlass "+maxKlass);
+            		//}
+            	//}
+            	
+            	// If nothing matched, invalid input!
+            	if (result.lastPointer == 0) {
+            		System.out.println("INVALID INPUT!");
+            		return;
+            	}
+            	
+            	
+            	// Something matched!
+            	String token = line.substring(0, result.lastPointer);
+            	if(result.lastAccept.klass!=null){
+            		System.out.print(result.lastAccept.klass.getName());
+                    System.out.println(" "+token);
+            	}
+            	else
+            		System.out.print("ITS NULL");
+            	//System.out.println(" "+token);
+            	
+            	// Consume and start over!
+            	line = line.substring(result.lastPointer);
             }
         }
     }
@@ -102,20 +152,38 @@ public class Parser {
             NFA nfa = func.origRegExp(currClass.getName());
             currClass.setNFA(nfa);
             currClass.setDFA(nfa.toDFA());
+            System.out.println("currClass "+currClass);
             nfa.setKlass(currClass);
+            //for(State state: nfa.getStates())
+            	//System.out.println("nfa klass "+state.klass);
 
             System.out.println(currClass.getNFA());
             System.out.println(currClass.getDFA());
         }
         State newStart = new State();
-        newStart.setLabel("Start");
+        //newStart.setLabel("Start");
         NFA newNfa = new NFA(newStart);
-        newNfa.setAccepts(newStart, false);
+        //newNfa.setAccepts(newStart, false);
         for(Terminals each : tokenDefs){
-            newNfa.addEpsilonTransition(newStart, each.getNFA().getStart());
+        	System.out.println("each tokendef "+each.toString());
+        }
+        for(Terminals each : tokenDefs){
+        	System.out.println("newnfa eps from "+newNfa.getStart().getCount()+" to "+ each.getNFA().getStart().getCount());
+            newNfa.addEpsilonTransition(newNfa.getStart(), each.getNFA().getStart());
         }
         bigNFA = newNfa;
         bigDFA = newNfa.toDFA();
+        System.out.println("BIG NFA\n"+bigNFA);
+        for(State state: bigNFA.getStates()){
+        	//System.out.println("newnfa eps from "+newNfa.getStart().getCount()+" to "+ each.getNFA().getStart().getCount());
+        	System.out.println("bignfa klass "+state.getCount()+" "+state.klass);
+        	//state.
+        }
+        System.out.println("BIG DFA\n"+bigDFA);
+        for(State state: bigDFA.getStates()){
+        	System.out.println("bigdfa klass "+state.getCount()+" "+state.klass);
+        }
+        //System.out.println("klass "+bigDFA.getStart().klass);
     }
     //	}
     /**

@@ -107,12 +107,19 @@ public class StateSet implements Cloneable {
         state.setAccepts(accepts());
 
         for(State currState : states){
-            if(currState.getAccepts() && state.klass == null)
+        	if(currState.getAccepts()){
                 state.klass = currState.klass;
-            else if(currState.getAccepts())
+                System.out.println("setting state class "+state.klass);
+            }
+            /*if(currState.getAccepts() && state.klass == null){
+                state.klass = currState.klass;
+                System.out.println("setting state class "+state.klass);
+            }
+            else if(currState.getAccepts()){
                 System.out.println("MORE THAN ONE KLASS IN A STATE SET");
+            }*/
         }
-
+        System.out.println("state's new klass variable "+state.klass);
         return state;
     }
 
