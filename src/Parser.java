@@ -14,8 +14,9 @@ public class Parser {
     public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
-        fileParser("input_spec2.txt");
-        scannerDFA("input2.txt");
+        fileParser("input_spec.txt");
+        scannerDFA("input.txt");
+        System.out.println(bigDFA.toTableString(true));
     }
 
     public static void scanner(String filename) throws FileNotFoundException {

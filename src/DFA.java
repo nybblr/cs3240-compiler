@@ -162,4 +162,11 @@ public class DFA extends NFA {
 		
 		return null;
 	}
+	
+	public String toTableString(boolean friendly) {
+		if (friendly) friendlyNames();
+		State[][] table = toTable();
+		String string = tableToString(table);
+		return string;
+	}
 }
