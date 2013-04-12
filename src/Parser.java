@@ -71,22 +71,9 @@ public class Parser {
             	
             	ArrayList<ScanResult> results = new ArrayList<ScanResult>();
             	
-            	// Run all the DFAs on the current string
-            	// See which one matches the farthest
-            	// First defined token takes precedence
-            	//int maxPointer = 0;
-            	//Terminals maxKlass = null;
-            	//for (Terminals klass : tokenDefs) {
             	ScanResult result = bigDFA.walk(line);
             	results.add(result);
             	System.out.println("last pointer "+result.lastPointer);
-            	//if (result.lastPointer > maxPointer) {
-            		//	maxPointer = result.lastPointer;
-            			//System.out.println("lastAccpt "+result.lastAccept);
-            			//maxKlass = result.lastAccept.klass;
-            			//System.out.println("maxKlass "+maxKlass);
-            		//}
-            	//}
             	
             	// If nothing matched, invalid input!
             	if (result.lastPointer == 0) {
