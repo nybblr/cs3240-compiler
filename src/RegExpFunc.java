@@ -41,10 +41,14 @@ public class RegExpFunc {
 		this.input = new String(input);
 		this.is = new InputStream(this.input);
 	}
-
+	
 	private boolean matchToken(String token) {
+		return matchToken(token, true);
+	}
+
+	private boolean matchToken(String token, boolean skipWhitespace) {
 		boolean matched = is.matchToken(token);
-		if (matched) {
+		if (matched && skipWhitespace) {
 			is.skipWhitespace();
 		}
 
@@ -324,7 +328,7 @@ public class RegExpFunc {
 			return createNFA(Parser.getClass(className));
 			/**-----------------------------------------------------------------------------------------------*/
 		} else if (peekToken(LBRAC)) {
-			matchToken(LBRAC);
+			matchToken(LBRAC, false);
 			nfa = charClassOne(className);
 			return nfa;
 		}

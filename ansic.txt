@@ -1,0 +1,6 @@
+0x34F8
+"hello world.""the dismal world *i* used_to_know."
+
+void ()
+"The answer is" + 42 / 100.43
+243 | 0473
