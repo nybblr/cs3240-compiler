@@ -117,6 +117,8 @@ public class State implements Cloneable {
         String string = label;
         if (string == null || string.equals(""))
             string = Integer.toString(count);
+        if (klass != null)
+        	string += "{"+klass.getName()+"}";
         if (getAccepts())
             string = "+"+string+"+";
         if (isStart())
