@@ -15,8 +15,8 @@ public class Parser {
 	public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
 		PrintStream out = new PrintStream(System.out, true, "UTF-8");
 		System.setOut(out);
-		fileParser("ansic_spec.txt");
-		scannerDFA("ansic.txt");
+		fileParser("specs/ansic.txt");
+		scannerDFA("inputs/ansic.txt");
 		//System.out.println(bigDFA.toTableString(true));
 	}
 
