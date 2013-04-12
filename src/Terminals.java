@@ -56,15 +56,15 @@ public class Terminals implements Cloneable{
         return "$"+name+": "+chars.toString();
     }
     
-    @Override
-    public Object clone() {
-        try {
-            Terminals t = (Terminals) super.clone();
-            return t;
-        } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }  
-    }
+//    @Override
+//    public Object clone() {
+//        try {
+//            Terminals t = (Terminals) super.clone();
+//            return t;
+//        } catch (CloneNotSupportedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return null;
+//        }  
+//    }
 }

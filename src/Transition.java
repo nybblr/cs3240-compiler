@@ -39,17 +39,17 @@ public class Transition implements Cloneable{
         return ""+from+"=>'"+Helpers.niceCharToString(c)+"'=>"+to;
     }
 
-    @Override
-    public Object clone(){
-        try {
-            Transition t = (Transition) super.clone();
-            t.from = (State) from.clone();
-            t.to = (State) to.clone();
-            return t;
-        } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    @Override
+//    public Object clone(){
+//        try {
+//            Transition t = (Transition) super.clone();
+//            t.from = (State) from.clone();
+//            t.to = (State) to.clone();
+//            return t;
+//        } catch (CloneNotSupportedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 }

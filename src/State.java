@@ -124,32 +124,32 @@ public class State implements Cloneable {
         return string;
     }
 
-    public State rename(){
-        State s = (State) this.clone();
-        s.setCount(getCounter());
-        counter++;
-        return s;
-    }
+//    public State rename(){
+//        State s = (State) this.clone();
+//        s.setCount(getCounter());
+//        counter++;
+//        return s;
+//    }
     
-    @Override
-    public Object clone(){
-        try {
-            State s = (State) super.clone();
-            s.transitions = (HashSet<Transition>) transitions.clone();
-            if(klass == null)
-                s.klass = null;
-            else
-                s.klass = (Terminals) klass.clone();
-            if(set == null)
-                s.set = null;
-            else
-                s.set = (StateSet) set.clone();
-            return s;
-        }
-        catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    @Override
+//    public Object clone(){
+//        try {
+//            State s = (State) super.clone();
+//            s.transitions = (HashSet<Transition>) transitions.clone();
+//            if(klass == null)
+//                s.klass = null;
+//            else
+//                s.klass = (Terminals) klass.clone();
+//            if(set == null)
+//                s.set = null;
+//            else
+//                s.set = (StateSet) set.clone();
+//            return s;
+//        }
+//        catch (CloneNotSupportedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 }

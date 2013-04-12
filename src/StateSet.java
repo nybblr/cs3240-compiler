@@ -116,21 +116,21 @@ public class StateSet implements Cloneable {
         return state;
     }
 
-    @Override
-    public Object clone(){
-        try {
-            StateSet set = (StateSet) super.clone();
-            Iterator<State> stateIter = states.iterator();
-            while(stateIter.hasNext()){
-                State s = stateIter.next();
-                set.states.remove(s);
-                set.states.add((State) s.clone());
-            }
-            return set;
-        } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    @Override
+//    public Object clone(){
+//        try {
+//            StateSet set = (StateSet) super.clone();
+//            Iterator<State> stateIter = states.iterator();
+//            while(stateIter.hasNext()){
+//                State s = stateIter.next();
+//                set.states.remove(s);
+//                set.states.add((State) s.clone());
+//            }
+//            return set;
+//        } catch (CloneNotSupportedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 }

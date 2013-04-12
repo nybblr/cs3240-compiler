@@ -160,62 +160,62 @@ public class NFA implements Cloneable {
             state.setAccepts(accepts);
     }
     
-    public NFA recreateNFA(){
-        HashSet<State> states = (HashSet<State>) this.states.clone();
-        HashSet<Transition> transitions = this.transitions;
-        State start = this.start;
-        NFA nfa = new NFA();
-        Iterator<State> statIter = states.iterator();
-        
-        Iterator<Transition> tranIter = transitions.iterator();
-        while(tranIter.hasNext()){
-            Transition t = tranIter.next();
-            State to = (State) t.to.clone();
-            State from = (State) t.from.clone();
-            nfa.transitions.add(new Transition(from, t.c, to));
-        }
-        
-        while(statIter.hasNext()){
-            State s = statIter.next();
-            State newS = s.rename();
-            newS.setNFA(nfa);
-            
-            if(s.getCount() == start.getCount()){
-                nfa.setStart(newS);
-            }
-            if(s.getAccepts()){
-                nfa.accepting.add(newS);
-            }
-            
-            nfa.states.add(newS);
-
-            Iterator<Transition> newTranIter = nfa.transitions.iterator();
-            while(newTranIter.hasNext()){
-                Transition newT;
-                Transition t = newTranIter.next();
-                State to = (State)t.to;
-                State from = (State)t.from;
-                Character c = t.c;
-                if(to.getCount() == s.getCount()) {
-                    t.to = newS;
-                }
-                if(from.getCount() == s.getCount()) {
-                    t.from = newS;
-                }
-            }
-        }
-//        this.states.remove(start);
-//        states.add(startClone);
-        
-        return nfa;
-    }
+//    public NFA recreateNFA(){
+//        HashSet<State> states = (HashSet<State>) this.states.clone();
+//        HashSet<Transition> transitions = this.transitions;
+//        State start = this.start;
+//        NFA nfa = new NFA();
+//        Iterator<State> statIter = states.iterator();
+//        
+//        Iterator<Transition> tranIter = transitions.iterator();
+//        while(tranIter.hasNext()){
+//            Transition t = tranIter.next();
+//            State to = (State) t.to.clone();
+//            State from = (State) t.from.clone();
+//            nfa.transitions.add(new Transition(from, t.c, to));
+//        }
+//        
+//        while(statIter.hasNext()){
+//            State s = statIter.next();
+//            State newS = s.rename();
+//            newS.setNFA(nfa);
+//            
+//            if(s.getCount() == start.getCount()){
+//                nfa.setStart(newS);
+//            }
+//            if(s.getAccepts()){
+//                nfa.accepting.add(newS);
+//            }
+//            
+//            nfa.states.add(newS);
+//
+//            Iterator<Transition> newTranIter = nfa.transitions.iterator();
+//            while(newTranIter.hasNext()){
+//                Transition newT;
+//                Transition t = newTranIter.next();
+//                State to = (State)t.to;
+//                State from = (State)t.from;
+//                Character c = t.c;
+//                if(to.getCount() == s.getCount()) {
+//                    t.to = newS;
+//                }
+//                if(from.getCount() == s.getCount()) {
+//                    t.from = newS;
+//                }
+//            }
+//        }
+////        this.states.remove(start);
+////        states.add(startClone);
+//        
+//        return nfa;
+//    }
 
     public static NFA union(NFA nfa1, NFA nfa2){
         if(nfa1 == null){
-            return (NFA) nfa2.clone();
+            return (NFA) nfa2;
         }
         if(nfa2 == null){
-            return (NFA) nfa1.clone();
+            return (NFA) nfa1;
         }
         
 //        HashSet<State> states1 = ((NFA) nfa1.clone()).getStates();
@@ -345,14 +345,6 @@ public class NFA implements Cloneable {
         s += ""+states.size()+" states: ";
 
         s += states.toString();
-        //		s += "[";
-        //		int i = 0;
-        //		for (State state : states) {
-        //			if (start.equals(state)) s += "=>";
-        //			s += state.toString();
-        //			if (i != states.size() - 1) s += ", ";
-        //			i++;
-        //		}
         s += "\n";
 
         s += ""+transitions.size()+" transitions: ";
@@ -367,19 +359,19 @@ public class NFA implements Cloneable {
         }
     }
     
-    @Override
-    public Object clone(){
-        try {
-            NFA nfa = (NFA) super.clone();
-            nfa.accepting = (HashSet<State>) accepting.clone();
-            nfa.start = (State) start.clone();
-            nfa.states = (HashSet<State>) states.clone();
-            nfa.transitions = (HashSet<Transition>) transitions.clone();
-            return nfa;
-        } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    @Override
+//    public Object clone(){
+//        try {
+//            NFA nfa = (NFA) super.clone();
+//            nfa.accepting = (HashSet<State>) accepting.clone();
+//            nfa.start = (State) start.clone();
+//            nfa.states = (HashSet<State>) states.clone();
+//            nfa.transitions = (HashSet<Transition>) transitions.clone();
+//            return nfa;
+//        } catch (CloneNotSupportedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 }
