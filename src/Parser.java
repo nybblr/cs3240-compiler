@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
+
 public class Parser {
 	static ArrayList<Terminals> charClasses;
 	static ArrayList<Terminals> tokenDefs;
@@ -65,7 +66,6 @@ public class Parser {
 		Scanner scan = new Scanner(new File(filename));
 		while(scan.hasNextLine()){
 			String line = scan.nextLine();
-			//System.out.println(line);
 			while(!line.isEmpty()) {
 				line = line.trim();
 
@@ -137,8 +137,6 @@ public class Parser {
 			currClass.setDFA(nfa.toDFA());
 			System.out.println("currClass "+currClass);
 			nfa.setKlass(currClass);
-			//for(State state: nfa.getStates())
-			//System.out.println("nfa klass "+state.klass);
 
 			System.out.println(currClass.getNFA());
 			System.out.println(currClass.getDFA());
@@ -179,7 +177,6 @@ public class Parser {
 			}
 			else{
 				list.add(c);
-				//System.out.println("added "+c+" to "+currClass.getName());
 			}
 			previousChar = c;
 			index++;
