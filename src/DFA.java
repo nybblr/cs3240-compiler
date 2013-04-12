@@ -23,13 +23,7 @@ public class DFA extends NFA {
 		startSet.add(nfa.getStart());
 		startSet.states.addAll(nfa.statesReachableFrom(nfa.getStart()));
 		
-		System.out.println("STARTSET to state");
-
 		setStart(startSet.toState());
-		for(State state: startSet.states){
-			System.out.println("START SET "+state.klass);
-		}
-		
 		map.put(startSet, getStart());
 		
 		Queue<StateSet> queue = new LinkedList<StateSet>();
@@ -42,7 +36,6 @@ public class DFA extends NFA {
 				StateSet trans = set.transition((char)i);
 				State to = null;
 				if (!map.containsKey(trans)) {
-					System.out.println("TRANS to state");
 					to = trans.toState();
 					map.put(trans, to);
 					if (!queue.contains(trans))
@@ -117,7 +110,7 @@ public class DFA extends NFA {
 			currState = table[index][c-Helpers.PRINTSTART+1];
 			
 			if(currState.getAccepts()) {
-				lastAccept = start;
+				lastAccept = currState;
 				acceptPointer = is.getPointer();
 			}
 			
