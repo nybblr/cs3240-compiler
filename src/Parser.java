@@ -31,10 +31,6 @@ public class Parser {
                 System.out.println("Found -s");
                 fileParser(args[1]);
             }
-            else{
-                throw new RuntimeException("\nIncorrect arguments. Arguments must be: \n" +
-                "-s <input_spec.txt> [-i <input.txt>] [-d <dfa.txt>] [-o <output.txt>] [--debug]");
-            }
             if(argsContains(args, "-d") != -1 && args.length >= 4){
                 System.out.println("Found -d");
                 dfa = true;
