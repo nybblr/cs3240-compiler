@@ -161,7 +161,7 @@ public class RegExpFunc {
 				// Swap them if they're other way around
 				// Throw error for now.
 				// int diff = b - a;
-				if(b - a < 0){
+				if(b - a <= 0){
 					invalid();
 					char swap = a;
 					a = b;
