@@ -49,6 +49,10 @@ public class Parser {
                     int ind = argsContains(args, "-i");
                     scannerDFA(args[ind++]);
                 }
+                else if(argsContains(args, "-o") != -1 && args.length >= 4){
+                    throw new RuntimeException("\nIncorrect arguments. Arguments must at least have: \n" +
+                    "-s <input_spec.txt> -i <input.txt> and -o <output.txt>\n if -o is used");
+                }
                 if(argsContains(args, "--debug") != -1 && args.length >= 3){
                     System.out.println("Found --debug");
                     debug = true;
