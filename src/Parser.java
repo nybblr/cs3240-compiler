@@ -82,6 +82,8 @@ public class Parser {
     public static void scanner(String filename) throws FileNotFoundException {
         System.out.println("Scanning input file...");
         Scanner scan = new Scanner(new File(filename));
+        String outputStr = "";
+        
         while(scan.hasNextLine()){
             String line = scan.nextLine();
             while(!line.isEmpty()) {
@@ -118,16 +120,7 @@ public class Parser {
                     System.out.println(" "+token);
                 }
                 else{
-                    File dfaFile = new File(outputFilename);
-                    try {
-                        FileWriter fw = new FileWriter(dfaFile);
-                        BufferedWriter bw = new BufferedWriter(fw);
-                        bw.write(bigDFA.toTableString(true));
-                        bw.close();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    outputStr = maxKlass.getName() + " " + token + "\n";
                 }
 
 
@@ -135,11 +128,25 @@ public class Parser {
                 line = line.substring(maxPointer);
             }
         }
+        if(output){
+            File dfaFile = new File(outputFilename);
+            try {
+                FileWriter fw = new FileWriter(dfaFile);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(outputStr);
+                bw.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
+    
     public static void scannerDFA(String filename) throws FileNotFoundException {
         if(debug)
             System.out.println("Scanning input file wih big dfa...");
         Scanner scan = new Scanner(new File(filename));
+        String outputStr = "";
         while(scan.hasNextLine()){
             String line = scan.nextLine();
             while(!line.isEmpty()) {
@@ -161,13 +168,28 @@ public class Parser {
                 String token = line.substring(0, result.lastPointer);
 
                 // Note: lastAccept.klass should NEVER be null!
-                if(output){
+                if(!output){
                     System.out.print(result.lastAccept.klass.getName());
                     System.out.println(" "+token);
+                }
+                else{
+                    outputStr = result.lastAccept.klass.getName() + " " + token + "\n";
                 }
 
                 // Consume and start over!
                 line = line.substring(result.lastPointer);
+            }
+        }
+        if(output){
+            File dfaFile = new File(outputFilename);
+            try {
+                FileWriter fw = new FileWriter(dfaFile);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(outputStr);
+                bw.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }
