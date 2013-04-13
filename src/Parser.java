@@ -23,16 +23,13 @@ public class Parser {
     private static String outputFilename;
 
     public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
-        ArrayList<String> cmdArgs = new ArrayList<String>();
-        for(int i=0; i<args.length; i++){
-            cmdArgs.add(args[i]);
-//            System.out.println(args[i] + " " + i);
-        }
+        PrintStream out = new PrintStream(System.out, true, "UTF-8");
+        System.setOut(out);
         if(args.length > 1 && args.length < 9 && args.length%2 == 0){
             System.out.println("HERE!");
-            if(cmdArgs.get(0).equals("-s") && cmdArgs.size() == 2){
+            if(args[0].equals("-s") && args.length >= 2){
                 System.out.println("Found -s");
-                fileParser(cmdArgs.get(1));
+                fileParser(args[1]);
             }
             else{
                 throw new RuntimeException("\nIncorrect arguments. Arguments must be: \n" +
@@ -57,7 +54,7 @@ public class Parser {
                 int ind = argsContains(args, "-i");
                 scannerDFA(args[ind++]);
             }
-            if(cmdArgs.contains("--debug") && cmdArgs.size() >= 3){
+            if(argsContains(args, "--debug") != -1 && args.length >= 3){
                 System.out.println("Found --debug");
                 debug = true;
             }
