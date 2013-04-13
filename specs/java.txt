@@ -4,7 +4,7 @@ $HEX [A-Fa-f0-9]
 $LETTER [A-Za-z]
 $ALNUM [A-Za-z0-9]
 $COMMENT //\.\*
-$PC [ a-zA-Z0-9_|-"'~!@#\$%\^&*()=;:/?.>,<\[\]{}]
+$PC [ a-zA-Z0-9_|\-"'~!@#\$%\^&*()=;:/?.>,<\[\]{}]
 $NQ [^"] IN $PC
 
 $OPEN_PAREN \(
