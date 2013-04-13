@@ -29,30 +29,30 @@ public class Parser {
             System.out.println("HERE!");
             if(args[0].equals("-s") && args.length >= 2){
                 System.out.println("Found -s");
+                if(argsContains(args, "-d") != -1 && args.length >= 4){
+                    System.out.println("Found -d");
+                    dfa = true;
+                    System.out.println(argsContains(args, "-d") + 1);
+                    dfaOutputFilename = args[argsContains(args, "-d")+1];
+                }
                 fileParser(args[1]);
-            }
-            if(argsContains(args, "-d") != -1 && args.length >= 4){
-                System.out.println("Found -d");
-                dfa = true;
-                int ind = argsContains(args, "-d");
-                dfaOutputFilename = args[ind++];
-            }
-            if(argsContains(args, "-o") != -1 && argsContains(args, "-i") != -1
-                    && args.length >= 6){
-                System.out.println("Found -o && -i");
-                output = true;
-                outputFilename = args[argsContains(args, "-o")];
-                int ind = argsContains(args, "-i");
-                scannerDFA(args[ind++]);
-            }
-            else if(argsContains(args, "-i") != -1 && args.length >= 4){
-                System.out.println("Found -i");
-                int ind = argsContains(args, "-i");
-                scannerDFA(args[ind++]);
-            }
-            if(argsContains(args, "--debug") != -1 && args.length >= 3){
-                System.out.println("Found --debug");
-                debug = true;
+                if(argsContains(args, "-o") != -1 && argsContains(args, "-i") != -1
+                        && args.length >= 6){
+                    System.out.println("Found -o && -i");
+                    output = true;
+                    outputFilename = args[argsContains(args, "-o")];
+                    int ind = argsContains(args, "-i");
+                    scannerDFA(args[ind++]);
+                }
+                else if(argsContains(args, "-i") != -1 && args.length >= 4){
+                    System.out.println("Found -i");
+                    int ind = argsContains(args, "-i");
+                    scannerDFA(args[ind++]);
+                }
+                if(argsContains(args, "--debug") != -1 && args.length >= 3){
+                    System.out.println("Found --debug");
+                    debug = true;
+                }
             }
         }
         else{
