@@ -16,3 +16,10 @@ Then type in the following to execute the Parser:
 		<> - the text file name (do not include <> around your filename just type filename)
 
 **Note:** *the DFA table outputted will be very large; make sure you open it with line wrapping turned off. In Vim, type `:set nowrap` from normal mode to turn of wrapping.*
+
+Modules
+-------
+Further information on the different classes is attached in the report. Those unaddressed include:
+- Helpers: a simple class for ASCII ditties.
+- StateSet: a simple wrapper around a set of NFA states used in the NFA to DFA conversion.
+- ScanResult: a tuple returned after executing a DFA on input.
