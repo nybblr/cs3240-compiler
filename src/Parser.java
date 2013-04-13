@@ -25,12 +25,12 @@ public class Parser {
     public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
-        if(args.length > 1 && args.length < 9 && args.length%2 == 0){
-            System.out.println("HERE!");
+        if(args.length > 1 && args.length < 10 && args.length%2 == 0){
+//            System.out.println("HERE!");
             if(args[0].equals("-s") && args.length >= 2){
-                System.out.println("Found -s");
+//                System.out.println("Found -s");
                 if(argsContains(args, "-d") != -1 && args.length >= 4){
-                    System.out.println("Found -d");
+//                    System.out.println("Found -d");
                     dfa = true;
                     System.out.println(argsContains(args, "-d") + 1);
                     dfaOutputFilename = args[argsContains(args, "-d")+1];
@@ -38,14 +38,14 @@ public class Parser {
                 fileParser(args[1]);
                 if(argsContains(args, "-o") != -1 && argsContains(args, "-i") != -1
                         && args.length >= 6){
-                    System.out.println("Found -o && -i");
+//                    System.out.println("Found -o && -i");
                     output = true;
                     outputFilename = args[argsContains(args, "-o")+1];
                     int ind = argsContains(args, "-i");
                     scannerDFA(args[ind+1]);
                 }
                 else if(argsContains(args, "-i") != -1 && args.length >= 4){
-                    System.out.println("Found -i");
+//                    System.out.println("Found -i");
                     int ind = argsContains(args, "-i");
                     scannerDFA(args[ind+1]);
                 }
@@ -53,10 +53,10 @@ public class Parser {
                     throw new RuntimeException("\nIncorrect arguments. Arguments must at least have: \n" +
                     "-s <input_spec.txt> -i <input.txt> and -o <output.txt>\n if -o is used");
                 }
-                if(argsContains(args, "--debug") != -1 && args.length >= 3){
-                    System.out.println("Found --debug");
-                    debug = true;
-                }
+//                if(argsContains(args, "--debug") != -1 && args.length >= 3){
+//                    System.out.println("Found --debug");
+//                    debug = true;
+//                }
             }
         }
         else{
@@ -173,7 +173,7 @@ public class Parser {
                     System.out.println(" "+token);
                 }
                 else{
-                    outputStr = result.lastAccept.klass.getName() + " " + token + "\n";
+                    outputStr += result.lastAccept.klass.getName() + " " + token + "\n";
                 }
 
                 // Consume and start over!
