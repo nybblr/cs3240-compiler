@@ -40,7 +40,7 @@ public class Parser {
                         && args.length >= 6){
                     System.out.println("Found -o && -i");
                     output = true;
-                    outputFilename = args[argsContains(args, "-o")];
+                    outputFilename = args[argsContains(args, "-o")+1];
                     int ind = argsContains(args, "-i");
                     scannerDFA(args[ind+1]);
                 }
