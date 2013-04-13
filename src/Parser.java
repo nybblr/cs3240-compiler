@@ -32,7 +32,7 @@ public class Parser {
                 if(argsContains(args, "-d") != -1 && args.length >= 4){
 //                    System.out.println("Found -d");
                     dfa = true;
-                    System.out.println(argsContains(args, "-d") + 1);
+//                    System.out.println(argsContains(args, "-d") + 1);
                     dfaOutputFilename = args[argsContains(args, "-d")+1];
                 }
                 fileParser(args[1]);
