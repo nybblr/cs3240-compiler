@@ -42,12 +42,12 @@ public class Parser {
                     output = true;
                     outputFilename = args[argsContains(args, "-o")];
                     int ind = argsContains(args, "-i");
-                    scannerDFA(args[ind++]);
+                    scannerDFA(args[ind+1]);
                 }
                 else if(argsContains(args, "-i") != -1 && args.length >= 4){
                     System.out.println("Found -i");
                     int ind = argsContains(args, "-i");
-                    scannerDFA(args[ind++]);
+                    scannerDFA(args[ind+1]);
                 }
                 else if(argsContains(args, "-o") != -1 && args.length >= 4){
                     throw new RuntimeException("\nIncorrect arguments. Arguments must at least have: \n" +
