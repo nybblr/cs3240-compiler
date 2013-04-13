@@ -14,3 +14,5 @@ Then type in the following to execute the Parser:
 		
 		[] - these are optional inputs however if -o <output.txt> is used then -i <input.txt> must also be used.
 		<> - the text file name (do not include <> around your filename just type filename)
+
+**Note:** *the DFA table outputted will be very large; make sure you open it with line wrapping turned off. In Vim, type `:set nowrap` from normal mode to turn of wrapping.*
