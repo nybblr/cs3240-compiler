@@ -1,0 +1,29 @@
+$LETTER [a-zA-Z]
+$DIGIT [0-9]
+$ASCII [ -~]
+$NONQUOTE [^"] IN $ASCII
+$NONSINGLEQUOTE [^'] IN $ASCII
+
+$ASCII-STR \"($NONQUOTE|\\\")*\"
+$BEGIN begin
+$END end
+$EQ =  
+$REPLACE replace
+$WITH with
+$IN in
+$SEMICOLON ; 
+$RECREP recursivereplace  
+$GRTNOT >!  
+$PRINT print 
+$OPENPARENS \( 
+$CLOSEPARENS \)  
+$COMMA ,  
+$HASH # 
+$FIND find 
+$DIFF diff   
+$UNION union 
+$INTERS inters
+$MAXFREQ maxfreqstring 
+$REGEX \'($NONSINGLEQUOTE|\\\')*\'
+$ID $LETTER ($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)($LETTER|$DIGIT|_|)
+$NUMBER ($DIGIT)+
