@@ -5,9 +5,13 @@ import java.util.ArrayList;
 public class TestScanner {
 
 	public static void main(String[] args) throws IOException {
+		Parser.debug = true;
+		
 		Parser parser = new Parser();
-		parser.buildFromFile("specs/sample2.txt");
-		parser.scanAndOutput("inputs/sample2.txt");
+		parser.buildFromFile("specs/minire.txt");
+		System.out.println(parser.bigDFA.toTableString(true));
+		
+		parser.scanAndOutput("inputs/minire.txt");
 		
 		ArrayList<TokenClass> classes = parser.getClasses();
 		

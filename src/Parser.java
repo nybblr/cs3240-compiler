@@ -17,7 +17,7 @@ public class Parser {
     ArrayList<TokenClass> charsAndTokens;
     NFA bigNFA;
     DFA bigDFA;
-    private static boolean debug = false;
+    static boolean debug = false;
     private static boolean dfa = false;
     private static boolean output = false;
     private static String dfaOutputFilename;
