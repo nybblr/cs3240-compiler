@@ -246,7 +246,7 @@ public class NFA implements Cloneable {
 		return s;
 	}
 
-	public void setKlass(Terminals klass){
+	public void setKlass(TokenClass klass){
 		for(State state : states) {
 			state.klass = klass;
 		}

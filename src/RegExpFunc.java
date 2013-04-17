@@ -30,7 +30,7 @@ public class RegExpFunc {
 	private static final HashSet<Character> CLS_CHAR = new HashSet<Character>(
 			Arrays.asList(EX_CLS_CHAR));
 
-	private ArrayList<Terminals> classes = Parser.getClasses();
+	private ArrayList<TokenClass> classes = Parser.getClasses();
 
 	private String input;
 	private InputStream is;

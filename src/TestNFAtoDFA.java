@@ -1,11 +1,12 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 
 public class TestNFAtoDFA {
 
-	public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException {
+	public static void main(String[] args) throws IOException {
 //		NFA nfa = new NFA(new State("Start"));
 //		State start = nfa.getStart();
 //		
@@ -24,12 +25,12 @@ public class TestNFAtoDFA {
 		
 		Parser.main(null);
 		
-		ArrayList<Terminals> classes = Parser.getClasses();
+		ArrayList<TokenClass> classes = Parser.getClasses();
 		
-		Terminals klass = null;
+		TokenClass klass = null;
 		String klassName = "FLOAT";
 		
-		for (Terminals t : classes) {
+		for (TokenClass t : classes) {
 			if (t.getName().equals(klassName)) {
 				klass = t;
 				break;

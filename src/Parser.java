@@ -8,12 +8,13 @@ import java.io.UnsupportedEncodingException;
 import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Parser {
-    static ArrayList<Terminals> charClasses;
-    static ArrayList<Terminals> tokenDefs;
-    static ArrayList<Terminals> charsAndTokens;
+    static ArrayList<TokenClass> charClasses;
+    static ArrayList<TokenClass> tokenDefs;
+    static ArrayList<TokenClass> charsAndTokens;
     static NFA bigNFA;
     static DFA bigDFA;
     private static boolean debug = false;
@@ -22,7 +23,7 @@ public class Parser {
     private static String dfaOutputFilename;
     private static String outputFilename;
 
-    public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException{
+    public static void main(String[] args) throws IOException{
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
         if(args.length > 1 && args.length < 10 && args.length%2 == 0){
@@ -70,6 +71,31 @@ public class Parser {
         //        System.out.println(bigDFA.toTableString(true));
     }
     
+    public static void scannerDFA(String filename) throws IOException {
+        if(debug)
+            System.out.println("Scanning input file with big dfa...");
+        
+        Scanner input = new Scanner(new File(filename));
+        
+        LinkedList<Token> tokens = scan(input);
+        
+        String outputStr = "";
+        for (Token token : tokens) {
+        	outputStr += token.getKlass().getName() + " " + token.getString();
+        }
+        
+        if(output){
+            File dfaFile = new File(outputFilename);
+            
+            FileWriter fw = new FileWriter(dfaFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(outputStr);
+            bw.close();
+        } else {
+        	System.out.println(outputStr);
+        }
+    }
+    
     public static int argsContains(String[] args, String str){
         for(int i=0; i<args.length; i++){
             if(args[i].equals(str)){
@@ -79,76 +105,62 @@ public class Parser {
         return -1;
     }
 
-    public static void scanner(String filename) throws FileNotFoundException {
-        System.out.println("Scanning input file...");
-        Scanner scan = new Scanner(new File(filename));
-        String outputStr = "";
-        
-        while(scan.hasNextLine()){
-            String line = scan.nextLine();
-            while(!line.isEmpty()) {
-                line = line.trim();
-
-                ArrayList<ScanResult> results = new ArrayList<ScanResult>();
-
-                // Run all the DFAs on the current string
-                // See which one matches the farthest
-                // First defined token takes precedence
-                int maxPointer = 0;
-                Terminals maxKlass = null;
-                for (Terminals klass : tokenDefs) {
-                    ScanResult result = klass.getDFA().walk(line);
-                    results.add(result);
-                    if (result.lastPointer > maxPointer) {
-                        maxPointer = result.lastPointer;
-                        maxKlass = klass;
-                    }
-                }
-
-                // If nothing matched, invalid input!
-                if (maxPointer == 0) {
-                    if(debug)
-                        System.out.println("INVALID INPUT!");
-                    return;
-                }
-
-                // Something matched!
-                String token = line.substring(0, maxPointer);
-
-                if(!output){
-                    System.out.print(maxKlass.getName());
-                    System.out.println(" "+token);
-                }
-                else{
-                    outputStr = maxKlass.getName() + " " + token + "\n";
-                }
-
-
-                // Consume and start over!
-                line = line.substring(maxPointer);
-            }
-        }
-        if(output){
-            File dfaFile = new File(outputFilename);
-            try {
-                FileWriter fw = new FileWriter(dfaFile);
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(outputStr);
-                bw.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
+//    // Old multi-DFA based scanner
+//    public static LinkedList<Token> scan(Scanner input) {
+//        LinkedList<Token> tokens = new LinkedList<Token>();
+//    	
+//        while(input.hasNextLine()){
+//            String line = input.nextLine();
+//            while(!line.isEmpty()) {
+//                line = line.trim();
+//
+//                ArrayList<ScanResult> results = new ArrayList<ScanResult>();
+//
+//                // Run all the DFAs on the current string
+//                // See which one matches the farthest
+//                // First defined token takes precedence
+//                int maxPointer = 0;
+//                TokenClass maxKlass = null;
+//                for (TokenClass klass : tokenDefs) {
+//                    ScanResult result = klass.getDFA().walk(line);
+//                    results.add(result);
+//                    if (result.lastPointer > maxPointer) {
+//                        maxPointer = result.lastPointer;
+//                        maxKlass = klass;
+//                    }
+//                }
+//
+//                // If nothing matched, invalid input!
+//                if (maxPointer == 0) {
+//                    if(debug)
+//                        System.out.println("INVALID INPUT!");
+//                    break;
+//                }
+//
+//                // Something matched!
+//                String token = line.substring(0, maxPointer);
+//
+//                if(!output){
+//                    System.out.print(maxKlass.getName());
+//                    System.out.println(" "+token);
+//                }
+//                else{
+//                	tokens.add(new Token(maxKlass, token));
+//                }
+//
+//                // Consume and start over!
+//                line = line.substring(maxPointer);
+//            }
+//        }
+//        
+//        return tokens;
+//    }
     
-    public static void scannerDFA(String filename) throws FileNotFoundException {
-        if(debug)
-            System.out.println("Scanning input file wih big dfa...");
-        Scanner scan = new Scanner(new File(filename));
-        String outputStr = "";
-        while(scan.hasNextLine()){
-            String line = scan.nextLine();
+    public static LinkedList<Token> scan(Scanner input) throws FileNotFoundException {
+        LinkedList<Token> tokens = new LinkedList<Token>();
+        
+        while(input.hasNextLine()){
+            String line = input.nextLine();
             while(!line.isEmpty()) {
                 line = line.trim();
 
@@ -161,50 +173,34 @@ public class Parser {
                 if (result.lastPointer == 0) {
                     if(debug)
                         System.out.println("INVALID INPUT!");
-                    return;
+                    break;
                 }
 
                 // Something matched!
                 String token = line.substring(0, result.lastPointer);
 
                 // Note: lastAccept.klass should NEVER be null!
-                if(!output){
-                    System.out.print(result.lastAccept.klass.getName());
-                    System.out.println(" "+token);
-                }
-                else{
-                    outputStr += result.lastAccept.klass.getName() + " " + token + "\n";
-                }
+                tokens.add(new Token(result.lastAccept.klass, token));
 
                 // Consume and start over!
                 line = line.substring(result.lastPointer);
             }
         }
-        if(output){
-            File dfaFile = new File(outputFilename);
-            try {
-                FileWriter fw = new FileWriter(dfaFile);
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(outputStr);
-                bw.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        
+        return tokens;
     }
 
     public static void fileParser(String filename) throws FileNotFoundException{
         if(debug)
             System.out.println("Parsing input spec...");
         Scanner scan = new Scanner(new File(filename));
-        Terminals currClass = null;
-        charClasses = new ArrayList<Terminals>();
-        tokenDefs = new ArrayList<Terminals>();
-        charsAndTokens = new ArrayList<Terminals>();
+        TokenClass currClass = null;
+        charClasses = new ArrayList<TokenClass>();
+        tokenDefs = new ArrayList<TokenClass>();
+        charsAndTokens = new ArrayList<TokenClass>();
 
         // Which array are we filling?
-        ArrayList<Terminals> classes = charClasses;
+        ArrayList<TokenClass> classes = charClasses;
         while(scan.hasNextLine()){
             String line = scan.nextLine();
 
@@ -220,7 +216,7 @@ public class Parser {
 
             String token = lineScan.next();
 
-            Terminals newClass = new Terminals();
+            TokenClass newClass = new TokenClass();
             currClass = newClass;
             classes.add(currClass);
             charsAndTokens.add(currClass);
@@ -250,7 +246,7 @@ public class Parser {
         //newStart.setLabel("Start");
         NFA newNfa = new NFA(newStart);
         //newNfa.setAccepts(newStart, false);
-        for(Terminals each : tokenDefs){
+        for(TokenClass each : tokenDefs){
             newNfa.addEpsilonTransition(newNfa.getStart(), each.getNFA().getStart());
         }
         bigNFA = newNfa;
@@ -275,7 +271,7 @@ public class Parser {
     /**
      * @return the classes
      */
-    public static ArrayList<Terminals> getClasses() {
+    public static ArrayList<TokenClass> getClasses() {
         return charsAndTokens;
     }
 
