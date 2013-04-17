@@ -58,12 +58,12 @@ public class Parser {
                     output = true;
                     outputFilename = args[argsContains(args, "-o")+1];
                     int ind = argsContains(args, "-i");
-                    parser.scanner(args[ind+1]);
+                    parser.scanAndOutput(args[ind+1]);
                 }
                 else if(argsContains(args, "-i") != -1 && args.length >= 4){
 //                    System.out.println("Found -i");
                     int ind = argsContains(args, "-i");
-                    parser.scanner(args[ind+1]);
+                    parser.scanAndOutput(args[ind+1]);
                 }
                 else if(argsContains(args, "-o") != -1 && args.length >= 4){
                     throw new RuntimeException("\nIncorrect arguments. Arguments must at least have: \n" +
@@ -79,14 +79,9 @@ public class Parser {
             throw new RuntimeException("\nIncorrect arguments. Arguments must be: \n" +
             "-s <input_spec.txt> [-i <input.txt>] [-d <dfa.txt>] [-o <output.txt>] [--debug]");
         }
-        //        PrintStream out = new PrintStream(System.out, true, "UTF-8");
-        //        System.setOut(out);
-        //                      fileParser("specs/ansic.txt");
-        //                      scannerDFA("inputs/ansic.txt");
-        //        System.out.println(bigDFA.toTableString(true));
     }
     
-    public void scanner(String filename) throws IOException {
+    public void scanAndOutput(String filename) throws IOException {
         if(debug)
             System.out.println("Scanning input file with big dfa...");
         
