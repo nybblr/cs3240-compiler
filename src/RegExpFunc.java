@@ -78,7 +78,7 @@ public class RegExpFunc {
 			return escaped.contains(is.peekToken(1));
 		} else {
 			// Is it in the ASCII printable?
-			return !escaped.contains(is.peekToken()) && (is.peekToken() >= Helpers.PRINTSTART && is.peekToken() < Helpers.PRINTEND);
+			return !escaped.contains(is.peekToken()) && Helpers.isPrintable(is.peekToken());
 		}
 	}
 

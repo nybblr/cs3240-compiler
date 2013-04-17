@@ -26,4 +26,8 @@ public class Helpers {
 
 		return p;
 	}
+	
+	public static boolean isPrintable(char c) {
+		return c >= PRINTSTART && c < PRINTEND;
+	}
 }
