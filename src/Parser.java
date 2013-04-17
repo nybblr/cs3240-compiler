@@ -12,11 +12,11 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Parser {
-    static ArrayList<TokenClass> charClasses;
-    static ArrayList<TokenClass> tokenDefs;
-    static ArrayList<TokenClass> charsAndTokens;
-    static NFA bigNFA;
-    static DFA bigDFA;
+    ArrayList<TokenClass> charClasses;
+    ArrayList<TokenClass> tokenDefs;
+    ArrayList<TokenClass> charsAndTokens;
+    NFA bigNFA;
+    DFA bigDFA;
     private static boolean debug = false;
     private static boolean dfa = false;
     private static boolean output = false;
@@ -24,6 +24,8 @@ public class Parser {
     private static String outputFilename;
 
     public static void main(String[] args) throws IOException{
+    	Parser parser = new Parser();
+    	
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
         System.setOut(out);
         if(args.length > 1 && args.length < 10 && args.length%2 == 0){
@@ -36,19 +38,32 @@ public class Parser {
 //                    System.out.println(argsContains(args, "-d") + 1);
                     dfaOutputFilename = args[argsContains(args, "-d")+1];
                 }
-                fileParser(args[1]);
+                
+                parser.buildFromFile(args[1]);
+                
+                if(!dfa)
+                    System.out.println(parser.bigDFA.toTableString(true));
+                else{
+                    File dfaFile = new File(dfaOutputFilename);
+                    
+                    FileWriter fw = new FileWriter(dfaFile);
+                    BufferedWriter bw = new BufferedWriter(fw);
+                    bw.write(parser.bigDFA.toTableString(true));
+                    bw.close();                    
+                }
+                
                 if(argsContains(args, "-o") != -1 && argsContains(args, "-i") != -1
                         && args.length >= 6){
 //                    System.out.println("Found -o && -i");
                     output = true;
                     outputFilename = args[argsContains(args, "-o")+1];
                     int ind = argsContains(args, "-i");
-                    scannerDFA(args[ind+1]);
+                    parser.scanner(args[ind+1]);
                 }
                 else if(argsContains(args, "-i") != -1 && args.length >= 4){
 //                    System.out.println("Found -i");
                     int ind = argsContains(args, "-i");
-                    scannerDFA(args[ind+1]);
+                    parser.scanner(args[ind+1]);
                 }
                 else if(argsContains(args, "-o") != -1 && args.length >= 4){
                     throw new RuntimeException("\nIncorrect arguments. Arguments must at least have: \n" +
@@ -71,13 +86,11 @@ public class Parser {
         //        System.out.println(bigDFA.toTableString(true));
     }
     
-    public static void scannerDFA(String filename) throws IOException {
+    public void scanner(String filename) throws IOException {
         if(debug)
             System.out.println("Scanning input file with big dfa...");
         
-        Scanner input = new Scanner(new File(filename));
-        
-        LinkedList<Token> tokens = scan(input);
+        LinkedList<Token> tokens = scanFromFile(filename);
         
         String outputStr = "";
         for (Token token : tokens) {
@@ -156,7 +169,11 @@ public class Parser {
 //        return tokens;
 //    }
     
-    public static LinkedList<Token> scan(Scanner input) throws FileNotFoundException {
+    public LinkedList<Token> scanFromFile(String filename) throws FileNotFoundException {
+    	return scan(new Scanner(new File(filename)));
+    }
+    
+    public LinkedList<Token> scan(Scanner input) {
         LinkedList<Token> tokens = new LinkedList<Token>();
         
         while(input.hasNextLine()){
@@ -190,10 +207,14 @@ public class Parser {
         return tokens;
     }
 
-    public static void fileParser(String filename) throws FileNotFoundException{
+    public void buildFromFile(String filename) throws FileNotFoundException {
+    	build(new Scanner(new File(filename)));
+    }
+    
+    public void build(Scanner input) {
         if(debug)
             System.out.println("Parsing input spec...");
-        Scanner scan = new Scanner(new File(filename));
+
         TokenClass currClass = null;
         charClasses = new ArrayList<TokenClass>();
         tokenDefs = new ArrayList<TokenClass>();
@@ -201,8 +222,8 @@ public class Parser {
 
         // Which array are we filling?
         ArrayList<TokenClass> classes = charClasses;
-        while(scan.hasNextLine()){
-            String line = scan.nextLine();
+        while(input.hasNextLine()){
+            String line = input.nextLine();
 
             // EOF or switch arrays?
             if (line.trim().isEmpty()) {
@@ -231,7 +252,7 @@ public class Parser {
             token = token.replaceAll("^\\s*", "");
             if(debug)
                 System.out.println(token);
-            RegExpFunc func = new RegExpFunc(token);
+            RegExpFunc func = new RegExpFunc(token, this);
             NFA nfa = func.origRegExp(currClass.getName());
             currClass.setNFA(nfa);
             currClass.setDFA(nfa.toDFA());
@@ -251,27 +272,12 @@ public class Parser {
         }
         bigNFA = newNfa;
         bigDFA = newNfa.toDFA();
-        
-        if(!dfa)
-            System.out.println(bigDFA.toTableString(true));
-        else{
-            File dfaFile = new File(dfaOutputFilename);
-            try {
-                FileWriter fw = new FileWriter(dfaFile);
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(bigDFA.toTableString(true));
-                bw.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }                        
-        }
     }
     //  }
     /**
      * @return the classes
      */
-    public static ArrayList<TokenClass> getClasses() {
+    public ArrayList<TokenClass> getClasses() {
         return charsAndTokens;
     }
 
@@ -299,7 +305,7 @@ public class Parser {
         return list;
     }
 
-    public static HashSet<Character> getClass(String className){
+    public HashSet<Character> getClass(String className){
         for(int i=0; i<charsAndTokens.size(); i++){
             if(charsAndTokens.get(i).getName().equals(className))
                 return charsAndTokens.get(i).getChars();
@@ -307,7 +313,7 @@ public class Parser {
         return null;
     }
 
-    public static void setClass(String className, HashSet<Character> exclude) {
+    public void setClass(String className, HashSet<Character> exclude) {
         for(int i=0; i<charsAndTokens.size(); i++){
             if(charsAndTokens.get(i).getName().equals(className))
                 charsAndTokens.get(i).setChars(exclude);

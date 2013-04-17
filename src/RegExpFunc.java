@@ -29,17 +29,19 @@ public class RegExpFunc {
 			Arrays.asList(EX_RE_CHAR));
 	private static final HashSet<Character> CLS_CHAR = new HashSet<Character>(
 			Arrays.asList(EX_CLS_CHAR));
-
-	private ArrayList<TokenClass> classes = Parser.getClasses();
+	private Parser parser;
+	private ArrayList<TokenClass> classes;
 
 	private String input;
 	private InputStream is;
 	private char lastCharAdded;
 
 	/* Constructor */
-	public RegExpFunc(String input) {
+	public RegExpFunc(String input, Parser parser) {
 		this.input = new String(input);
 		this.is = new InputStream(this.input);
+		this.parser = parser;
+		this.classes = parser.getClasses();
 	}
 	
 	private boolean matchToken(String token) {
@@ -201,7 +203,7 @@ public class RegExpFunc {
 	}
 
 	private NFA getNFA(String className){
-		HashSet<Character> chars = Parser.getClass(className);
+		HashSet<Character> chars = parser.getClass(className);
 		if (chars != null)
 			return createNFA(chars);
 		else
@@ -272,7 +274,7 @@ public class RegExpFunc {
 			addToHashSet(className, reChar);
 			nfa = regExTwoTail(className, nfa);
 			if(nfa == null){
-				nfa = createNFA(Parser.getClass(className));
+				nfa = createNFA(parser.getClass(className));
 			}
 			return nfa;
 		}
@@ -325,9 +327,9 @@ public class RegExpFunc {
 			nfa = new NFA(s);
 			nfa.setAccepts(a, true);
 			for(char c=Helpers.PRINTSTART; c < Helpers.PRINTEND; c++){
-				Parser.getClass(className).add(c);
+				parser.getClass(className).add(c);
 			}
-			return createNFA(Parser.getClass(className));
+			return createNFA(parser.getClass(className));
 			/**-----------------------------------------------------------------------------------------------*/
 		} else if (peekToken(LBRAC)) {
 			matchToken(LBRAC, false);
@@ -363,7 +365,7 @@ public class RegExpFunc {
 		if (peekClsToken()) {
 			charSet(className);
 			charSetList(className);
-			return createNFA(Parser.getClass(className));
+			return createNFA(parser.getClass(className));
 		} else if (peekToken(RBRAC)) {
 			matchToken(RBRAC);
 			return null;
@@ -418,7 +420,7 @@ public class RegExpFunc {
 					matchToken(IN);
 					if (peekToken(DOLLAR)) {
 						excludeSetTail(className);
-						nfa = createNFA(Parser.getClass(className));
+						nfa = createNFA(parser.getClass(className));
 					}
 					return nfa;
 				} else {
@@ -454,9 +456,9 @@ public class RegExpFunc {
 		 else {
 			 matchToken(DOLLAR);
 			 String name = definedClass();
-			 HashSet<Character> hashSet1 = Parser.getClass(className);
-			 HashSet<Character> hashSet2 = Parser.getClass(name);
-			 Parser.setClass(className, exclude(hashSet1, hashSet2));
+			 HashSet<Character> hashSet1 = parser.getClass(className);
+			 HashSet<Character> hashSet2 = parser.getClass(name);
+			 parser.setClass(className, exclude(hashSet1, hashSet2));
 		 }
 	 }
 }

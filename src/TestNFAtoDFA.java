@@ -23,9 +23,10 @@ public class TestNFAtoDFA {
 //		
 //		System.out.println(nfa.statesReachableFrom(start));
 		
-		Parser.main(null);
+		Parser parser = new Parser();
+		parser.buildFromFile("");
 		
-		ArrayList<TokenClass> classes = Parser.getClasses();
+		ArrayList<TokenClass> classes = parser.getClasses();
 		
 		TokenClass klass = null;
 		String klassName = "FLOAT";
