@@ -94,7 +94,7 @@ public class Parser {
         
         String outputStr = "";
         for (Token token : tokens) {
-        	outputStr += token.getKlass().getName() + " " + token.getString();
+        	outputStr += token.getKlass().getName() + " " + token.getString() + "\n";
         }
         
         if(output){
