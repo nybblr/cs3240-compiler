@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 
@@ -13,6 +14,13 @@ public class Grammar {
 	// Constructors
 	public Grammar() {
 		super();
+	}
+	
+	// Create grammar from files
+	public Grammar(Scanner grammar, Scanner spec) {
+		super();
+		
+		
 	}
 
 	// Getters/setters
