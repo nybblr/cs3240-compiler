@@ -168,6 +168,15 @@ public class Parser {
     	return scan(new Scanner(new File(filename)));
     }
     
+    // Find matching token class
+    public TokenClass identifyToken(String token) {
+    	ScanResult result = bigDFA.walk(token);
+    	
+    	if (!result.accepts) return null;
+    	
+    	return result.lastAccept.klass;
+    }
+    
     public LinkedList<Token> scan(Scanner input) {
         LinkedList<Token> tokens = new LinkedList<Token>();
         
