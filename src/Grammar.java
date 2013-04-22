@@ -43,19 +43,47 @@ public class Grammar {
 	            	// It's <variable>; make new var (if it doesn't exist in map.keys())
 	            	// If the label == Variable.EPSILON, make epsilon variable instead.
 	            	// Add to the current rule.
+	            	String varName = is.peekTill(VAR_END);
+	            	
+	            	// Do variable instantiation stuff here
+	            	// TODO
+	            	
+	            	// Consume variable and VAR_END
+	            	is.matchToken(varName);
+	            	is.matchToken(VAR_END);
+	            	
 	            	break;
 	            case NEW_RULE:
 	            	// We found a | so start on the new rule
 	            	// Make new rule, assign to map, and start over
+	            	currRule = new Rule(this, currVar);
+	            	
+	            	// Consume symbol
+	            	is.matchToken(NEW_RULE);
+	            	
 	            	break;
 	            case ASSIGN_START:
 	            	// Could it be ::=? Try it! Same behavior as NEW_RULE.
+	            	if (is.peekToken(ASSIGN)) {
+	            		currRule = new Rule(this, currVar);
+	            		
+	            		// Consume string
+	            		is.matchToken(ASSIGN);
+	            	} else {
+	            		invalid();
+	            	}
+	            	
 	            	break;
 	            default:
 	            	// Could be a TokenClass like BEGIN, or a matching token like 'begin'
 	            	// Try matching TokenClass first. As a last resort, try scanToken.
+	            	
+	            	// TODO
+	            	
 	            	break;
 	            }
+	            
+	            is.skipWhitespace();
             }
     		
     		// Reset currVariable and currRule.
@@ -100,5 +128,10 @@ public class Grammar {
 	public String toString() {
 		// Print out pretty grammar here
 		return "";
+	}
+	
+	public void invalid() {
+		System.out.println("Couldn't parse gramamr spec.");
+		System.exit(0);
 	}
 }

@@ -68,6 +68,27 @@ public class InputStream {
 		advancePointer(token.length());
 		return true;
 	}
+	
+	// Output peek until some char, excluding it
+	public String peekTill(Character c) {
+		int i = 0;
+		while(!isConsumed()) {
+			if (peekToken(i).equals(c)) {
+				return input.substring(pointer, pointer+i);
+			}
+			i++;
+		}
+		
+		return null;
+	}
+	
+	// Include through char
+	public String peekThrough(Character c) {
+		String s = peekTill(c);
+		if (s == null) return null;
+		// Add the "through" character
+		return s + c;
+	}
 
 	// Move pointer forward
 	public int advancePointer() {
