@@ -11,6 +11,13 @@ public class Grammar {
 	// Start variable
 	private Variable start;
 	
+	// Special characters for parsing
+	private final char VAR_START = '<';
+	private final char VAR_END = '>';
+	private final char NEW_RULE = '|';
+	private final char ASSIGN_START = ':';
+	private final String ASSIGN = "::=";
+	
 	// Constructors
 	public Grammar() {
 		super();
@@ -20,7 +27,41 @@ public class Grammar {
 	public Grammar(Scanner grammar, Scanner spec) {
 		super();
 		
+		// Build scanner first
+		Parser parser = new Parser();
+		parser.build(spec);
+
+		Variable currVar = null;
+		Rule currRule = null;
 		
+		while(grammar.hasNextLine()){
+            InputStream is = new InputStream(grammar.nextLine());
+            
+            while(!is.isConsumed()) {
+	            switch(is.peekToken()) {
+	            case VAR_START:
+	            	// It's <variable>; make new var (if it doesn't exist in map.keys())
+	            	// If the label == Variable.EPSILON, make epsilon variable instead.
+	            	// Add to the current rule.
+	            	break;
+	            case NEW_RULE:
+	            	// We found a | so start on the new rule
+	            	// Make new rule, assign to map, and start over
+	            	break;
+	            case ASSIGN_START:
+	            	// Could it be ::=? Try it! Same behavior as NEW_RULE.
+	            	break;
+	            default:
+	            	// Could be a TokenClass like BEGIN, or a matching token like 'begin'
+	            	// Try matching TokenClass first. As a last resort, try scanToken.
+	            	break;
+	            }
+            }
+    		
+    		// Reset currVariable and currRule.
+    		currVar = null;
+    		currRule = null;
+		}
 	}
 
 	// Getters/setters

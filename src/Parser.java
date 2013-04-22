@@ -177,6 +177,19 @@ public class Parser {
     	return result.lastAccept.klass;
     }
     
+    // Find one token
+    public Token scanToken(String line) {
+    	ScanResult result = bigDFA.walk(line);
+    	
+    	if (result.lastPointer == 0) {
+    		return null;
+    	} else {
+    		return new Token(
+    				result.lastAccept.klass,
+    				line.substring(0, result.lastPointer));
+    	}
+    }
+    
     public LinkedList<Token> scan(Scanner input) {
         LinkedList<Token> tokens = new LinkedList<Token>();
         
@@ -185,10 +198,7 @@ public class Parser {
             while(!line.isEmpty()) {
                 line = line.trim();
 
-                ArrayList<ScanResult> results = new ArrayList<ScanResult>();
-
                 ScanResult result = bigDFA.walk(line);
-                results.add(result);
 
                 // If nothing matched, invalid input!
                 if (result.lastPointer == 0) {

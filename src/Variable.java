@@ -53,4 +53,20 @@ public class Variable extends RuleItem {
 	public String toString() {
 		return label;
 	}
+	
+	public int hashCode() {
+		return label.hashCode();
+	}
+
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (obj == this)
+			return true;
+		if (!(obj instanceof Variable))
+			return false;
+
+		Variable var = (Variable) obj;
+		return this.label.equals(var.label);
+	}
 }
