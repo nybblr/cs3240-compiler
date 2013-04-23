@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -180,5 +181,27 @@ public class Grammar {
 	public void invalid() {
 		System.out.println("Couldn't parse gramamr spec.");
 		System.exit(0);
+	}
+	
+	public void calculateFirstSets() {
+		for(Variable variable : map.keySet()){
+			int size = map.get(variable).size();
+			for(Rule rule : map.get(variable)){
+				int k = 0;
+				boolean cont = true;
+				List<RuleItem> items = rule.getItems();
+				while(cont == true && k <= size){
+					Set<TokenClass> newFirst = items.get(k).getFirst();
+					boolean containsE = newFirst.remove(new EpsilonVariable(this));
+					variable.addAllToFirst(newFirst);
+					if(!containsE)
+						cont = false;
+					k++;
+				}
+				if(cont == true){
+					//variable.addToFirst(new EpsilonVariable(this));
+				}
+			}
+		}
 	}
 }

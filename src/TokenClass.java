@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 
 public class TokenClass extends RuleItem {
@@ -54,5 +55,11 @@ public class TokenClass extends RuleItem {
 
 	public String toString() {
 		return "$"+name;
+	}
+	
+	public Set<TokenClass> getFirst() {
+		Set<TokenClass> first = new HashSet<TokenClass>();
+		first.add(this);
+		return first;
 	}
 }

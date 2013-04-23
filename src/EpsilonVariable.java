@@ -1,3 +1,6 @@
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class EpsilonVariable extends Variable {
 	// Keyword for epsilon variable
@@ -6,5 +9,4 @@ public class EpsilonVariable extends Variable {
 	public EpsilonVariable(Grammar grammar) {
 		super(grammar, "epsilon");
 	}
-
 }
