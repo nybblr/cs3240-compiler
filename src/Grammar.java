@@ -186,6 +186,7 @@ public class Grammar {
 	public void calculateFirstSets() {
 		boolean hasChanged = false;
 		do{
+			hasChanged = false;
 			for(Variable variable : map.keySet()){
 				int size = map.get(variable).size();
 				for(Rule rule : map.get(variable)){
