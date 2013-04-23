@@ -18,10 +18,10 @@ public class Variable extends RuleItem {
 		this.label = label;
 	}
 	
-	public Variable(String label) {
-		super();
-		this.label = label;
-	}
+//	public Variable(String label) {
+//		super();
+//		this.label = label;
+//	}
 
 	// Getters/setters
 	public String getLabel() {
