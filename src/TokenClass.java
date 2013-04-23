@@ -2,7 +2,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 
-public class TokenClass implements Cloneable{
+public class TokenClass extends RuleItem {
 	private HashSet<Character> chars = new HashSet<Character>();
 	private DFA dfa;
 	private NFA nfa;

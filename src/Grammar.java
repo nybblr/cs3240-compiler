@@ -79,6 +79,28 @@ public class Grammar {
 	            	// Try matching TokenClass first. As a last resort, try scanToken.
 	            	
 	            	// TODO
+	            	String string = is.peekTillSpace();
+	            	TokenClass klass = parser.getTokenClass(string);
+	            	
+	            	if (klass != null) {
+	            		// It's a valid TokenClass, like BEGIN
+	            		// Add to current rule
+	            		currRule.addItem(klass);
+	            	} else {
+	            		// See if any token classes match
+	            		Token token = parser.scanToken(string);
+	            		
+	            		if (token != null) {
+	            			// It was valid string from TokenClass, like begin
+	            			// Add to current rule
+	            			currRule.addItem(token.getKlass());
+	            			
+	            			// Consume the text that matched
+	            			is.matchToken(token.getString());
+	            		} else {
+	            			invalid();
+	            		}
+	            	}
 	            	
 	            	break;
 	            }

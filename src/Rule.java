@@ -1,19 +1,22 @@
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 
-public class Rule extends RuleItem {
+public class Rule {
 	// Parent grammar
 	private Grammar grammar;
 	// Variable this rule substitutes
 	private Variable variable;
-	// Ordered set of the token classes/variables
-	private LinkedHashSet<RuleItem> items;
+	// Ordered list of the token classes/variables
+	// Can't be an ordered set because a Rule Item may appear multiple times
+	private List<RuleItem> items;
 	
 	// Constructors
 	public Rule(Grammar grammar, Variable variable) {
 		super();
 		this.grammar = grammar;
 		this.variable = variable;
+		this.items = new LinkedList<RuleItem>();
 	}
 	
 	// Getters/setters
@@ -29,8 +32,14 @@ public class Rule extends RuleItem {
 	public void setVariable(Variable variable) {
 		this.variable = variable;
 	}
-	public LinkedHashSet<RuleItem> getItems() {
+	public List<RuleItem> getItems() {
 		return items;
+	}
+	
+	// Manipulation
+	public void addItem(RuleItem item) {
+		// Add item to end
+		items.add(item);
 	}
 	
 	// Utility

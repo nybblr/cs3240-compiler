@@ -89,6 +89,15 @@ public class InputStream {
 		// Add the "through" character
 		return s + c;
 	}
+	
+	public String peekTillSpace() {
+		int i = 0;
+		while (!isConsumed() && !Character.isWhitespace(peekToken(i))) {
+			i++;
+		}
+
+		return input.substring(pointer, pointer+i);
+	}
 
 	// Move pointer forward
 	public int advancePointer() {

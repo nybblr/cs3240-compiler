@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class Parser {
     ArrayList<TokenClass> charClasses;
-    ArrayList<TokenClass> tokenDefs;
+    ArrayList<TokenClass> tokenClasses;
     ArrayList<TokenClass> charsAndTokens;
     NFA bigNFA;
     DFA bigDFA;
@@ -231,7 +231,7 @@ public class Parser {
 
         TokenClass currClass = null;
         charClasses = new ArrayList<TokenClass>();
-        tokenDefs = new ArrayList<TokenClass>();
+        tokenClasses = new ArrayList<TokenClass>();
         charsAndTokens = new ArrayList<TokenClass>();
 
         // Which array are we filling?
@@ -243,7 +243,7 @@ public class Parser {
             if (line.trim().isEmpty()) {
                 // Time for a switch?
                 if (classes == charClasses)
-                    classes = tokenDefs;
+                    classes = tokenClasses;
                 continue;
             }
 
@@ -281,7 +281,7 @@ public class Parser {
         //newStart.setLabel("Start");
         NFA newNfa = new NFA(newStart);
         //newNfa.setAccepts(newStart, false);
-        for(TokenClass each : tokenDefs){
+        for(TokenClass each : tokenClasses){
             newNfa.addEpsilonTransition(newNfa.getStart(), each.getNFA().getStart());
         }
         bigNFA = newNfa;
@@ -332,5 +332,13 @@ public class Parser {
             if(charsAndTokens.get(i).getName().equals(className))
                 charsAndTokens.get(i).setChars(exclude);
         }
+    }
+    
+    public TokenClass getTokenClass(String name) {
+    	for (TokenClass klass : tokenClasses) {
+    		if (klass.getName().equals(name)) return klass;
+    	}
+    	
+    	return null;
     }
 }
