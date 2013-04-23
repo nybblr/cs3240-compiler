@@ -341,4 +341,16 @@ public class Parser {
     	
     	return null;
     }
+    
+    // Try to identify token class in start of string
+    public TokenClass findTokenClassIn(String string) {
+    	for (TokenClass klass : tokenClasses) {
+    		String name = klass.getName();
+    		
+    		if (string.substring(0, Math.min(name.length(), string.length())).equals(name))
+    			return klass;
+    	}
+    	
+    	return null;
+    }
 }

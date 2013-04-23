@@ -100,6 +100,10 @@ public class InputStream {
 
 		return input.substring(pointer, pointer+i);
 	}
+	
+	public String peekTillEnd() {
+		return input.substring(pointer);
+	}
 
 	// Move pointer forward
 	public int advancePointer() {

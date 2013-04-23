@@ -1,6 +1,8 @@
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -34,6 +36,7 @@ public class Grammar {
 		Variable currVar = null;
 		Rule currRule = null;
 		
+		int i = 0;
 		while(grammar.hasNextLine()){
             InputStream is = new InputStream(grammar.nextLine());
             
@@ -46,29 +49,37 @@ public class Grammar {
 	            	is.matchToken(VAR_START);
 	            	
 	            	String varName = is.peekTill(VAR_END);
-	            	
-	            	// Do variable instantiation stuff here
 	            	Variable var = new Variable(this, varName);
-	            	if (map.containsKey(var)) {
-	            		// Variable already instantiated; use it
-	            		Variable varMatch = null;
-	            		for (Variable v : map.keySet()) {
-	            			if (v.equals(var)) {
-	            				varMatch = v;
-	            			}
+	            	
+	            	if (varName.equals(EpsilonVariable.EPSILON)) {
+	            		if (currRule != null) {
+	            			var = new EpsilonVariable(this);
 	            		}
-	            		
-	            		// Ditch the other one
-	            		var = varMatch;
 	            	} else {
-	            		// Not made; add it to map
-	            		map.put(var, new HashSet<Rule>());
+		            	// Do variable instantiation stuff here
+		            	if (map.containsKey(var)) {
+		            		// Variable already instantiated; use it
+		            		Variable varMatch = null;
+		            		for (Variable v : map.keySet()) {
+		            			if (v.equals(var)) {
+		            				varMatch = v;
+		            				break;
+		            			}
+		            		}
+		            		
+		            		// Ditch the other one
+		            		var = varMatch;
+		            	} else {
+		            		// Not made; add it to map
+		            		map.put(var, new HashSet<Rule>());
+		            	}
 	            	}
 	            	
 	            	// See if we are working on rules
 	            	if (currVar == null) {
 	            		// First variable on line
 	            		currVar = var;
+	            		if (i == 0) start = var;
 	            	} else if (currRule != null) {
 	            		// Working on rule; add
 	            		currRule.addItem(var);
@@ -83,6 +94,7 @@ public class Grammar {
 	            	// We found a | so start on the new rule
 	            	// Make new rule, assign to map, and start over
 	            	currRule = new Rule(this, currVar);
+	            	addRule(currRule);
 	            	
 	            	// Consume symbol
 	            	is.matchToken(NEW_RULE);
@@ -92,11 +104,12 @@ public class Grammar {
 	            	// Could it be ::=? Try it! Same behavior as NEW_RULE.
 	            	if (is.peekToken(ASSIGN)) {
 	            		currRule = new Rule(this, currVar);
+	            		addRule(currRule);
 	            		
 	            		// Consume string
 	            		is.matchToken(ASSIGN);
 	            	} else {
-	            		invalid();
+	            		invalid(is);
 	            	}
 	            	
 	            	break;
@@ -104,15 +117,18 @@ public class Grammar {
 	            	// Could be a TokenClass like BEGIN, or a matching token like 'begin'
 	            	// Try matching TokenClass first. As a last resort, try scanToken.
 	            	String string = is.peekTillSpace();
-	            	TokenClass klass = parser.getTokenClass(string);
+	            	TokenClass klass = parser.findTokenClassIn(string);
 	            	
 	            	if (klass != null) {
 	            		// It's a valid TokenClass, like BEGIN
 	            		// Add to current rule
 	            		currRule.addItem(klass);
+		            	
+	            		// Consume TokenClass
+		            	is.matchToken(string);
 	            	} else {
 	            		// See if any token classes match
-	            		Token token = parser.scanToken(string);
+	            		Token token = parser.scanToken(is.peekTillEnd());
 	            		
 	            		if (token != null) {
 	            			// It's a valid string from TokenClass, like begin
@@ -123,7 +139,7 @@ public class Grammar {
 	            			is.matchToken(token.getString());
 	            		} else {
 	            			// That didn't work either, invalid!
-	            			invalid();
+	            			invalid(is);
 	            		}
 	            	}
 	            	
@@ -136,6 +152,7 @@ public class Grammar {
     		// Reset currVariable and currRule.
     		currVar = null;
     		currRule = null;
+    		i++;
 		}
 	}
 
@@ -174,11 +191,28 @@ public class Grammar {
 	// Utility
 	public String toString() {
 		// Print out pretty grammar here
-		return "";
+		String s = "";
+		for (Entry<Variable, Set<Rule>> entry : map.entrySet()) {
+			s += entry.getKey();
+			int i = 0;
+			for (Rule rule : entry.getValue()) {
+				if (i == 0)
+					s += " ::= ";
+				else
+					s += " | ";
+				
+				s += rule.toVarlessString();
+				i++;
+			}
+			s += "\n";
+		}
+		
+		return s;
 	}
 	
-	public void invalid() {
-		System.out.println("Couldn't parse gramamr spec.");
+	public void invalid(InputStream is) {
+		System.out.println("Couldn't parse grammar spec.");
+		System.out.println(is.toString());
 		System.exit(0);
 	}
 }
