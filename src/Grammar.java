@@ -49,14 +49,30 @@ public class Grammar {
 	            	Variable var = new Variable(this, varName);
 	            	if (map.containsKey(var)) {
 	            		// Variable already instantiated; use it
-	            		//var = map.getEqualKey(var);
-	            		// TODO
+	            		Variable varMatch = null;
+	            		for (Variable v : map.keySet()) {
+	            			if (v.equals(var)) {
+	            				varMatch = v;
+	            			}
+	            		}
+	            		
+	            		// Ditch the other one
+	            		var = varMatch;
 	            	} else {
 	            		// Not made; add it to map
 	            		map.put(var, new HashSet<Rule>());
 	            		
 	            		// Add if we're working on a rule
 	            		if (currRule != null) currRule.addItem(var);
+	            	}
+	            	
+	            	// See if we are working on rules
+	            	if (currVar == null) {
+	            		// First variable on line
+	            		currVar = var;
+	            	} else {
+	            		// Working on rule; add
+	            		currRule.addItem(var);
 	            	}
 	            	
 	            	// Consume variable and VAR_END
