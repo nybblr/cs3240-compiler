@@ -59,7 +59,7 @@ public class Variable extends RuleItem {
 	
 	// Utility
 	public String toString() {
-		return label;
+		return "<"+label+">";
 	}
 	
 	public int hashCode() {

@@ -1,3 +1,4 @@
+
 public class InputStream {
 	private String input;
 	private int pointer = 0; // index of character peekToken will see
@@ -92,7 +93,8 @@ public class InputStream {
 	
 	public String peekTillSpace() {
 		int i = 0;
-		while (!isConsumed() && !Character.isWhitespace(peekToken(i))) {
+		while (!isConsumed(i)) {
+			if (Character.isWhitespace(peekToken(i))) break;
 			i++;
 		}
 
@@ -130,11 +132,28 @@ public class InputStream {
 	/* Utility */
 	// Have we already matched all the tokens in the string?
 	public boolean isConsumed() {
-		return pointer >= input.length();
+		return isConsumed(0);
+	}
+	
+	// Is some i from now beyond consumption?
+	public boolean isConsumed(int i) {
+		return pointer+i >= input.length();
 	}
 
 	// Do we have enough characters in the string to match?
 	public boolean isEnough(int tokenLength) {
 		return pointer + tokenLength <= input.length();
+	}
+	
+	public String toString() {
+		String s = input;
+		s += "\n";
+		
+		for (int i = 0; i < pointer; i++)
+			s += " ";
+		
+		s += "^";
+		
+		return s;
 	}
 }

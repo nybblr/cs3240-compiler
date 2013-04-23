@@ -45,6 +45,6 @@ public class Rule {
 	// Utility
 	public String toString() {
 		// Print out pretty rule here
-		return "";
+		return variable.toString()+" => "+items.toString();
 	}
 }

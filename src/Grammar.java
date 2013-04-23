@@ -12,11 +12,11 @@ public class Grammar {
 	private Variable start;
 	
 	// Special characters for parsing
-	private final char VAR_START = '<';
-	private final char VAR_END = '>';
-	private final char NEW_RULE = '|';
-	private final char ASSIGN_START = ':';
-	private final String ASSIGN = "::=";
+	private static final char VAR_START = '<';
+	private static final char VAR_END = '>';
+	private static final char NEW_RULE = '|';
+	private static final char ASSIGN_START = ':';
+	private static final String ASSIGN = "::=";
 	
 	// Constructors
 	public Grammar() {
@@ -43,6 +43,8 @@ public class Grammar {
 	            	// It's <variable>; make new var (if it doesn't exist in map.keys())
 	            	// If the label == Variable.EPSILON, make epsilon variable instead.
 	            	// Add to the current rule.
+	            	is.matchToken(VAR_START);
+	            	
 	            	String varName = is.peekTill(VAR_END);
 	            	
 	            	// Do variable instantiation stuff here
@@ -61,16 +63,13 @@ public class Grammar {
 	            	} else {
 	            		// Not made; add it to map
 	            		map.put(var, new HashSet<Rule>());
-	            		
-	            		// Add if we're working on a rule
-	            		if (currRule != null) currRule.addItem(var);
 	            	}
 	            	
 	            	// See if we are working on rules
 	            	if (currVar == null) {
 	            		// First variable on line
 	            		currVar = var;
-	            	} else {
+	            	} else if (currRule != null) {
 	            		// Working on rule; add
 	            		currRule.addItem(var);
 	            	}

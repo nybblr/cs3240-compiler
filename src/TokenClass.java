@@ -53,6 +53,6 @@ public class TokenClass extends RuleItem {
 	}
 
 	public String toString() {
-		return "$"+name+": "+chars.toString();
+		return "$"+name;
 	}
 }

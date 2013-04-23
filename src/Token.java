@@ -24,4 +24,8 @@ public class Token {
 	public void setString(String string) {
 		this.string = string;
 	}
+	
+	public String toString() {
+		return klass.toString() + ": \"" + string + "\"";
+	}
 }
