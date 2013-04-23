@@ -3,15 +3,18 @@ import java.util.Set;
 
 
 public class Variable extends RuleItem {
+	private Grammar grammar;
 	private String label;
+	
 	// First set
 	private Set<TokenClass> first = new HashSet<TokenClass>();
 	// Follow set
 	private Set<TokenClass> follow = new HashSet<TokenClass>();
 
 	// Constructors
-	public Variable(String label) {
+	public Variable(Grammar grammar, String label) {
 		super();
+		this.grammar = grammar;
 		this.label = label;
 	}
 

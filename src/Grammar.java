@@ -46,7 +46,18 @@ public class Grammar {
 	            	String varName = is.peekTill(VAR_END);
 	            	
 	            	// Do variable instantiation stuff here
-	            	// TODO
+	            	Variable var = new Variable(this, varName);
+	            	if (map.containsKey(var)) {
+	            		// Variable already instantiated; use it
+	            		//var = map.getEqualKey(var);
+	            		// TODO
+	            	} else {
+	            		// Not made; add it to map
+	            		map.put(var, new HashSet<Rule>());
+	            		
+	            		// Add if we're working on a rule
+	            		if (currRule != null) currRule.addItem(var);
+	            	}
 	            	
 	            	// Consume variable and VAR_END
 	            	is.matchToken(varName);
@@ -77,8 +88,6 @@ public class Grammar {
 	            default:
 	            	// Could be a TokenClass like BEGIN, or a matching token like 'begin'
 	            	// Try matching TokenClass first. As a last resort, try scanToken.
-	            	
-	            	// TODO
 	            	String string = is.peekTillSpace();
 	            	TokenClass klass = parser.getTokenClass(string);
 	            	
@@ -91,13 +100,14 @@ public class Grammar {
 	            		Token token = parser.scanToken(string);
 	            		
 	            		if (token != null) {
-	            			// It was valid string from TokenClass, like begin
+	            			// It's a valid string from TokenClass, like begin
 	            			// Add to current rule
 	            			currRule.addItem(token.getKlass());
 	            			
 	            			// Consume the text that matched
 	            			is.matchToken(token.getString());
 	            		} else {
+	            			// That didn't work either, invalid!
 	            			invalid();
 	            		}
 	            	}
