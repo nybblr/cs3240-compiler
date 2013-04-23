@@ -215,4 +215,31 @@ public class Grammar {
 		System.out.println(is.toString());
 		System.exit(0);
 	}
+	
+	public void calculateFirstSets() {
+		boolean hasChanged = false;
+		do{
+			hasChanged = false;
+			for(Variable variable : map.keySet()){
+				int size = map.get(variable).size();
+				for(Rule rule : map.get(variable)){
+					int k = 0;
+					boolean cont = true;
+					List<RuleItem> items = rule.getItems();
+					while(cont == true && k <= size){
+						Set<TokenClass> newFirst = items.get(k).getFirst();
+						boolean containsE = newFirst.remove(new EpsilonVariable(this));
+						if(variable.addAllToFirst(newFirst))
+							hasChanged = true;
+						if(!containsE)
+							cont = false;
+						k++;
+					}
+					if(cont == true){
+						//variable.addToFirst(new EpsilonVariable(this));
+					}
+				}
+			}
+		} while(hasChanged);
+	}
 }
