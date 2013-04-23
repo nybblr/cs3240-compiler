@@ -17,6 +17,11 @@ public class Variable extends RuleItem {
 		this.grammar = grammar;
 		this.label = label;
 	}
+	
+	public Variable(String label) {
+		super();
+		this.label = label;
+	}
 
 	// Getters/setters
 	public String getLabel() {
