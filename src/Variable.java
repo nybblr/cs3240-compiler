@@ -41,20 +41,20 @@ public class Variable extends RuleItem {
 	}
 	
 	// First/follow sets
-	public void addToFirst(TokenClass klass) {
-		first.add(klass);
+	public boolean addToFirst(TokenClass klass) {
+		return first.add(klass);
 	}
 	
-	public void addAllToFirst(Set<TokenClass> klasses) {
-		first.addAll(klasses);
+	public boolean addAllToFirst(Set<TokenClass> klasses) {
+		return first.addAll(klasses);
 	}
 	
-	public void addToFollow(TokenClass klass) {
-		follow.add(klass);
+	public boolean addToFollow(TokenClass klass) {
+		return follow.add(klass);
 	}
 	
-	public void addAllToFollow(Set<TokenClass> klasses) {
-		follow.addAll(klasses);
+	public boolean addAllToFollow(Set<TokenClass> klasses) {
+		return follow.addAll(klasses);
 	}
 	
 	// Utility
