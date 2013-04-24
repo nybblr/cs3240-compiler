@@ -49,40 +49,40 @@ public class Grammar {
 	            	is.matchToken(VAR_START);
 	            	
 	            	String varName = is.peekTill(VAR_END);
-	            	Variable var = new Variable(this, varName);
+	            	RuleItem item = new Variable(this, varName);
 	            	
-	            	if (varName.equals(EpsilonVariable.EPSILON)) {
+	            	if (varName.equals(EpsilonTerminal.EPSILON)) {
 	            		if (currRule != null) {
-	            			var = new EpsilonVariable(this);
+	            			item = new EpsilonTerminal(this);
 	            		}
 	            	} else {
 		            	// Do variable instantiation stuff here
-		            	if (map.containsKey(var)) {
+		            	if (map.containsKey(item)) {
 		            		// Variable already instantiated; use it
 		            		Variable varMatch = null;
 		            		for (Variable v : map.keySet()) {
-		            			if (v.equals(var)) {
+		            			if (v.equals(item)) {
 		            				varMatch = v;
 		            				break;
 		            			}
 		            		}
 		            		
 		            		// Ditch the other one
-		            		var = varMatch;
+		            		item = varMatch;
 		            	} else {
 		            		// Not made; add it to map
-		            		map.put(var, new HashSet<Rule>());
+		            		map.put((Variable)item, new HashSet<Rule>());
 		            	}
 	            	}
 	            	
 	            	// See if we are working on rules
 	            	if (currVar == null) {
 	            		// First variable on line
-	            		currVar = var;
-	            		if (i == 0) start = var;
+	            		currVar = (Variable)item;
+	            		if (i == 0) start = (Variable)item;
 	            	} else if (currRule != null) {
 	            		// Working on rule; add
-	            		currRule.addItem(var);
+	            		currRule.addItem(item);
 	            	}
 	            	
 	            	// Consume variable and VAR_END
@@ -228,7 +228,7 @@ public class Grammar {
 					List<RuleItem> items = rule.getItems();
 					while(cont == true && k <= size){
 						Set<TokenClass> newFirst = items.get(k).getFirst();
-						boolean containsE = newFirst.remove(new EpsilonVariable(this));
+						boolean containsE = newFirst.remove(new EpsilonTerminal(this));
 						if(variable.addAllToFirst(newFirst))
 							hasChanged = true;
 						if(!containsE)
