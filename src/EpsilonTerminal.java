@@ -13,7 +13,7 @@ public class EpsilonTerminal extends Terminal {
 		this.grammar = grammar;
 	}
 	
-	public Set<TokenClass> getFirst() {
+	public Set<Terminal> getFirst() {
 		return null;
 	}
 	

@@ -3,7 +3,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 
-public class TokenClass extends RuleItem {
+public class TokenClass extends Terminal {
 	private HashSet<Character> chars = new HashSet<Character>();
 	private DFA dfa;
 	private NFA nfa;
@@ -57,8 +57,8 @@ public class TokenClass extends RuleItem {
 		return "$"+name;
 	}
 	
-	public Set<TokenClass> getFirst() {
-		Set<TokenClass> first = new HashSet<TokenClass>();
+	public Set<Terminal> getFirst() {
+		Set<Terminal> first = new HashSet<Terminal>();
 		first.add(this);
 		return first;
 	}

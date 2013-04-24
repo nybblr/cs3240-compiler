@@ -227,7 +227,7 @@ public class Grammar {
 					boolean cont = true;
 					List<RuleItem> items = rule.getItems();
 					while(cont == true && k <= size){
-						Set<TokenClass> newFirst = items.get(k).getFirst();
+						Set<Terminal> newFirst = items.get(k).getFirst();
 						boolean containsE = newFirst.remove(new EpsilonTerminal(this));
 						if(variable.addAllToFirst(newFirst))
 							hasChanged = true;

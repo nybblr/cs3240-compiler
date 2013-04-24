@@ -7,9 +7,9 @@ public class Variable extends RuleItem {
 	private String label;
 	
 	// First set
-	private Set<TokenClass> first = new HashSet<TokenClass>();
+	private Set<Terminal> first = new HashSet<Terminal>();
 	// Follow set
-	private Set<TokenClass> follow = new HashSet<TokenClass>();
+	private Set<Terminal> follow = new HashSet<Terminal>();
 
 	// Constructors
 	public Variable(Grammar grammar, String label) {
@@ -32,28 +32,28 @@ public class Variable extends RuleItem {
 		this.label = label;
 	}
 
-	public Set<TokenClass> getFirst() {
+	public Set<Terminal> getFirst() {
 		return first;
 	}
 
-	public Set<TokenClass> getFollow() {
+	public Set<Terminal> getFollow() {
 		return follow;
 	}
 	
 	// First/follow sets
-	public boolean addToFirst(TokenClass klass) {
+	public boolean addToFirst(Terminal klass) {
 		return first.add(klass);
 	}
 	
-	public boolean addAllToFirst(Set<TokenClass> klasses) {
+	public boolean addAllToFirst(Set<Terminal> klasses) {
 		return first.addAll(klasses);
 	}
 	
-	public boolean addToFollow(TokenClass klass) {
+	public boolean addToFollow(Terminal klass) {
 		return follow.add(klass);
 	}
 	
-	public boolean addAllToFollow(Set<TokenClass> klasses) {
+	public boolean addAllToFollow(Set<Terminal> klasses) {
 		return follow.addAll(klasses);
 	}
 	
