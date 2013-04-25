@@ -11,6 +11,14 @@ public class DollarItem extends Terminal {
 	}
 	
 	public Set<Terminal> getFirst() {
-		return null;
+		return new HashSet<Terminal>();
+	}
+	
+	public Set<Terminal> getFollow() {
+		return new HashSet<Terminal>();
+	}
+	
+	public String toString() {
+		return "$";
 	}
 }

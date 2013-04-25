@@ -62,4 +62,9 @@ public class TokenClass extends Terminal {
 		first.add(this);
 		return first;
 	}
+	public Set<Terminal> getFollow() {
+		Set<Terminal> follow = new HashSet<Terminal>();
+		follow.add(this);
+		return follow;
+	}
 }

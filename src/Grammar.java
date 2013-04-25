@@ -244,4 +244,42 @@ public class Grammar {
 			}
 		} while(hasChanged);
 	}
+	public void calculateFollowSets() {
+		start.addToFollow(new DollarItem(this));	
+		boolean hasChanged = false;
+		do{
+			hasChanged = false;
+			for(Variable variable : map.keySet()){
+				//int size = map.get(variable).size();
+				for(Rule rule : map.get(variable)){
+					List<RuleItem> items = rule.getItems();
+					for(int i=0; i<items.size(); i++){
+						if(items.get(i) instanceof Variable){
+							Set<Terminal> newFirst = new HashSet<Terminal>();
+							for(int j=i+1; j<items.size(); j++){
+								Set<Terminal> currSet = items.get(j).getFirst();
+								newFirst.addAll(currSet);
+								if(!currSet.contains(new EpsilonTerminal(this)))
+									break;
+							}
+							boolean containsE = newFirst.remove(new EpsilonTerminal(this));
+							/*if(newFirst.isEmpty())
+								System.out.println(items.get(i)+" empty");
+							else
+								System.out.println(items.get(i)+" "+newFirst);*/
+
+							if(items.get(i).getFollow().addAll(newFirst))
+								hasChanged = true;
+							if(containsE){
+								Set<Terminal> newFollow = variable.getFollow();
+								//newFollow.remove(new EpsilonTerminal(this));
+								if(items.get(i).getFollow().addAll(newFollow))
+									hasChanged = true;
+							}
+						}
+					}
+				}
+			}
+		} while(hasChanged);
+	}
 }

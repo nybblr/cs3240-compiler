@@ -17,6 +17,10 @@ public class EpsilonTerminal extends Terminal {
 		return new HashSet<Terminal>();
 	}
 	
+	public Set<Terminal> getFollow() {
+		return new HashSet<Terminal>();
+	}
+	
 	public String toString() {
 		return "<epsilon>";
 	}

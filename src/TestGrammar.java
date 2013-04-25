@@ -8,10 +8,18 @@ public class TestGrammar {
 		
 		System.out.println(g.toString());
 		g.calculateFirstSets();
+		g.calculateFollowSets();
 		for(Variable variable : g.getVariables()){
 			System.out.print("First("+variable+") = {");
 			for(Terminal elementInFirstSet : variable.getFirst())
 				System.out.print(elementInFirstSet+", ");
+			System.out.println("}");
+		}
+		System.out.println();
+		for(Variable variable : g.getVariables()){
+			System.out.print("Follow("+variable+") = {");
+			for(Terminal elementInFollowSet : variable.getFollow())
+				System.out.print(elementInFollowSet+", ");
 			System.out.println("}");
 		}
 	}
