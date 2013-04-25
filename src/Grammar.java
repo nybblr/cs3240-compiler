@@ -228,6 +228,7 @@ public class Grammar {
 					List<RuleItem> items = rule.getItems();
 					while(cont == true && k <= size){
 						Set<Terminal> newFirst = items.get(k).getFirst();
+						//System.out.println(items.get(k)+" "+newFirst);
 						boolean containsE = newFirst.remove(new EpsilonTerminal(this));
 						if(variable.addAllToFirst(newFirst))
 							hasChanged = true;
@@ -236,7 +237,7 @@ public class Grammar {
 						k++;
 					}
 					if(cont == true){
-						//variable.addToFirst(new EpsilonVariable(this));
+						variable.addToFirst(new EpsilonTerminal(this));
 					}
 				}
 			}

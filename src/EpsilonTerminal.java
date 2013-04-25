@@ -14,7 +14,7 @@ public class EpsilonTerminal extends Terminal {
 	}
 	
 	public Set<Terminal> getFirst() {
-		return null;
+		return new HashSet<Terminal>();
 	}
 	
 	public String toString() {
