@@ -237,7 +237,8 @@ public class Grammar {
 						k++;
 					}
 					if(cont == true){
-						variable.addToFirst(new EpsilonTerminal(this));
+						if(variable.addToFirst(new EpsilonTerminal(this)))
+							hasChanged = true;
 					}
 				}
 			}
