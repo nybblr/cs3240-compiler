@@ -3,7 +3,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Queue;
 import java.util.LinkedList;
 
@@ -100,7 +99,7 @@ public class DFA extends NFA {
 
 		if(currState.getAccepts()) lastAccept = start;
 
-		String string = "Derivation: "+currState;
+//		String string = "Derivation: "+currState;
 
 		while(!is.isConsumed()) {
 			char c = is.peekToken().charValue();
@@ -114,7 +113,7 @@ public class DFA extends NFA {
 				acceptPointer = is.getPointer();
 			}
 
-			string += " => " + currState;
+//			string += " => " + currState;
 		}
 		//System.out.println(string);
 		return new ScanResult(lastAccept, acceptPointer, currState.getAccepts());
@@ -149,7 +148,6 @@ public class DFA extends NFA {
 		try {
 			return baos.toString("UTF8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

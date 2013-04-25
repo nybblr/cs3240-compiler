@@ -118,6 +118,7 @@ import java.util.Iterator;
  * </PRE>
  *
  */
+@SuppressWarnings({"rawtypes", "unchecked", "unused"})
 public class MultiColumnPrinter {
 
     final public static int	LEFT	= 0;
@@ -136,7 +137,7 @@ public class MultiColumnPrinter {
     private int titleAlign = CENTER;
     private String border = null;
 
-    private Vector table = null;
+	private Vector table = null;
     private Vector titleTable = null;
     private Vector titleSpanTable = null;
     private int curLength[];

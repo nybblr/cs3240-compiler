@@ -12,13 +12,13 @@ import java.util.Iterator;
  * 
  */
 public class RegExpFunc {
+	@SuppressWarnings("unused")
 	private static final String SPACE = " ", BSLASH = "/", STAR = "*",
 			PLUS = "+", OR = "|", LBRAC = "[", RBRAC = "]", LPAREN = "(",
 			RPAREN = ")", PERIOD = ".", APOS = "'", QUOT = "\"",
 			IN = "IN", NOT = "^", DASH = "-", DOLLAR = "$";
 
 	private static final Character ESCAPE = new Character('\\');
-	private static final Character SPACEC = new Character(' ');
 
 	private static final Character[] EX_RE_CHAR = { ' ', '\\', '*', '+', '?',
 		'|', '[', ']', '(', ')', '.', '\'', '"', '$' };
@@ -151,7 +151,7 @@ public class RegExpFunc {
 		}
 	}
 
-	public HashSet completeHashSet(String className, Character c) {
+	public HashSet<Character> completeHashSet(String className, Character c) {
 		HashSet<Character> classHash;
 		for (int i = 0; i < classes.size(); i++) {
 			if (classes.get(i).getName().equals(className)) {
@@ -181,6 +181,7 @@ public class RegExpFunc {
 
 	public HashSet<Character> exclude(HashSet<Character> set1, HashSet<Character> set2){
 		Iterator<Character> iter = set1.iterator();
+		@SuppressWarnings("unchecked")
 		HashSet<Character> newHashSet = (HashSet<Character>) set2.clone();
 		while(iter.hasNext()){
 			Character c = iter.next();
@@ -190,7 +191,7 @@ public class RegExpFunc {
 		return newHashSet;
 	}
 
-	public static NFA createNFA(HashSet set){
+	public static NFA createNFA(HashSet<Character> set){
 		State s = new State();
 		State t = new State();
 		NFA nfa = new NFA(s);

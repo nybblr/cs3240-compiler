@@ -32,6 +32,10 @@ public class Variable extends RuleItem {
 		this.label = label;
 	}
 
+	public Grammar getGrammar() {
+		return grammar;
+	}
+
 	public Set<Terminal> getFirst() {
 		return first;
 	}

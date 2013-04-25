@@ -10,6 +10,11 @@ public class DollarItem extends Terminal {
 		this.grammar = grammar;
 	}
 	
+	// Getters/setters
+	public Grammar getGrammar() {
+		return grammar;
+	}
+
 	public Set<Terminal> getFirst() {
 		return new HashSet<Terminal>();
 	}
