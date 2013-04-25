@@ -1,0 +1,4 @@
+<declaration> ::= <type> <var-list>
+<type> ::= int | float
+<var-list> ::= IDENTIFIER <var-tail>
+<var-tail> ::= , <var-list> | <epsilon>
