@@ -10,18 +10,13 @@ public class TestGrammar {
 		g.calculateFirstSets();
 		g.calculateFollowSets();
 		for(Variable variable : g.getVariables()){
-			System.out.print("First("+variable+") = {");
-			for(Terminal elementInFirstSet : variable.getFirst())
-				System.out.print(elementInFirstSet+", ");
-			System.out.println("}");
+			System.out.print("First("+variable+") = ");
+			System.out.println(variable.getFirst());
 		}
 		System.out.println();
 		for(Variable variable : g.getVariables()){
-			System.out.print("Follow("+variable+") = {");
-			for(Terminal elementInFollowSet : variable.getFollow())
-				System.out.print(elementInFollowSet+", ");
-			System.out.println("}");
+			System.out.print("Follow("+variable+") = ");
+			System.out.println(variable.getFollow());
 		}
 	}
-
 }
