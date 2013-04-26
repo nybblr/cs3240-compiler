@@ -1,5 +1,7 @@
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 
 public class Rule {
@@ -10,6 +12,11 @@ public class Rule {
 	// Ordered list of the token classes/variables
 	// Can't be an ordered set because a Rule Item may appear multiple times
 	private List<RuleItem> items;
+	
+	// First set
+	private Set<Terminal> first = new HashSet<Terminal>();
+	// Follow set
+	private Set<Terminal> follow = new HashSet<Terminal>();
 	
 	// Constructors
 	public Rule(Grammar grammar, Variable variable) {
@@ -34,6 +41,23 @@ public class Rule {
 	}
 	public List<RuleItem> getItems() {
 		return items;
+	}
+	
+	// First/follow sets
+	public boolean addToFirst(Terminal klass) {
+		return first.add(klass);
+	}
+	
+	public boolean addAllToFirst(Set<Terminal> klasses) {
+		return first.addAll(klasses);
+	}
+	
+	public boolean addToFollow(Terminal klass) {
+		return follow.add(klass);
+	}
+	
+	public boolean addAllToFollow(Set<Terminal> klasses) {
+		return follow.addAll(klasses);
 	}
 	
 	// Manipulation
