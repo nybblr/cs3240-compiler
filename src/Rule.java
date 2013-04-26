@@ -45,19 +45,23 @@ public class Rule {
 	
 	// First/follow sets
 	public boolean addToFirst(Terminal klass) {
-		return first.add(klass);
+		boolean changed = first.add(klass);
+		return variable.addToFirst(klass) || changed;
 	}
 	
 	public boolean addAllToFirst(Set<Terminal> klasses) {
-		return first.addAll(klasses);
+		boolean changed = first.addAll(klasses);
+		return variable.addAllToFirst(klasses) || changed;
 	}
 	
 	public boolean addToFollow(Terminal klass) {
-		return follow.add(klass);
+		boolean changed = follow.add(klass);
+		return variable.addToFollow(klass) || changed;
 	}
 	
 	public boolean addAllToFollow(Set<Terminal> klasses) {
-		return follow.addAll(klasses);
+		boolean changed = follow.addAll(klasses);
+		return variable.addAllToFollow(klasses) || changed;
 	}
 	
 	// Manipulation

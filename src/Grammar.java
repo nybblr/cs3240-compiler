@@ -229,15 +229,18 @@ public class Grammar {
 					while(cont == true && k <= size){
 						Set<Terminal> newFirst = items.get(k).getFirst();
 						//System.out.println(items.get(k)+" "+newFirst);
+						// This won't work right now! Epsilon terminals don't have an equals method
+						// Need to iterate instead since epsilons may be unique to a rule...
 						boolean containsE = newFirst.remove(new EpsilonTerminal(this));
-						if(variable.addAllToFirst(newFirst))
+						// Add to rule instead, and it will automatically update the variable's copy
+						if(rule.addAllToFirst(newFirst))
 							hasChanged = true;
 						if(!containsE)
 							cont = false;
 						k++;
 					}
 					if(cont == true){
-						if(variable.addToFirst(new EpsilonTerminal(this)))
+						if(rule.addToFirst(new EpsilonTerminal(this)))
 							hasChanged = true;
 					}
 				}

@@ -7,4 +7,4 @@ $UPPERCASE  [^a-z] IN $LETTER
 $INT int
 $FLOAT float
 $COMMA ,
-$IDENTIFIER $SMALLCASE ($LETTER | $DIGIT)*
+$IDENTIFIER floater | identifier
