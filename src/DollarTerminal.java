@@ -2,13 +2,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class EpsilonTerminal extends Terminal {
-	// Keyword for epsilon variable
-	public static final String EPSILON = "epsilon";
-	
+public class DollarTerminal extends Terminal {
 	private Grammar grammar;
+	
+	private final String DOLLAR = "$";
 
-	public EpsilonTerminal(Grammar grammar) {
+	public DollarTerminal(Grammar grammar) {
 		//super(grammar, "epsilon");
 		this.grammar = grammar;
 	}
@@ -27,16 +26,16 @@ public class EpsilonTerminal extends Terminal {
 	}
 	
 	public String toString() {
-		return "<epsilon>";
+		return DOLLAR;
 	}
 	
-	public boolean isEpsilon() {
+	public boolean isDollar() {
 		return true;
 	}
 	
 	// As long as it's the same grammar, they're equal.
 	public int hashCode() {
-		return EPSILON.hashCode() + grammar.hashCode();
+		return DOLLAR.hashCode() + grammar.hashCode();
 	}
 
 	public boolean equals(Object obj) {
@@ -44,7 +43,7 @@ public class EpsilonTerminal extends Terminal {
 			return false;
 		if (obj == this)
 			return true;
-		if (!(obj instanceof EpsilonTerminal))
+		if (!(obj instanceof DollarTerminal))
 			return false;
 
 		return true;

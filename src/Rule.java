@@ -42,6 +42,14 @@ public class Rule {
 	public List<RuleItem> getItems() {
 		return items;
 	}
+
+	public Set<Terminal> getFirst() {
+		return first;
+	}
+
+	public Set<Terminal> getFollow() {
+		return follow;
+	}
 	
 	// First/follow sets
 	public boolean addToFirst(Terminal klass) {
@@ -62,6 +70,10 @@ public class Rule {
 	public boolean addAllToFollow(Set<Terminal> klasses) {
 		boolean changed = follow.addAll(klasses);
 		return variable.addAllToFollow(klasses) || changed;
+	}
+	
+	public boolean hasEpsilonInFirst() {
+		return first.contains(new EpsilonTerminal(grammar));
 	}
 	
 	// Manipulation

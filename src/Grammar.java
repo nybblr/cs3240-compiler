@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,11 @@ public class Grammar {
 	private Map<Variable,Set<Rule>> map = new HashMap<Variable, Set<Rule>>();
 	// Start variable
 	private Variable start;
+	// Parser
+	private Parser parser;
+	
+	// Ordered list of variables for nicer output
+	private List<Variable> orderedVars;
 	
 	// Special characters for parsing
 	private static final char VAR_START = '<';
@@ -29,8 +35,10 @@ public class Grammar {
 	public Grammar(Scanner grammar, Scanner spec) {
 		super();
 		
+		orderedVars = new ArrayList<Variable>();
+		
 		// Build scanner first
-		Parser parser = new Parser();
+		parser = new Parser();
 		parser.build(spec);
 
 		Variable currVar = null;
@@ -79,7 +87,11 @@ public class Grammar {
 	            	if (currVar == null) {
 	            		// First variable on line
 	            		currVar = (Variable)item;
-	            		if (i == 0) start = (Variable)item;
+	            		
+	            		if (!orderedVars.contains(currVar))
+	            			orderedVars.add(currVar);
+	            		
+	            		if (i == 0) start = currVar;
 	            	} else if (currRule != null) {
 	            		// Working on rule; add
 	            		currRule.addItem(item);
@@ -169,9 +181,28 @@ public class Grammar {
 		return map.keySet();
 	}
 	
+	public List<Variable> getOrderedVars() {
+		return orderedVars;
+	}
+
+	public Parser getParser() {
+		return parser;
+	}
+	
 	// Traversal
 	public Set<Rule> getRulesFor(Variable v) {
 		return map.get(v);
+	}
+	
+	// Get all rules
+	public Set<Rule> getRules() {
+		Set<Rule> rules = new HashSet<Rule>();
+		
+		for (Set<Rule> ruleSet : map.values()) {
+			rules.addAll(ruleSet);
+		}
+		
+		return rules;
 	}
 	
 	// Manipulation
@@ -248,7 +279,7 @@ public class Grammar {
 		} while(hasChanged);
 	}
 	public void calculateFollowSets() {
-		start.addToFollow(new DollarItem(this));	
+		start.addToFollow(new DollarTerminal(this));	
 		boolean hasChanged = false;
 		do{
 			hasChanged = false;
