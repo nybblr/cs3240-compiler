@@ -3,7 +3,7 @@ import java.util.Set;
 
 
 public class TokenClass extends Terminal {
-	private HashSet<Character> chars = new HashSet<Character>();
+	private Set<Character> chars = new HashSet<Character>();
 	private DFA dfa;
 	private NFA nfa;
 	private String name;
@@ -11,11 +11,11 @@ public class TokenClass extends Terminal {
 	/* Constructor */
 
 	/* Setters and getters */
-	public HashSet<Character> getChars() {
+	public Set<Character> getChars() {
 		return chars;
 	}
 
-	public void setChars(HashSet<Character> chars) {
+	public void setChars(Set<Character> chars) {
 		this.chars = chars;
 	}
 	public void addChar(char c) {

@@ -1,7 +1,8 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -25,12 +26,12 @@ public class RegExpFunc {
 	private static final Character[] EX_CLS_CHAR = { '\\', '^', '-', '[', ']',
 	'$' };
 
-	private static final HashSet<Character> RE_CHAR = new HashSet<Character>(
+	private static final Set<Character> RE_CHAR = new HashSet<Character>(
 			Arrays.asList(EX_RE_CHAR));
-	private static final HashSet<Character> CLS_CHAR = new HashSet<Character>(
+	private static final Set<Character> CLS_CHAR = new HashSet<Character>(
 			Arrays.asList(EX_CLS_CHAR));
 	private Parser parser;
-	private ArrayList<TokenClass> classes;
+	private List<TokenClass> classes;
 
 	private String input;
 	private InputStream is;
@@ -68,7 +69,7 @@ public class RegExpFunc {
 		return is.peekToken(token);
 	}
 
-	private boolean peekEscaped(HashSet<Character> escaped) {
+	private boolean peekEscaped(Set<Character> escaped) {
 		debug();
 		if (is.isConsumed())
 			return false;
@@ -82,7 +83,7 @@ public class RegExpFunc {
 		}
 	}
 
-	private Character matchEscaped(HashSet<Character> escaped) {
+	private Character matchEscaped(Set<Character> escaped) {
 		if (is.isConsumed())
 			return null;
 
@@ -151,8 +152,8 @@ public class RegExpFunc {
 		}
 	}
 
-	public HashSet<Character> completeHashSet(String className, Character c) {
-		HashSet<Character> classHash;
+	public Set<Character> completeHashSet(String className, Character c) {
+		Set<Character> classHash;
 		for (int i = 0; i < classes.size(); i++) {
 			if (classes.get(i).getName().equals(className)) {
 				classHash = classes.get(i).getChars();
@@ -179,10 +180,10 @@ public class RegExpFunc {
 		return null;
 	}
 
-	public HashSet<Character> exclude(HashSet<Character> set1, HashSet<Character> set2){
+	public Set<Character> exclude(Set<Character> set1, Set<Character> set2){
 		Iterator<Character> iter = set1.iterator();
 		@SuppressWarnings("unchecked")
-		HashSet<Character> newHashSet = (HashSet<Character>) set2.clone();
+		Set<Character> newHashSet = (HashSet<Character>) ((HashSet<Character>)set2).clone();
 		while(iter.hasNext()){
 			Character c = iter.next();
 			if(newHashSet.contains(c))
@@ -191,7 +192,7 @@ public class RegExpFunc {
 		return newHashSet;
 	}
 
-	public static NFA createNFA(HashSet<Character> set){
+	public static NFA createNFA(Set<Character> set){
 		State s = new State();
 		State t = new State();
 		NFA nfa = new NFA(s);
@@ -204,7 +205,7 @@ public class RegExpFunc {
 	}
 
 	private NFA getNFA(String className){
-		HashSet<Character> chars = parser.getClass(className);
+		Set<Character> chars = parser.getClass(className);
 		if (chars != null)
 			return createNFA(chars);
 		else
@@ -457,8 +458,8 @@ public class RegExpFunc {
 		 else {
 			 matchToken(DOLLAR);
 			 String name = definedClass();
-			 HashSet<Character> hashSet1 = parser.getClass(className);
-			 HashSet<Character> hashSet2 = parser.getClass(name);
+			 Set<Character> hashSet1 = parser.getClass(className);
+			 Set<Character> hashSet2 = parser.getClass(name);
 			 parser.setClass(className, exclude(hashSet1, hashSet2));
 		 }
 	 }

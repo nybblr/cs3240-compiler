@@ -1,5 +1,5 @@
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class TestScanner {
@@ -13,7 +13,7 @@ public class TestScanner {
 		
 		parser.scanAndOutput("inputs/minire.txt");
 		
-		ArrayList<TokenClass> classes = parser.getClasses();
+		List<TokenClass> classes = parser.getClasses();
 		
 		TokenClass klass = null;
 		String klassName = "FLOAT";

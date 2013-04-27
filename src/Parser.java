@@ -5,9 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Parser {
     private ArrayList<TokenClass> charClasses;
@@ -83,7 +84,7 @@ public class Parser {
         if(debug)
             System.out.println("Scanning input file with big dfa...");
         
-        LinkedList<Token> tokens = scanFromFile(filename);
+        List<Token> tokens = scanFromFile(filename);
         
         String outputStr = "";
         for (Token token : tokens) {
@@ -162,7 +163,7 @@ public class Parser {
 //        return tokens;
 //    }
     
-    public LinkedList<Token> scanFromFile(String filename) throws FileNotFoundException {
+    public List<Token> scanFromFile(String filename) throws FileNotFoundException {
     	return scan(new Scanner(new File(filename)));
     }
     
@@ -188,8 +189,8 @@ public class Parser {
     	}
     }
     
-    public LinkedList<Token> scan(Scanner input) {
-        LinkedList<Token> tokens = new LinkedList<Token>();
+    public List<Token> scan(Scanner input) {
+        List<Token> tokens = new LinkedList<Token>();
         
         while(input.hasNextLine()){
             String line = input.nextLine();
@@ -233,7 +234,7 @@ public class Parser {
         charsAndTokens = new ArrayList<TokenClass>();
 
         // Which array are we filling?
-        ArrayList<TokenClass> classes = charClasses;
+        List<TokenClass> classes = charClasses;
         while(input.hasNextLine()){
             String line = input.nextLine();
 
@@ -289,16 +290,16 @@ public class Parser {
     /**
      * @return the classes
      */
-    public ArrayList<TokenClass> getClasses() {
+    public List<TokenClass> getClasses() {
         return charsAndTokens;
     }
 
-    public ArrayList<TokenClass> getTokenClasses() {
+    public List<TokenClass> getTokenClasses() {
 		return tokenClasses;
 	}
 
-	public static ArrayList<Character> getIntervalOfChars(String inside){
-        ArrayList<Character> list = new ArrayList<Character>();
+	public static List<Character> getIntervalOfChars(String inside){
+        List<Character> list = new ArrayList<Character>();
         int index=0;
         char previousChar = inside.charAt(0);
         while(index<inside.length()){
@@ -321,7 +322,7 @@ public class Parser {
         return list;
     }
 
-    public HashSet<Character> getClass(String className){
+    public Set<Character> getClass(String className){
         for(int i=0; i<charsAndTokens.size(); i++){
             if(charsAndTokens.get(i).getName().equals(className))
                 return charsAndTokens.get(i).getChars();
@@ -329,7 +330,7 @@ public class Parser {
         return null;
     }
 
-    public void setClass(String className, HashSet<Character> exclude) {
+    public void setClass(String className, Set<Character> exclude) {
         for(int i=0; i<charsAndTokens.size(); i++){
             if(charsAndTokens.get(i).getName().equals(className))
                 charsAndTokens.get(i).setChars(exclude);

@@ -3,6 +3,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class ParseTable {
@@ -68,6 +69,10 @@ public class ParseTable {
 		System.out.println("The grammar is not LL(1)! Entries clashed.");
 		System.out.println("Cell ["+var+","+term+"] currently has "+table[var][term]+" but tried to assign "+rule);
 		System.exit(0);
+	}
+	
+	public void walk(Scanner input) {
+		List<Token> tokens = grammar.getParser().scan(input);
 	}
 	
 	public String toString() {
