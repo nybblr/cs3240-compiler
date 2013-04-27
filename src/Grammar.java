@@ -265,7 +265,7 @@ public class Grammar {
 						boolean containsE = false;
 						System.out.println(newFirst);
 						for(Terminal term : newFirst){
-							if(term instanceof EpsilonTerminal){
+							if(term.isEpsilon()){
 								containsE = true;
 								newFirst.remove(term);
 							}
