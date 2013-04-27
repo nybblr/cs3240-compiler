@@ -262,7 +262,15 @@ public class Grammar {
 						//System.out.println(items.get(k)+" "+newFirst);
 						// This won't work right now! Epsilon terminals don't have an equals method
 						// Need to iterate instead since epsilons may be unique to a rule...
-						boolean containsE = newFirst.remove(new EpsilonTerminal(this));
+						boolean containsE = false;
+						System.out.println(newFirst);
+						for(Terminal term : newFirst){
+							if(term instanceof EpsilonTerminal){
+								containsE = true;
+								newFirst.remove(term);
+							}
+						}
+						System.out.println(containsE);
 						// Add to rule instead, and it will automatically update the variable's copy
 						if(rule.addAllToFirst(newFirst))
 							hasChanged = true;
