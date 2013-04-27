@@ -19,11 +19,15 @@ public class EpsilonTerminal extends Terminal {
 	}
 
 	public Set<Terminal> getFirst() {
-		return new HashSet<Terminal>();
+		Set<Terminal> first = new HashSet<Terminal>();
+		first.add(this);
+		return first;
 	}
 	
 	public Set<Terminal> getFollow() {
-		return new HashSet<Terminal>();
+		Set<Terminal> follow = new HashSet<Terminal>();
+		follow.add(this);
+		return follow;
 	}
 	
 	public String toString() {
