@@ -38,8 +38,15 @@ public class ParseTable {
 		for (Rule rule : grammar.getRules()) {
 			int varI = varList.indexOf(rule.getVariable());
 			
+			boolean hasEpsilon = false;
+			
 			// For each token in First(rule)
 			for (Terminal term : rule.getFirst()) {
+				if (term.isEpsilon()) {
+					hasEpsilon = true;
+					continue;
+				}
+				
 				int termI = termList.indexOf(term);
 				
 				if (table[varI][termI] == null) {
@@ -50,7 +57,7 @@ public class ParseTable {
 			}
 			
 			// If epsilon in First(rule)
-			if (rule.hasEpsilonInFirst()) {
+			if (hasEpsilon) {
 				// For each token in Follow(rule)
 				for (Terminal term : rule.getFollow()) {
 					int termI = termList.indexOf(term);
@@ -73,6 +80,8 @@ public class ParseTable {
 	
 	public void walk(Scanner input) {
 		List<Token> tokens = grammar.getParser().scan(input);
+		
+		
 	}
 	
 	public String toString() {
