@@ -259,22 +259,14 @@ public class Grammar {
 					List<RuleItem> items = rule.getItems();
 					size = items.size();
 					while(cont == true && k < size){
-						//System.out.println(k+" "+cont+" "+size);
 						Set<Terminal> newFirst = items.get(k).getFirst();
-						//System.out.println(newFirst);
-						//System.out.println(items.get(k)+" "+newFirst);
-						// This won't work right now! Epsilon terminals don't have an equals method
-						// Need to iterate instead since epsilons may be unique to a rule...
 						boolean containsE = false;
-						//System.out.println(newFirst);
 						for(Terminal term : newFirst){
 							if(term.isEpsilon()){
 								containsE = true;
 								newFirst.remove(term);
 							}
 						}
-						//System.out.println(containsE);
-						// Add to rule instead, and it will automatically update the variable's copy
 						if(rule.addAllToFirst(newFirst))
 							hasChanged = true;
 						if(!containsE)
@@ -295,7 +287,6 @@ public class Grammar {
 		do{
 			hasChanged = false;
 			for(Variable variable : map.keySet()){
-				//int size = map.get(variable).size();
 				for(Rule rule : map.get(variable)){
 					System.out.println("rule "+rule);
 					List<RuleItem> items = rule.getItems();
@@ -305,7 +296,6 @@ public class Grammar {
 							System.out.println("VARIABLE "+items.get(i));
 							Set<Terminal> newFirst = new HashSet<Terminal>();
 							for(int j=i+1; j<items.size(); j++){
-								//if(items.)
 								Set<Terminal> currSet = items.get(j).getFirst();
 								System.out.println(items.get(j)+" "+currSet);
 								newFirst.addAll(currSet);
@@ -313,24 +303,14 @@ public class Grammar {
 									break;
 							}
 							boolean containsE = newFirst.remove(new EpsilonTerminal(this));
-							/*if(newFirst.isEmpty())
-								System.out.println(items.get(i)+" empty");
-							else
-								System.out.println(items.get(i)+" "+newFirst);*/
-
 							if(items.get(i).getFollow().addAll(newFirst)){
 								hasChanged = true;
 								System.out.println("ADDED to follow "+items.get(i).getFollow());
 							}
 							if(containsE || i == (items.size()-1)){
-								//System.out.println("contains e");
 								Set<Terminal> newFollow = variable.getFollow();
-								//newFollow.remove(new EpsilonTerminal(this));
 								if(items.get(i).getFollow().addAll(newFollow))
 									hasChanged = true;
-							}
-							else {
-								//System.out.println("doesnt contain e");
 							}
 						}
 					}
