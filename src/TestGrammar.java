@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class TestGrammar {
 	public static void main(String[] args) throws Exception {
-		Grammar g = new Grammar(new Scanner(new File("grammars/simple.txt")), new Scanner(new File("specs/simple.txt")));
+		Grammar g = new Grammar(new Scanner(new File("grammars/math.txt")), new Scanner(new File("specs/math.txt")));
 		
 		System.out.println(g.toString());
 		g.calculateFirstSets();

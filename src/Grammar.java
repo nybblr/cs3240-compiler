@@ -288,16 +288,12 @@ public class Grammar {
 			hasChanged = false;
 			for(Variable variable : map.keySet()){
 				for(Rule rule : map.get(variable)){
-					System.out.println("rule "+rule);
 					List<RuleItem> items = rule.getItems();
-					System.out.println("items "+items);
 					for(int i=0; i<items.size(); i++){
 						if(items.get(i) instanceof Variable){
-							System.out.println("VARIABLE "+items.get(i));
 							Set<Terminal> newFirst = new HashSet<Terminal>();
 							for(int j=i+1; j<items.size(); j++){
 								Set<Terminal> currSet = items.get(j).getFirst();
-								System.out.println(items.get(j)+" "+currSet);
 								newFirst.addAll(currSet);
 								if(!currSet.contains(new EpsilonTerminal(this)))
 									break;
@@ -305,7 +301,6 @@ public class Grammar {
 							boolean containsE = newFirst.remove(new EpsilonTerminal(this));
 							if(items.get(i).getFollow().addAll(newFirst)){
 								hasChanged = true;
-								System.out.println("ADDED to follow "+items.get(i).getFollow());
 							}
 							if(containsE || i == (items.size()-1)){
 								Set<Terminal> newFollow = variable.getFollow();
