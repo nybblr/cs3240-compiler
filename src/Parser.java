@@ -10,9 +10,9 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Parser {
-    ArrayList<TokenClass> charClasses;
-    ArrayList<TokenClass> tokenClasses;
-    ArrayList<TokenClass> charsAndTokens;
+    private ArrayList<TokenClass> charClasses;
+    private ArrayList<TokenClass> tokenClasses;
+    private ArrayList<TokenClass> charsAndTokens;
     NFA bigNFA;
     DFA bigDFA;
     static boolean debug = false;
@@ -293,7 +293,11 @@ public class Parser {
         return charsAndTokens;
     }
 
-    public static ArrayList<Character> getIntervalOfChars(String inside){
+    public ArrayList<TokenClass> getTokenClasses() {
+		return tokenClasses;
+	}
+
+	public static ArrayList<Character> getIntervalOfChars(String inside){
         ArrayList<Character> list = new ArrayList<Character>();
         int index=0;
         char previousChar = inside.charAt(0);

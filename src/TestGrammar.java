@@ -18,5 +18,8 @@ public class TestGrammar {
 			System.out.print("Follow("+variable+") = ");
 			System.out.println(variable.getFollow());
 		}
+		
+		ParseTable pt = new ParseTable(g);
+		System.out.println(pt.toString());
 	}
 }
