@@ -261,7 +261,7 @@ public class Grammar {
 					while(cont == true && k < size){
 						//System.out.println(k+" "+cont+" "+size);
 						Set<Terminal> newFirst = items.get(k).getFirst();
-						System.out.println(newFirst);
+						//System.out.println(newFirst);
 						//System.out.println(items.get(k)+" "+newFirst);
 						// This won't work right now! Epsilon terminals don't have an equals method
 						// Need to iterate instead since epsilons may be unique to a rule...
@@ -297,12 +297,17 @@ public class Grammar {
 			for(Variable variable : map.keySet()){
 				//int size = map.get(variable).size();
 				for(Rule rule : map.get(variable)){
+					System.out.println("rule "+rule);
 					List<RuleItem> items = rule.getItems();
+					System.out.println("items "+items);
 					for(int i=0; i<items.size(); i++){
 						if(items.get(i) instanceof Variable){
+							System.out.println("VARIABLE "+items.get(i));
 							Set<Terminal> newFirst = new HashSet<Terminal>();
 							for(int j=i+1; j<items.size(); j++){
+								//if(items.)
 								Set<Terminal> currSet = items.get(j).getFirst();
+								System.out.println(items.get(j)+" "+currSet);
 								newFirst.addAll(currSet);
 								if(!currSet.contains(new EpsilonTerminal(this)))
 									break;
@@ -313,13 +318,19 @@ public class Grammar {
 							else
 								System.out.println(items.get(i)+" "+newFirst);*/
 
-							if(items.get(i).getFollow().addAll(newFirst))
+							if(items.get(i).getFollow().addAll(newFirst)){
 								hasChanged = true;
-							if(containsE){
+								System.out.println("ADDED to follow "+items.get(i).getFollow());
+							}
+							if(containsE || i == (items.size()-1)){
+								//System.out.println("contains e");
 								Set<Terminal> newFollow = variable.getFollow();
 								//newFollow.remove(new EpsilonTerminal(this));
 								if(items.get(i).getFollow().addAll(newFollow))
 									hasChanged = true;
+							}
+							else {
+								//System.out.println("doesnt contain e");
 							}
 						}
 					}
