@@ -1,0 +1,9 @@
+$DIGIT [0-9]
+$NONZERO [1-9]
+
+$LPAREN \(
+$RPAREN \)
+$MULT \*
+$PLUS \+
+$MINUS -
+$NUMBER $NONZERO ($DIGIT)*
