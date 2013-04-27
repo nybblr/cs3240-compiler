@@ -81,7 +81,7 @@ public class ParseTable {
 	public void walk(Scanner input) {
 		List<Token> tokens = grammar.getParser().scan(input);
 		
-		
+		TokenStream ts = new TokenStream(tokens);
 	}
 	
 	public String toString() {

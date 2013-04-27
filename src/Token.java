@@ -26,6 +26,6 @@ public class Token {
 	}
 	
 	public String toString() {
-		return klass.toString() + ": \"" + string + "\"";
+		return klass.toString() + ":\"" + string + "\"";
 	}
 }
