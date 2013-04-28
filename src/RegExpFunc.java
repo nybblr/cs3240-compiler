@@ -213,17 +213,17 @@ public class RegExpFunc {
         debug();
         NFA nfa = regExOne(className);
         if (peekToken(OR)) {
-            nfa = NFA.union(nfa, regExPrime(className));
+            nfa = regExPrime(className, nfa);
         }
         return nfa;
     }
 
-    public NFA regExPrime(String className) {
+    public NFA regExPrime(String className, NFA nfa) {
         debug();
         if (peekToken(OR)) {
             matchToken(OR);
-            NFA nfa = regExOne(className);
-            nfa = NFA.concat(regExPrime(className), nfa);
+            nfa = NFA.union(nfa, regExOne(className));
+            nfa = NFA.concat(regExPrime(className, nfa), nfa);
             return nfa;
         } else {
             State a = new State();
@@ -304,6 +304,10 @@ public class RegExpFunc {
                 for(State item : accepts) {
                     nfa.addEpsilonTransition(item, a);
                 }
+            }
+            else {
+                State s = new State();
+                nfa = new NFA(s);
             }
             return nfa;
         }
