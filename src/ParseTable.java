@@ -84,7 +84,7 @@ public class ParseTable {
 	public void walk(Scanner input) {
 		List<Token> tokens = grammar.getParser().scan(input);
 		
-		TokenStream ts = new TokenStream(tokens);
+		TerminalStream ts = new TerminalStream(tokens);
 		Stack<RuleItem> stack = new Stack<RuleItem>();
 		
 		// Push start variable
@@ -93,6 +93,8 @@ public class ParseTable {
 		// While there is something on the stack
 		// And we have input left
 		while (!stack.isEmpty() && !ts.isConsumed()) {
+			System.out.println(stack);
+			System.out.println(ts);
 			if (stack.peek().isVariable()) {
 				// Find a substitution
 				Rule rule = getRuleFor((Variable)stack.peek(), ts.peekToken().getKlass());
@@ -138,13 +140,13 @@ public class ParseTable {
 		return table[vI][tI];
 	}
 	
-	public void invalid(Variable var, Terminal term, TokenStream ts) {
+	public void invalid(Variable var, Terminal term, TerminalStream ts) {
 		System.out.println("There is no rule for ["+var+","+term+"]!");
 		System.out.println(ts.toString());
 		System.exit(0);
 	}
 	
-	public void invalid(Terminal sterm, Terminal iterm, TokenStream ts) {
+	public void invalid(Terminal sterm, Terminal iterm, TerminalStream ts) {
 		System.out.println("Stack and input terminals don't match: ["+sterm+","+iterm+"]!");
 		System.out.println(ts.toString());
 		System.exit(0);

@@ -1,12 +1,12 @@
 import java.util.List;
 
 
-public class TokenStream {
+public class TerminalStream {
 	private List<Token> tokens;
 	private int pointer;
 	
 	// Constructors
-	public TokenStream(List<Token> tokens) {
+	public TerminalStream(List<Token> tokens) {
 		this.tokens = tokens;
 		this.pointer = 0;
 	}
