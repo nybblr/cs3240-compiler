@@ -2,18 +2,18 @@ import java.util.List;
 
 
 public class TerminalStream {
-	private List<Token> tokens;
+	private List<Terminal> terminals;
 	private int pointer;
 	
 	// Constructors
-	public TerminalStream(List<Token> tokens) {
-		this.tokens = tokens;
+	public TerminalStream(List<Terminal> terminals) {
+		this.terminals = terminals;
 		this.pointer = 0;
 	}
 
 	// Setters/getters
-	public List<Token> getTokens() {
-		return tokens;
+	public List<Terminal> getTerminals() {
+		return terminals;
 	}
 
 	public int getPointer() {
@@ -21,30 +21,33 @@ public class TerminalStream {
 	}
 	
 	// Manipulation
-	public Token peekToken() {
+	public Terminal peekTerminal() {
 		if (isConsumed()) return null;
-		return tokens.get(pointer);
+		return terminals.get(pointer);
 	}
 
-	// Peek token at pointer and return if it matches
-	public boolean peekToken(TokenClass klass) {
-		return klass.equals(peekToken().getKlass());
+	// Peek terminal at pointer and return if it matches
+	public boolean peekTerminal(Terminal term) {
+		if (term.isEpsilon()) return true;
+		if (peekTerminal().isToken()) return term.equals(((Token)peekTerminal()).getKlass());
+		return term.equals(peekTerminal());
 	}
 
 	// Get character at current pointer plus offset without advancing
-	public Token peekToken(int i) {
+	public Terminal peekTerminal(int i) {
 		if (isConsumed()) return null;
-		return tokens.get(pointer + i);
+		return terminals.get(pointer + i);
 	}
 	
 	// Consume character at current pointer
 	// Returns if we matched
-	public boolean matchToken(TokenClass klass) {
-		// Make sure the token matches
-		if (!klass.equals(peekToken().getKlass())) return false;
+	public boolean matchTerminal(Terminal term) {
+		// Make sure the terminal matches
+		if (!peekTerminal(term))
+			return false;
 
-		// Advance pointer
-		advancePointer();
+		// Advance pointer if not epsilon
+		if (!term.isEpsilon()) advancePointer();
 		return true;
 	}
 	
@@ -54,7 +57,7 @@ public class TerminalStream {
 		return ++pointer;
 	}
 
-	// Move pointer forward over multitoken
+	// Move pointer forward over multiterminal
 	public int advancePointer(int n) {
 		if (!isEnough(n)) return -1;
 		pointer += n;
@@ -62,19 +65,19 @@ public class TerminalStream {
 	}
 	
 	/* Utility */
-	// Have we already matched all the tokens in the string?
+	// Have we already matched all the terminals in the string?
 	public boolean isConsumed() {
 		return isConsumed(0);
 	}
 	
 	// Is some i from now beyond consumption?
 	public boolean isConsumed(int i) {
-		return pointer+i >= tokens.size();
+		return pointer+i >= terminals.size();
 	}
 
 	// Do we have enough characters in the string to match?
-	public boolean isEnough(int tokenLength) {
-		return pointer + tokenLength <= tokens.size();
+	public boolean isEnough(int terminalLength) {
+		return pointer + terminalLength <= terminals.size();
 	}
 	
 	public String toString() {
@@ -82,8 +85,8 @@ public class TerminalStream {
 		
 		int offset = 0;
 		int length = 0;
-		for (int i = 0; i < tokens.size(); i++) {
-			String ts = tokens.get(i).toString() + " ";
+		for (int i = 0; i < terminals.size(); i++) {
+			String ts = terminals.get(i).toString() + " ";
 			s += ts;
 			if (i < pointer) offset += ts.length();
 			else if (i == pointer) length = ts.length() - 1;

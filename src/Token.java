@@ -1,5 +1,7 @@
+import java.util.Set;
 
-public class Token {
+
+public class Token extends Terminal {
 	private TokenClass klass;
 	private String string;
 	
@@ -25,7 +27,21 @@ public class Token {
 		this.string = string;
 	}
 	
+	
 	public String toString() {
 		return klass.toString() + ":\"" + string + "\"";
+	}
+	
+	public boolean isToken() {
+		return true;
+	}
+
+	// Shouldn't ever use these...
+	public Set<Terminal> getFirst() {
+		return null;
+	}
+
+	public Set<Terminal> getFollow() {
+		return null;
 	}
 }

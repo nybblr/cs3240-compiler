@@ -8,6 +8,10 @@ public abstract class Terminal extends RuleItem {
 		return false;
 	}
 	
+	public boolean isToken() {
+		return false;
+	}
+	
 	public boolean isTerminal() {
 		return true;
 	}

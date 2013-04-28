@@ -82,22 +82,25 @@ public class ParseTable {
 	}
 	
 	public void walk(Scanner input) {
-		List<Token> tokens = grammar.getParser().scan(input);
+		List<Terminal> terminals = new ArrayList<Terminal>();
+		terminals.addAll(grammar.getParser().scan(input));
+		terminals.add(new DollarTerminal(grammar));
 		
-		TerminalStream ts = new TerminalStream(tokens);
+		TerminalStream ts = new TerminalStream(terminals);
 		Stack<RuleItem> stack = new Stack<RuleItem>();
 		
-		// Push start variable
+		// Push dollar and start variable
+		stack.push(new DollarTerminal(grammar));
 		stack.push(grammar.getStart());
 		
 		// While there is something on the stack
 		// And we have input left
-		while (!stack.isEmpty() && !ts.isConsumed()) {
+		while (!stack.isEmpty()) {
 			System.out.println(stack);
 			System.out.println(ts);
 			if (stack.peek().isVariable()) {
 				// Find a substitution
-				Rule rule = getRuleFor((Variable)stack.peek(), ts.peekToken().getKlass());
+				Rule rule = getRuleFor((Variable)stack.peek(), ts.peekTerminal());
 				
 				// Is there a substitution rule?
 				if (rule != null) {
@@ -112,15 +115,15 @@ public class ParseTable {
 						stack.push(li.previous());
 					}
 				} else {
-					invalid((Variable)stack.peek(), ts.peekToken().getKlass(), ts);
+					invalid((Variable)stack.peek(), ts.peekTerminal(), ts);
 				}
 			} else {
 				// It's a terminal. Match it!
-				if (ts.matchToken((TokenClass)stack.peek())) {
+				if (ts.matchTerminal((Terminal)stack.peek())) {
 					// Pop the terminal.
 					stack.pop();
 				} else {
-					invalid((TokenClass)stack.peek(), ts.peekToken().getKlass(), ts);
+					invalid((Terminal)stack.peek(), ts.peekTerminal(), ts);
 				}
 			}
 		}
@@ -133,8 +136,11 @@ public class ParseTable {
 	}
 	
 	public Rule getRuleFor(Variable var, Terminal term) {
+		Terminal trueTerm = term;
+		if (term.isToken()) trueTerm = ((Token)term).getKlass();
+		
 		int vI = varList.indexOf(var);
-		int tI = termList.indexOf(term);
+		int tI = termList.indexOf(trueTerm);
 		
 		if (vI == -1 || tI == -1) return null;
 		return table[vI][tI];
