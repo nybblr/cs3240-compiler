@@ -1,30 +1,34 @@
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 public class StateSet implements Cloneable {
-	public HashSet<State> states = new HashSet<State>();
+	private Set<State> states = new HashSet<State>();
 
 	/* Constructors */
 	public StateSet() {
-
 	}
 
-	public StateSet(HashSet<State> states) {
+	public StateSet(Set<State> states) {
 		this.states = states;
 	}
 
 	/* Setters/Getters */
-	public HashSet<State> getStates() {
+	public Set<State> getStates() {
 		return states;
 	}
 
-	public void setStates(HashSet<State> states) {
+	public void setStates(Set<State> states) {
 		this.states = states;
 	}
 
 	/* Manipulation */
-	public void add(State state) {
-		states.add(state);
+	public boolean add(State state) {
+		return this.states.add(state);
+	}
+	
+	public boolean addAll(Set<State> states) {
+		return this.states.addAll(states);
 	}
 
 	/* Info */
@@ -55,8 +59,8 @@ public class StateSet implements Cloneable {
 	}
 
 	// What characters cause transitions in this set?
-	public HashSet<Character> transitionCharacters() {
-		HashSet<Character> chars = new HashSet<Character>();
+	public Set<Character> transitionCharacters() {
+		Set<Character> chars = new HashSet<Character>();
 		Iterator<State> iter = states.iterator();
 		while (iter.hasNext()) {
 			Iterator<Transition> transIter = iter.next().getTransitions().iterator();
@@ -67,8 +71,8 @@ public class StateSet implements Cloneable {
 		return chars;
 	}
 
-	public HashSet<State> statesReachableOn(Character on) {
-		HashSet<State> reachable = new HashSet<State>();
+	public Set<State> statesReachableOn(Character on) {
+		Set<State> reachable = new HashSet<State>();
 		Iterator<State> iter = states.iterator();
 		while (iter.hasNext()) {
 			State state = iter.next();
@@ -79,7 +83,7 @@ public class StateSet implements Cloneable {
 	}
 
 	public StateSet transition(Character on) {
-		HashSet<State> reachable = statesReachableOn(on);
+		Set<State> reachable = statesReachableOn(on);
 
 		if (reachable.equals(states)) {
 			return this;
@@ -92,13 +96,22 @@ public class StateSet implements Cloneable {
 		return states.toString();
 	}
 
-	public State toState() {
+	public State toState(Parser parser) {
 		State state = new State(toString());
 		state.setAccepts(accepts());
-
+		
+		int lastIndex = -1;
+		
+		// Use whichever one appears earliest in token classes
 		for(State currState : states){
 			if(currState.getAccepts()){
-				state.klass = currState.klass;
+				// Make sure it comes first
+				int index = parser.getTokenClasses().indexOf(currState.klass);
+				if (lastIndex == -1 ||
+						(index < lastIndex && lastIndex != -1)) {
+					state.klass = currState.klass;
+					lastIndex = index;
+				}
 			}
 		}
 		return state;

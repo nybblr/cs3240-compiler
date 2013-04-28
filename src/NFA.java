@@ -223,13 +223,13 @@ public class NFA implements Cloneable {
 	}
 
 	/* Export */
-	public State[][] toTable() {
+	public State[][] toTable(Parser parser) {
 		// Should return some kind of transition table
-		return toDFA().toTable();
+		return toDFA(parser).toTable();
 	}
 
-	public DFA toDFA() {
-		return new DFA(this);
+	public DFA toDFA(Parser parser) {
+		return new DFA(this, parser);
 	}
 
 	public String toString() {

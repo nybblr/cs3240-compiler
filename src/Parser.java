@@ -268,7 +268,7 @@ public class Parser {
             RegExpFunc func = new RegExpFunc(token, this);
             NFA nfa = func.origRegExp(currClass.getName());
             currClass.setNFA(nfa);
-            currClass.setDFA(nfa.toDFA());
+            currClass.setDFA(nfa.toDFA(this));
             if(debug)
                 System.out.println("Parsing class "+currClass);
             nfa.setKlass(currClass);
@@ -284,7 +284,7 @@ public class Parser {
             newNfa.addEpsilonTransition(newNfa.getStart(), each.getNFA().getStart());
         }
         bigNFA = newNfa;
-        bigDFA = newNfa.toDFA();
+        bigDFA = newNfa.toDFA(this);
     }
     //  }
     /**
