@@ -4,14 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-/**
- *
- */
-
-/**
- * @author Rochelle
- * 
- */
 public class RegExpFunc {
     @SuppressWarnings("unused")
     private static final String SPACE = " ", BSLASH = "/", STAR = "*",
@@ -58,12 +50,12 @@ public class RegExpFunc {
         return matched;
     }
 
-    private String peekToken() {
-        if (is.peekToken() == null)
-            return null;
-        String s = String.valueOf(is.peekToken());
-        return s;
-    }
+//    private String peekToken() {
+//        if (is.peekToken() == null)
+//            return null;
+//        String s = String.valueOf(is.peekToken());
+//        return s;
+//    }
 
     private boolean peekToken(String token) {
         return is.peekToken(token);
@@ -124,7 +116,7 @@ public class RegExpFunc {
 
     private void debug() {
         if (Parser.debug) {
-            System.out.println("Pointer at: " + peekToken());
+            System.out.println(is);
             System.out.println(Thread.currentThread().getStackTrace()[2]);
         }
     }
@@ -289,8 +281,10 @@ public class RegExpFunc {
                 nfa = regExThree(className);
                 return nfa;
             } else {
-                invalid();
-                return null;
+            	// Assume it's epsilon
+            	State a = new State();
+                a.setAccepts(true);
+                return new NFA(a);
             }
         }
     }
@@ -305,7 +299,7 @@ public class RegExpFunc {
             return NFA.plus(nfa);
         } else {
             if(nfa != null){
-                HashSet<State> accepts = nfa.getAcceptingStates();
+                Set<State> accepts = nfa.getAcceptingStates();
                 State a = new State();
                 a.setAccepts(true);
                 for(State item : accepts) {
@@ -322,11 +316,11 @@ public class RegExpFunc {
         if (peekToken(PERIOD) || peekToken(LBRAC) || peekToken(DOLLAR)) {
             nfa = charClass(className);
             return nfa;
-        } else if (peekToken("null")) {
-            return null;
         } else {
-            invalid();
-            return null;
+        	// Assume it's epsilon
+        	State a = new State();
+            a.setAccepts(true);
+            return new NFA(a);
         }
     }
 
