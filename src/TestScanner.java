@@ -11,7 +11,7 @@ public class TestScanner {
 		parser.buildFromFile("specs/minire.txt");
 		System.out.println(parser.bigDFA.toTableString(true));
 		
-		parser.scanAndOutput("inputs/minire.txt");
+		parser.scanAndOutput("scripts/script1.txt");
 		
 		List<TokenClass> classes = parser.getClasses();
 		
