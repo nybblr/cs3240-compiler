@@ -8,10 +8,10 @@ public class TestScanner {
 		Parser.debug = true;
 		
 		Parser parser = new Parser();
-		parser.buildFromFile("specs/minire.txt");
+		parser.buildFromFile("specs/epsilon.txt");
 		System.out.println(parser.bigDFA.toTableString(true));
 		
-		parser.scanAndOutput("scripts/script1.txt");
+		parser.scanAndOutput("inputs/epsilon.txt");
 		
 		List<TokenClass> classes = parser.getClasses();
 		
