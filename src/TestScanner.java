@@ -13,17 +13,7 @@ public class TestScanner {
 		
 		parser.scanAndOutput("scripts/script1.txt");
 		
-		List<TokenClass> classes = parser.getClasses();
-		
-		TokenClass klass = null;
-		String klassName = "ID";
-		
-		for (TokenClass t : classes) {
-			if (t.getName().equals(klassName)) {
-				klass = t;
-				break;
-			}
-		}
+		TokenClass klass = parser.getTokenClass("ID");
 		
 		//if (klass.getNFA() != klass.getNFA().getStart().getNFA()) System.out.println("THAT'S AN ISSUE!");
 		DFA dfa = klass.getDFA();
@@ -39,8 +29,6 @@ public class TestScanner {
 		System.out.println('"'+input+'"'+" is"+((accepts) ? "" : " NOT")+" a valid "+klass.getName());
 		
 		System.out.println(parser.scanToken("cd"));
-		
-		System.out.println(parser.getTokenClasses());
 	}
 
 }
