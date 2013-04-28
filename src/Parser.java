@@ -11,9 +11,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Parser {
-    private ArrayList<TokenClass> charClasses;
-    private ArrayList<TokenClass> tokenClasses;
-    private ArrayList<TokenClass> charsAndTokens;
+    private List<TokenClass> charClasses;
+    private List<TokenClass> tokenClasses;
+    private List<TokenClass> charsAndTokens;
     NFA bigNFA;
     DFA bigDFA;
     static boolean debug = false;
