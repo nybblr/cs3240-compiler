@@ -4,6 +4,7 @@ $ASCII [ -~]
 $NONQUOTE [^"] IN $ASCII
 $NONSINGLEQUOTE [^'] IN $ASCII
 
+$TEST (ab|bc|cd)
 $ASCII-STR \"($NONQUOTE|\\\")*\"
 $BEGIN begin
 $END end

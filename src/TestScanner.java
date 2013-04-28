@@ -32,13 +32,13 @@ public class TestScanner {
 		
 		
 		// Now try table walking!
-		String input = "begin";
+		String input = "n_matches";
 		System.out.println("Input: "+input);
 		boolean accepts = DFA.walkTable(input, table).accepts;
 		
 		System.out.println('"'+input+'"'+" is"+((accepts) ? "" : " NOT")+" a valid "+klass.getName());
 		
-		System.out.println(parser.scanToken("begin"));
+		System.out.println(parser.scanToken("cd"));
 		
 		System.out.println(parser.getTokenClasses());
 	}
