@@ -27,8 +27,8 @@ public class TokenStream {
 	}
 
 	// Peek token at pointer and return if it matches
-	public boolean peekToken(Token t) {
-		return t.equals(peekToken());
+	public boolean peekToken(TokenClass klass) {
+		return klass.equals(peekToken().getKlass());
 	}
 
 	// Get character at current pointer plus offset without advancing
@@ -39,9 +39,9 @@ public class TokenStream {
 	
 	// Consume character at current pointer
 	// Returns if we matched
-	public boolean matchToken(Token token) {
+	public boolean matchToken(TokenClass klass) {
 		// Make sure the token matches
-		if (!token.equals(peekToken())) return false;
+		if (!klass.equals(peekToken().getKlass())) return false;
 
 		// Advance pointer
 		advancePointer();

@@ -68,12 +68,8 @@ public class Rule {
 	}
 	
 	public boolean addAllToFollow(Set<Terminal> klasses) {
-		boolean changed = follow.addAll(klasses);
-		return variable.addAllToFollow(klasses) || changed;
-	}
-	
-	public boolean hasEpsilonInFirst() {
-		return first.contains(new EpsilonTerminal(grammar));
+		//boolean changed = follow.addAll(klasses);
+		return variable.addAllToFollow(klasses);// || changed;
 	}
 	
 	// Manipulation
@@ -85,11 +81,18 @@ public class Rule {
 	// Utility
 	public String toString() {
 		// Print out pretty rule here
-		return variable.toString()+" => "+toVarlessString();
+		return variable.toString()+" ::= "+toVarlessString();
 	}
 	
 	public String toVarlessString() {
 		// Print out pretty rule here
-		return items.toString();
+		String s = "";
+		int i = 0;
+		for (RuleItem item : items) {
+			s += item.toString();
+			if (i != items.size() - 1) s += " ";
+			i++;
+		}
+		return s;
 	}
 }

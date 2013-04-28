@@ -7,4 +7,8 @@ public abstract class Terminal extends RuleItem {
 	public boolean isDollar() {
 		return false;
 	}
+	
+	public boolean isTerminal() {
+		return true;
+	}
 }

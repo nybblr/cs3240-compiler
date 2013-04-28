@@ -21,5 +21,7 @@ public class TestGrammar {
 		
 		ParseTable pt = new ParseTable(g);
 		System.out.println(pt.toString());
+		
+		pt.walk((new Scanner(new File("scripts/math.txt"))));
 	}
 }

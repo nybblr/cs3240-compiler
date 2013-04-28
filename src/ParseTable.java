@@ -2,8 +2,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Scanner;
+import java.util.Stack;
 
 
 public class ParseTable {
@@ -59,7 +62,7 @@ public class ParseTable {
 			// If epsilon in First(rule)
 			if (hasEpsilon) {
 				// For each token in Follow(rule)
-				for (Terminal term : rule.getFollow()) {
+				for (Terminal term : rule.getVariable().getFollow()) {
 					int termI = termList.indexOf(term);
 					
 					if (table[varI][termI] == null) {
@@ -82,6 +85,69 @@ public class ParseTable {
 		List<Token> tokens = grammar.getParser().scan(input);
 		
 		TokenStream ts = new TokenStream(tokens);
+		Stack<RuleItem> stack = new Stack<RuleItem>();
+		
+		// Push start variable
+		stack.push(grammar.getStart());
+		
+		// While there is something on the stack
+		// And we have input left
+		while (!stack.isEmpty() && !ts.isConsumed()) {
+			if (stack.peek().isVariable()) {
+				// Find a substitution
+				Rule rule = getRuleFor((Variable)stack.peek(), ts.peekToken().getKlass());
+				
+				// Is there a substitution rule?
+				if (rule != null) {
+					// Pop the variable
+					stack.pop();
+					
+					// Push the rule items from right to left
+					List<RuleItem> items = rule.getItems();
+					ListIterator<RuleItem> li = items.listIterator(items.size());
+					
+					while(li.hasPrevious()) {
+						stack.push(li.previous());
+					}
+				} else {
+					invalid((Variable)stack.peek(), ts.peekToken().getKlass(), ts);
+				}
+			} else {
+				// It's a terminal. Match it!
+				if (ts.matchToken((TokenClass)stack.peek())) {
+					// Pop the terminal.
+					stack.pop();
+				} else {
+					invalid((TokenClass)stack.peek(), ts.peekToken().getKlass(), ts);
+				}
+			}
+		}
+		
+		if (stack.isEmpty() && ts.isConsumed()) {
+			System.out.println("Successfully parsed the token stream!");
+		} else {
+			System.out.println("Invalid input token stream.");
+		}
+	}
+	
+	public Rule getRuleFor(Variable var, Terminal term) {
+		int vI = varList.indexOf(var);
+		int tI = termList.indexOf(term);
+		
+		if (vI == -1 || tI == -1) return null;
+		return table[vI][tI];
+	}
+	
+	public void invalid(Variable var, Terminal term, TokenStream ts) {
+		System.out.println("There is no rule for ["+var+","+term+"]!");
+		System.out.println(ts.toString());
+		System.exit(0);
+	}
+	
+	public void invalid(Terminal sterm, Terminal iterm, TokenStream ts) {
+		System.out.println("Stack and input terminals don't match: ["+sterm+","+iterm+"]!");
+		System.out.println(ts.toString());
+		System.exit(0);
 	}
 	
 	public String toString() {

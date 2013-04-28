@@ -290,7 +290,8 @@ public class Grammar {
 				for(Rule rule : map.get(variable)){
 					List<RuleItem> items = rule.getItems();
 					for(int i=0; i<items.size(); i++){
-						if(items.get(i) instanceof Variable){
+						RuleItem item = items.get(i);
+						if(item.isVariable()){
 							Set<Terminal> newFirst = new HashSet<Terminal>();
 							for(int j=i+1; j<items.size(); j++){
 								Set<Terminal> currSet = items.get(j).getFirst();
@@ -299,12 +300,12 @@ public class Grammar {
 									break;
 							}
 							boolean containsE = newFirst.remove(new EpsilonTerminal(this));
-							if(items.get(i).getFollow().addAll(newFirst)){
+							if(((Variable)item).addAllToFollow(newFirst)){
 								hasChanged = true;
 							}
 							if(containsE || i == (items.size()-1)){
 								Set<Terminal> newFollow = variable.getFollow();
-								if(items.get(i).getFollow().addAll(newFollow))
+								if(((Variable)item).addAllToFollow(newFollow))
 									hasChanged = true;
 							}
 						}

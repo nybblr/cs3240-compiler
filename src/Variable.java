@@ -62,6 +62,10 @@ public class Variable extends RuleItem {
 	}
 	
 	// Utility
+	public boolean isVariable() {
+		return true;
+	}
+	
 	public String toString() {
 		return "<"+label+">";
 	}
