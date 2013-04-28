@@ -8,4 +8,8 @@ public class ScanResult {
 		this.lastPointer = lastPointer;
 		this.accepts = accepts;
 	}
+	
+	public String toString() {
+		return "Last accepted "+lastAccept+" up to "+lastPointer+"; "+((accepts) ? "accepted" : "rejected");
+	}
 }

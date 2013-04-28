@@ -8,15 +8,15 @@ public class TestScanner {
 		Parser.debug = true;
 		
 		Parser parser = new Parser();
-		parser.buildFromFile("specs/epsilon.txt");
+		parser.buildFromFile("specs/minire.txt");
 		System.out.println(parser.bigDFA.toTableString(true));
 		
-		parser.scanAndOutput("inputs/epsilon.txt");
+		parser.scanAndOutput("scripts/script1.txt");
 		
 		List<TokenClass> classes = parser.getClasses();
 		
 		TokenClass klass = null;
-		String klassName = "FLOAT";
+		String klassName = "ID";
 		
 		for (TokenClass t : classes) {
 			if (t.getName().equals(klassName)) {
@@ -32,11 +32,13 @@ public class TestScanner {
 		
 		
 		// Now try table walking!
-		String input = "3.4";
+		String input = "begin";
 		System.out.println("Input: "+input);
 		boolean accepts = DFA.walkTable(input, table).accepts;
 		
 		System.out.println('"'+input+'"'+" is"+((accepts) ? "" : " NOT")+" a valid "+klass.getName());
+		
+		System.out.println(parser.scanToken("begin"));
 	}
 
 }
