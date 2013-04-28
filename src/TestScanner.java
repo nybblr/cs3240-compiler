@@ -39,8 +39,6 @@ public class TestScanner {
 		System.out.println('"'+input+'"'+" is"+((accepts) ? "" : " NOT")+" a valid "+klass.getName());
 		
 		System.out.println(parser.scanToken("cd"));
-		
-		System.out.println(parser.getTokenClasses());
 	}
 
 }
