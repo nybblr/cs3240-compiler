@@ -246,10 +246,7 @@ public class RegExpFunc {
             NFA nfa = regExTwo(className);
             nfa = NFA.concat(nfa, regExOnePrime(className));
             return nfa;
-        } else if(peekToken("")) {
-            return null;
-        }
-        else {
+        } else {
             State a = new State();
             a.setAccepts(true);
             return new NFA(a);
