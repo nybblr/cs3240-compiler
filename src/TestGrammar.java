@@ -7,8 +7,7 @@ public class TestGrammar {
 		Grammar g = new Grammar(new Scanner(new File("grammars/minire.txt")), new Scanner(new File("specs/minire.txt")));
 		
 		System.out.println(g.toString());
-		g.calculateFirstSets();
-		g.calculateFollowSets();
+		
 		for(Variable variable : g.getVariables()){
 			System.out.print("First("+variable+") = ");
 			System.out.println(variable.getFirst());
@@ -22,6 +21,6 @@ public class TestGrammar {
 		ParseTable pt = new ParseTable(g);
 		System.out.println(pt.toString());
 		
-		pt.walk((new Scanner(new File("scripts/script2.txt"))));
+		pt.walk((new Scanner(new File("scripts/script1.txt"))));
 	}
 }

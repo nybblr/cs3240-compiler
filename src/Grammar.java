@@ -166,6 +166,9 @@ public class Grammar {
     		currRule = null;
     		i++;
 		}
+		
+		calculateFirstSets();
+		calculateFollowSets();
 	}
 
 	// Getters/setters
