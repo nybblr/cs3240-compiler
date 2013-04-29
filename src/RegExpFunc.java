@@ -322,7 +322,10 @@ public class RegExpFunc {
             return nfa;
         } else {
             // Assume it's epsilon
-            return null;
+        	State a = new State();
+            nfa = new NFA(a);
+            nfa.setAccepts(a, true);
+            return nfa;
         }
     }
 
