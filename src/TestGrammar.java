@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class TestGrammar {
 	public static void main(String[] args) throws Exception {
-		Grammar g = new Grammar(new Scanner(new File("grammars/math.txt")), new Scanner(new File("specs/math.txt")));
+		Grammar g = new Grammar(new Scanner(new File("grammars/minire.txt")), new Scanner(new File("specs/minire.txt")));
 		
 		System.out.println(g.toString());
 		g.calculateFirstSets();
@@ -22,6 +22,6 @@ public class TestGrammar {
 		ParseTable pt = new ParseTable(g);
 		System.out.println(pt.toString());
 		
-		pt.walk((new Scanner(new File("scripts/math.txt"))));
+		pt.walk((new Scanner(new File("scripts/script2.txt"))));
 	}
 }

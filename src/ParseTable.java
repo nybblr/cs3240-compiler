@@ -127,6 +127,10 @@ public class ParseTable {
 			}
 		}
 		
+		System.out.println("FINISHED with:");
+		System.out.println(stack);
+		System.out.println(ts);
+		
 		if (stack.isEmpty() && ts.isConsumed()) {
 			System.out.println("Successfully parsed the token stream!");
 		} else {

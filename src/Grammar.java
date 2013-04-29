@@ -137,7 +137,7 @@ public class Grammar {
 	            		currRule.addItem(klass);
 		            	
 	            		// Consume TokenClass
-		            	is.matchToken(string);
+		            	is.matchToken(klass.getName());
 	            	} else {
 	            		// See if any token classes match
 	            		Token token = parser.scanToken(is.peekTillEnd());
