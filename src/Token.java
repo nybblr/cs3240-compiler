@@ -32,6 +32,10 @@ public class Token extends Terminal {
 		return klass.toString() + ":\"" + string + "\"";
 	}
 	
+	public String toCleanString() {
+		return string;
+	}
+	
 	public boolean isToken() {
 		return true;
 	}

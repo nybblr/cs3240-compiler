@@ -15,4 +15,8 @@ public abstract class Terminal extends RuleItem {
 	public boolean isTerminal() {
 		return true;
 	}
+	
+	public String toCleanString() {
+		return toString();
+	}
 }

@@ -86,7 +86,7 @@ public class TerminalStream {
 		int offset = 0;
 		int length = 0;
 		for (int i = 0; i < terminals.size(); i++) {
-			String ts = terminals.get(i).toString() + " ";
+			String ts = terminals.get(i).toCleanString() + " ";
 			s += ts;
 			if (i < pointer) offset += ts.length();
 			else if (i == pointer) length = ts.length() - 1;
