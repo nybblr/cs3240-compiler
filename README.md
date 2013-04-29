@@ -37,6 +37,7 @@ Execution
 Run the main method of TestGrammar. Make sure to set the grammar, token spec, and sample script in the various paths.
 
 The console will show:
+
 1. parsed grammar rules as represented in memory
 2. first/follow sets
 3. LL(1) parse table
