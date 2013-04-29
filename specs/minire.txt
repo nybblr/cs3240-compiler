@@ -4,7 +4,7 @@ $ASCII [ -~]
 $NONQUOTE [^"] IN $ASCII
 $NONSINGLEQUOTE [^'] IN $ASCII
 
-$TEST (ab|bc|cd)
+$TEST (ab|bc|cd)19(a|b|c)
 $ASCII-STR \"($NONQUOTE|\\\")*\"
 $BEGIN begin
 $END end
