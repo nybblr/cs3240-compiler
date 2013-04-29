@@ -49,9 +49,9 @@ Most of the classes are also discussed in the writeup. The class hierarchy is sh
 - Grammar
 - Rule
 - RuleItem (abstract)
-  - Terminal (abstract)
-    - Token
-    - TokenClass
-    - EpsilonTerminal
-    - DollarTerminal
-  - Variable
+    - Terminal (abstract)
+        - Token
+        - TokenClass
+        - EpsilonTerminal
+        - DollarTerminal
+    - Variable
