@@ -1,0 +1,132 @@
+<exp'> ::= <epsilon> | <addop> <term> <exp'>
+<term'> ::= <epsilon> | <mulop> <factor> <term'>
+<exp> ::= <term> <exp'>
+<addop> ::= $PLUS | $MINUS
+<term> ::= <factor> <term'>
+<factor> ::= $NUMBER | $LPAREN <exp> $RPAREN
+<mulop> ::= $MULT
+
+First(<exp'>) = [<epsilon>, $MINUS, $PLUS]
+First(<term'>) = [<epsilon>, $MULT]
+First(<exp>) = [$LPAREN, $NUMBER]
+First(<addop>) = [$MINUS, $PLUS]
+First(<term>) = [$LPAREN, $NUMBER]
+First(<factor>) = [$LPAREN, $NUMBER]
+First(<mulop>) = [$MULT]
+
+Follow(<exp'>) = [$RPAREN, $]
+Follow(<term'>) = [$RPAREN, $MINUS, $PLUS, $]
+Follow(<exp>) = [$RPAREN, $]
+Follow(<addop>) = [$LPAREN, $NUMBER]
+Follow(<term>) = [$RPAREN, $MINUS, $PLUS, $]
+Follow(<factor>) = [$RPAREN, $MINUS, $PLUS, $, $MULT]
+Follow(<mulop>) = [$LPAREN, $NUMBER]
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Variable               $LPAREN                       $RPAREN                        $MULT                               $PLUS                             $MINUS                         $NUMBER                      $          
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ <exp>         <exp> ::= <term> <exp'>                 ~~                             ~~                                  ~~                                ~~                   <exp> ::= <term> <exp'>             ~~          
+ <exp'>                   ~~                  <exp'> ::= <epsilon>                    ~~                   <exp'> ::= <addop> <term> <exp'>  <exp'> ::= <addop> <term> <exp'>              ~~               <exp'> ::= <epsilon> 
+<addop>                   ~~                           ~~                             ~~                          <addop> ::= $PLUS                 <addop> ::= $MINUS                     ~~                        ~~          
+ <term>      <term> ::= <factor> <term'>               ~~                             ~~                                  ~~                                ~~                 <term> ::= <factor> <term'>           ~~          
+<term'>                   ~~                  <term'> ::= <epsilon>  <term'> ::= <mulop> <factor> <term'>       <term'> ::= <epsilon>             <term'> ::= <epsilon>                    ~~               <term'> ::= <epsilon>
+<mulop>                   ~~                           ~~                     <mulop> ::= $MULT                           ~~                                ~~                             ~~                        ~~          
+<factor>  <factor> ::= $LPAREN <exp> $RPAREN           ~~                             ~~                                  ~~                                ~~                    <factor> ::= $NUMBER               ~~          
+
+[$, <exp>]
+3 * ( 4 + 6 ) $ 
+^
+[$, <exp'>, <term>]
+3 * ( 4 + 6 ) $ 
+^
+[$, <exp'>, <term'>, <factor>]
+3 * ( 4 + 6 ) $ 
+^
+[$, <exp'>, <term'>, $NUMBER]
+3 * ( 4 + 6 ) $ 
+^
+[$, <exp'>, <term'>]
+3 * ( 4 + 6 ) $ 
+  ^
+[$, <exp'>, <term'>, <factor>, <mulop>]
+3 * ( 4 + 6 ) $ 
+  ^
+[$, <exp'>, <term'>, <factor>, $MULT]
+3 * ( 4 + 6 ) $ 
+  ^
+[$, <exp'>, <term'>, <factor>]
+3 * ( 4 + 6 ) $ 
+    ^
+[$, <exp'>, <term'>, $RPAREN, <exp>, $LPAREN]
+3 * ( 4 + 6 ) $ 
+    ^
+[$, <exp'>, <term'>, $RPAREN, <exp>]
+3 * ( 4 + 6 ) $ 
+      ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term>]
+3 * ( 4 + 6 ) $ 
+      ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term'>, <factor>]
+3 * ( 4 + 6 ) $ 
+      ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term'>, $NUMBER]
+3 * ( 4 + 6 ) $ 
+      ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term'>]
+3 * ( 4 + 6 ) $ 
+        ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <epsilon>]
+3 * ( 4 + 6 ) $ 
+        ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>]
+3 * ( 4 + 6 ) $ 
+        ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term>, <addop>]
+3 * ( 4 + 6 ) $ 
+        ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term>, $PLUS]
+3 * ( 4 + 6 ) $ 
+        ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term>]
+3 * ( 4 + 6 ) $ 
+          ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term'>, <factor>]
+3 * ( 4 + 6 ) $ 
+          ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term'>, $NUMBER]
+3 * ( 4 + 6 ) $ 
+          ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <term'>]
+3 * ( 4 + 6 ) $ 
+            ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>, <epsilon>]
+3 * ( 4 + 6 ) $ 
+            ^
+[$, <exp'>, <term'>, $RPAREN, <exp'>]
+3 * ( 4 + 6 ) $ 
+            ^
+[$, <exp'>, <term'>, $RPAREN, <epsilon>]
+3 * ( 4 + 6 ) $ 
+            ^
+[$, <exp'>, <term'>, $RPAREN]
+3 * ( 4 + 6 ) $ 
+            ^
+[$, <exp'>, <term'>]
+3 * ( 4 + 6 ) $ 
+              ^
+[$, <exp'>, <epsilon>]
+3 * ( 4 + 6 ) $ 
+              ^
+[$, <exp'>]
+3 * ( 4 + 6 ) $ 
+              ^
+[$, <epsilon>]
+3 * ( 4 + 6 ) $ 
+              ^
+[$]
+3 * ( 4 + 6 ) $ 
+              ^
+FINISHED with:
+[]
+3 * ( 4 + 6 ) $ 
+                
+Successfully parsed the token stream!
