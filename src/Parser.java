@@ -194,6 +194,7 @@ public class Parser {
         
         while(input.hasNextLine()){
             String line = input.nextLine();
+            String fullLine = new String(line);
             while(!line.isEmpty()) {
                 line = line.trim();
 
@@ -201,9 +202,15 @@ public class Parser {
 
                 // If nothing matched, invalid input!
                 if (result.lastPointer == 0) {
-                    if(debug)
-                        System.out.println("INVALID INPUT!");
-                    break;
+                    System.out.println("INVALID INPUT!");
+                    System.out.println(fullLine);
+                    
+                    String s = "";
+                    for (int i = 0; i < fullLine.length()-line.length(); i++)
+                    	s += " ";
+                    s += "^";
+                    System.out.println(s);
+                    System.exit(0);
                 }
 
                 // Something matched!
